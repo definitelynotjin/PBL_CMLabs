@@ -27,4 +27,4 @@ class LetterSeeder extends Seeder
         ]);
     }
 }
-```
+

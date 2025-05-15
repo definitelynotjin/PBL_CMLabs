@@ -27,4 +27,4 @@ class SalarySeeder extends Seeder
         ]);
     }
 }
-```
+

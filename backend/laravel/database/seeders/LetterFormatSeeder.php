@@ -25,4 +25,3 @@ class LetterFormatSeeder extends Seeder
         ]);
     }
 }
-```

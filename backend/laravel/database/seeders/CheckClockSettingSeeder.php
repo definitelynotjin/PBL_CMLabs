@@ -23,4 +23,6 @@ class CheckClockSettingSeeder extends Seeder
         ]);
     }
 }
-```
+// CheckClockSettingSeeder.php
+// CheckClockSettingSeeder.php
+// CheckClockSettingSeeder.php                                                                                                                                                                                                  
