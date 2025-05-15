@@ -3,8 +3,8 @@ import { CheckEmail } from "@/components/check-email";
 
 export default function CheckEmailPage() {
   return (
-    <>
-      <style>
+      <div className="grid min-h-svh lg:grid-cols-2">
+        <style>
         {`
           .animated-gradient {
             background: linear-gradient(
@@ -35,7 +35,6 @@ export default function CheckEmailPage() {
           }
         `}
       </style>
-      <div className="grid min-h-svh lg:grid-cols-2">
         <div className="flex flex-col gap-4 p-6 md:p-10">
           <div className="flex justify-center gap-2 md:justify-start">
             <a href="#" className="flex items-center gap-2 font-medium">
@@ -61,6 +60,5 @@ export default function CheckEmailPage() {
           </div>
         </div>
       </div>
-    </>
   );
 }
