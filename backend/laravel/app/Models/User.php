@@ -2,47 +2,23 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    protected $table = "users";
+    protected $primaryKey = "id";
+    public $incrementing = false;
+    protected $keyType = "string";
+    protected $fillable = ["id", "email", "password", "is_admin"];
+    protected $casts = ["is_admin" => "boolean"];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    public function employees() { return $this->hasMany(Employee::class, "user_id"); }
+    public function letters() { return $this->hasMany(Letter::class, "user_id"); }
+    public function salaries() { return $this->hasMany(Salary::class, "user_id"); }
+    public function checkClocks() { return $this->hasMany(CheckClock::class, "user_id"); }
 }

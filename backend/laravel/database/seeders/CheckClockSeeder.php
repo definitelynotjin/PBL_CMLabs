@@ -1,4 +1,3 @@
-```php
 <?php
 
 namespace Database\Seeders;
@@ -10,18 +9,18 @@ class CheckClockSeeder extends Seeder
 {
     public function run(): void
     {
-        CheckClock::factory()->create([
-            'id' => '2e3f4g5h-6i7j-98k9-f0l1-123456789001',
-            'user_id' => '550e8400-e29b-41d4-a716-446655440002',
-            'check_clock_type' => 1,
-            'check_clock_time' => '08:05:00',
+    CheckClock::factory()->create([
+            "id" => "dj4k5l6m-7g7h-88i9-e0j1-123456789001",
+                "user_id" => "550e8400-e29b-41d4-a716-446655440002",
+                "check_clock_type" => 1,
+                "check_clock_time" => "09:00:00",
+        ]);
+    CheckClock::factory()->create([
+            "id" => "dj4k5l6m-7g7h-88i9-e0j1-123456789002",
+                "user_id" => "550e8400-e29b-41d4-a716-446655440003",
+                "check_clock_type" => 2,
+                "check_clock_time" => "22:00:00",
         ]);
 
-        CheckClock::factory()->create([
-            'id' => '2e3f4g5h-6i7j-98k9-f0l1-123456789002',
-            'user_id' => '550e8400-e29b-41d4-a716-446655440003',
-            'check_clock_type' => 1,
-            'check_clock_time' => '20:10:00',
-        ]);
     }
 }

@@ -1,4 +1,3 @@
-```php
 <?php
 
 namespace Database\Seeders;
@@ -10,21 +9,18 @@ class LetterSeeder extends Seeder
 {
     public function run(): void
     {
-        Letter::factory()->create([
-            'id' => '9b0c1d2e-3f4g-65h6-c7i8-890123456701',
-            'letter_format_id' => '8a9b0c1d-2e3f-54g5-b6h7-789012345601',
-            'user_id' => '550e8400-e29b-41d4-a716-446655440002',
-            'name' => 'John Offer',
+    Letter::factory()->create([
+            "id" => "af1h2i3j-4d4e-55f6-b7g8-890123456701",
+                "letter_format_id" => "9e0f1g2h-3c3d-44e5-a6f7-789012345601",
+                "user_id" => "550e8400-e29b-41d4-a716-446655440002",
+                "name" => "Promotion Letter for John",
+        ]);
+    Letter::factory()->create([
+            "id" => "af1h2i3j-4d4e-55f6-b7g8-890123456702",
+                "letter_format_id" => "9e0f1g2h-3c3d-44e5-a6f7-789012345602",
+                "user_id" => "550e8400-e29b-41d4-a716-446655440003",
+                "name" => "Resignation Letter for Jane",
         ]);
 
-
-
-        Letter::factory()->create([
-            'id' => '9b0c1d2e-3f4g-65h6-c7i8-890123456702',
-            'letter_format_id' => '8a9b0c1d-2e3f-54g5-b6h7-789012345602',
-            'user_id' => '550e8400-e29b-41d4-a716-446655440003',
-            'name' => 'Jane Termination',
-        ]);
     }
 }
-
