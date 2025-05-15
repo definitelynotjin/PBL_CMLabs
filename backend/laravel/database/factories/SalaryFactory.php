@@ -3,6 +3,8 @@
 namespace Database\Factories;
 
 use App\Models\Salary;
+use App\Models\User;
+use App\Models\CheckClockSetting; 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 

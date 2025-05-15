@@ -3,6 +3,8 @@
 namespace Database\Factories;
 
 use App\Models\Letter;
+use App\Models\User;
+use App\Models\LetterFormat;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 

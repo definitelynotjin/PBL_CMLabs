@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\CheckClockSettingTime;
+use App\Models\CheckClockSetting;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 

@@ -14,7 +14,7 @@ class UserFactory extends Factory
     {
         return [
             "id" => (string) Str::uuid(),
-            "email" => $this->faker->unique()->safeEmail,
+            "email" => $this->faker->unique()->safeEmail(),
             "password" => bcrypt("password"),
             "is_admin" => false,
         ];
