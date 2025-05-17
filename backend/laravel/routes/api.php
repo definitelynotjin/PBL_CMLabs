@@ -11,14 +11,13 @@ use App\Http\Controllers\SalaryController;
 use App\Http\Controllers\CheckClockSettingTimeController;
 use App\Http\Controllers\CheckClockController;
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\LoginController;
-use App\Http\Controllers\Api\RegisterController;
-use App\Http\Controllers\Api\ForgotPasswordController;
-use App\Http\Controllers\Api\ResetPasswordController;
 
-
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
+
     Route::apiResources([
         'users' => UserController::class,
         'check_clock_settings' => CheckClockSettingController::class,
@@ -30,6 +29,12 @@ Route::middleware('auth:sanctum')->group(function () {
         'check_clocks' => CheckClockController::class,
     ]);
 });
-
-Route::post('/login', [LoginController::class, 'login']);
-Route::post('/register', [RegisterController::class, 'register']);
+Route::get('/check_clock_settings/{id}/check_clock_setting_times', [CheckClockSettingController::class, 'getCheckClockSettingTimes']);
+Route::get('/check_clock_settings/{id}/check_clocks', [CheckClockSettingController::class, 'getCheckClocks']);
+Route::get('/employees/{id}/check_clocks', [EmployeeController::class, 'getCheckClocks']);
+Route::get('/employees/{id}/salaries', [EmployeeController::class, 'getSalaries']);
+Route::get('/employees/{id}/letters', [EmployeeController::class, 'getLetters']);
+Route::get('/employees/{id}/check_clock_settings', [EmployeeController::class, 'getCheckClockSettings']);
+Route::get('/employees/{id}/check_clock_setting_times', [EmployeeController::class, 'getCheckClockSettingTimes']);
+Route::get('/employees/{id}/check_clock_setting_times/{setting_id}', [EmployeeController::class, 'getCheckClockSettingTime']);
+Route::get('/employees/{id}/check_clock_setting_times/{setting_id}/check_clocks', [EmployeeController::class, 'getCheckClocksBySettingTime']);
