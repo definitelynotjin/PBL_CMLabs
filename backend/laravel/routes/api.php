@@ -1,40 +1,92 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\CheckClockSettingController;
-use App\Http\Controllers\EmployeeController;
-use App\Http\Controllers\LetterFormatController;
-use App\Http\Controllers\LetterController;
-use App\Http\Controllers\SalaryController;
-use App\Http\Controllers\CheckClockSettingTimeController;
-use App\Http\Controllers\CheckClockController;
-use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
+use App\Models\User;
 
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/register', [AuthController::class, 'register']);
+class AuthController extends Controller
+{
+    /**
+     * Register a new user and create access token.
+     */
+    public function register(Request $request)
+    {
+        // Validate request input
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|unique:users,email',
+            'password' => 'required|string|min:6|confirmed', // expects password_confirmation
+        ]);
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout']);
+        // Create user with hashed password
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+        ]);
 
-    Route::apiResources([
-        'users' => UserController::class,
-        'check_clock_settings' => CheckClockSettingController::class,
-        'employees' => EmployeeController::class,
-        'letter_formats' => LetterFormatController::class,
-        'letters' => LetterController::class,
-        'salaries' => SalaryController::class,
-        'check_clock_setting_times' => CheckClockSettingTimeController::class,
-        'check_clocks' => CheckClockController::class,
-    ]);
-});
-Route::get('/check_clock_settings/{id}/check_clock_setting_times', [CheckClockSettingController::class, 'getCheckClockSettingTimes']);
-Route::get('/check_clock_settings/{id}/check_clocks', [CheckClockSettingController::class, 'getCheckClocks']);
-Route::get('/employees/{id}/check_clocks', [EmployeeController::class, 'getCheckClocks']);
-Route::get('/employees/{id}/salaries', [EmployeeController::class, 'getSalaries']);
-Route::get('/employees/{id}/letters', [EmployeeController::class, 'getLetters']);
-Route::get('/employees/{id}/check_clock_settings', [EmployeeController::class, 'getCheckClockSettings']);
-Route::get('/employees/{id}/check_clock_setting_times', [EmployeeController::class, 'getCheckClockSettingTimes']);
-Route::get('/employees/{id}/check_clock_setting_times/{setting_id}', [EmployeeController::class, 'getCheckClockSettingTime']);
-Route::get('/employees/{id}/check_clock_setting_times/{setting_id}/check_clocks', [EmployeeController::class, 'getCheckClocksBySettingTime']);
+        // Create a token for the user
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        // Return response with user and token
+        return response()->json([
+            'message' => 'User registered successfully',
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+            'user' => $user,
+        ], 201);
+    }
+
+    /**
+     * Authenticate user and return access token.
+     */
+    public function login(Request $request)
+    {
+        // Validate login input
+        $request->validate([
+            'email' => 'required|string|email',
+            'password' => 'required|string',
+        ]);
+
+        // Find user by email
+        $user = User::where('email', $request->email)->first();
+
+        // Check user and password correctness
+        if (! $user || ! Hash::check($request->password, $user->password)) {
+            throw ValidationException::withMessages([
+                'email' => ['The provided credentials are incorrect.'],
+            ]);
+        }
+
+        // Optional: delete old tokens to restrict to single session
+        $user->tokens()->delete();
+
+        // Create new token
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        // Return token and user info
+        return response()->json([
+            'message' => 'Login successful',
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+            'user' => $user,
+        ]);
+    }
+
+    /**
+     * Log out the authenticated user by deleting current token.
+     */
+    public function logout(Request $request)
+    {
+        // Delete the token used to authenticate current request
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json([
+            'message' => 'Logged out successfully',
+        ]);
+    }
+}

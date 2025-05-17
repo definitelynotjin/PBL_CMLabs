@@ -1,95 +1,183 @@
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
+"use client";
+
+import React, { useState } from "react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useRouter } from "next/navigation";
+
 
 export function SignUpForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
+  const router = useRouter();
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    terms: false,
+  });
+
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  // Handler for text inputs
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const { id, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  }
+
+  // Handler for checkbox
+  function handleCheckboxChange(checked: boolean) {
+    setFormData((prev) => ({
+      ...prev,
+      terms: checked,
+    }));
+  }
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    if (!formData.terms) {
+      setError("You must agree to the terms of use");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch("http://localhost:8000/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: `${formData.firstName} ${formData.lastName}`,
+          email: formData.email,
+          password: formData.password,
+          password_confirmation: formData.confirmPassword,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log("User registered:", data);
+        // Optionally reset form or redirect here
+      } else {
+        setError(data.message || "Registration failed");
+      }
+    } catch {
+      setError("Network error");
+    }
+
+    setLoading(false);
+  }
+
   return (
-    <form className={cn("flex flex-col gap-6", className)} {...props}>
+    <form
+      className={cn("flex flex-col gap-6", className)}
+      onSubmit={handleSubmit}
+      {...props}
+    >
       <div className="flex flex-col items-start gap-2">
         <h1 className="text-3xl font-semibold">Sign Up</h1>
         <p className="text-muted-foreground text-sm">
           Create your account and streamline your employee management.
         </p>
       </div>
-      
+
       <div className="grid gap-6">
         <div className="grid grid-cols-2 gap-4">
           <div className="grid gap-2">
             <Label htmlFor="firstName">First Name</Label>
-            <Input 
-              id="firstName" 
-              type="text" 
-              placeholder="Enter your first name" 
+            <Input
+              id="firstName"
+              type="text"
+              placeholder="Enter your first name"
               className="p-6"
-              required 
+              required
+              value={formData.firstName}
+              onChange={handleInputChange}
             />
           </div>
           <div className="grid gap-2">
             <Label htmlFor="lastName">Last Name</Label>
-            <Input 
-              id="lastName" 
-              type="text" 
-              placeholder="Enter your first name" 
+            <Input
+              id="lastName"
+              type="text"
+              placeholder="Enter your last name"
               className="p-6"
-              required 
+              required
+              value={formData.lastName}
+              onChange={handleInputChange}
             />
           </div>
         </div>
-        
+
         <div className="grid gap-2">
           <Label htmlFor="email">Email</Label>
-          <Input 
-            id="email" 
-            type="email" 
-            placeholder="Enter your email" 
+          <Input
+            id="email"
+            type="email"
+            placeholder="Enter your email"
             className="p-6"
-            required 
+            required
+            value={formData.email}
+            onChange={handleInputChange}
           />
         </div>
-        
+
         <div className="grid gap-2">
           <Label htmlFor="password">Password</Label>
           <div className="relative">
-            <Input 
-              id="password" 
-              type="password" 
-              placeholder="Enter your password" 
+            <Input
+              id="password"
+              type="password"
+              placeholder="Enter your password"
               className="p-6"
-              required 
+              required
+              value={formData.password}
+              onChange={handleInputChange}
             />
-            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-500">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="currentColor" />
-              </svg>
-            </div>
+            {/* Icon here */}
           </div>
         </div>
 
         <div className="grid gap-2">
           <Label htmlFor="confirmPassword">Confirm Password</Label>
           <div className="relative">
-            <Input 
-              id="confirmPassword" 
-              type="password" 
-              placeholder="Enter your confirm password" 
+            <Input
+              id="confirmPassword"
+              type="password"
+              placeholder="Confirm your password"
               className="p-6"
-              required 
+              required
+              value={formData.confirmPassword}
+              onChange={handleInputChange}
             />
-            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-500">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="currentColor" />
-              </svg>
-            </div>
+            {/* Icon here */}
           </div>
         </div>
-        
+
         <div className="flex items-center space-x-2">
-          <Checkbox id="terms" />
+          <Checkbox
+            id="terms"
+            checked={formData.terms}
+            onCheckedChange={handleCheckboxChange}
+          />
           <label
             htmlFor="terms"
             className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -97,20 +185,26 @@ export function SignUpForm({
             I agree with the terms of use of HRIS
           </label>
         </div>
-        
-        <Button type="submit" className="w-full p-6 bg-gray-500 hover:bg-gray-600 text-white uppercase">
-          Sign Up
+
+        {error && <p className="text-red-600">{error}</p>}
+
+        <Button
+          type="submit"
+          className="w-full p-6 bg-gray-500 hover:bg-gray-600 text-white uppercase"
+          disabled={loading}
+        >
+          {loading ? "Signing up..." : "Sign Up"}
         </Button>
-        
-        <Button 
-          variant="outline" 
+
+        <Button
+          variant="outline"
           className="w-full p-6 border-gray-200"
           type="button"
         >
           Sign up with Google
         </Button>
       </div>
-      
+
       <div className="pt-2 text-center text-sm border-t border-gray-200">
         Already have an account?{" "}
         <a href="#" className="text-blue-600 hover:underline">
@@ -118,5 +212,5 @@ export function SignUpForm({
         </a>
       </div>
     </form>
-  )
+  );
 }
