@@ -2,72 +2,47 @@
 
 namespace App\Models;
 
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    /** @use HasFactory<\Database\Factories\UserFactory> */
+    use HasFactory, Notifiable;
 
-    protected $table = "users";
-    protected $primaryKey = "id";
-    public $incrementing = false;
-    protected $keyType = "string";
-
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var list<string>
+     */
     protected $fillable = [
-        "id",
-        "name",
-        "email",
-        "password",
-        "is_admin",
-        "remember_token"
+        'name',
+        'email',
+        'password',
     ];
 
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var list<string>
+     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    protected $casts = [
-        "is_admin" => "boolean",
-        "email_verified_at" => "datetime",
-        "password" => "hashed",
-    ];
-
-    public function employees()
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
     {
-        return $this->hasMany(Employee::class, "user_id");
-    }
-
-    public function letters()
-    {
-        return $this->hasMany(Letter::class, "user_id");
-    }
-
-    public function salaries()
-    {
-        return $this->hasMany(Salary::class, "user_id");
-    }
-
-    public function checkClocks()
-    {
-        return $this->hasMany(CheckClock::class, "user_id");
-    }
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($model) {
-            if (empty($model->id)) {
-                $model->id = (string) Str::uuid();
-            }
-            if (empty($model->is_admin)) {
-                $model->is_admin = false;
-            }
-        });
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
     }
 }
