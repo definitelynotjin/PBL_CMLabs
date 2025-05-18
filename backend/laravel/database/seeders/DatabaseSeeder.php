@@ -3,6 +3,9 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Database\Seeders\EmployeeSeeder;
+use App\Models\User;
+
 
 class DatabaseSeeder extends Seeder
 {

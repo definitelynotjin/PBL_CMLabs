@@ -2,31 +2,37 @@
 
 namespace Database\Seeders;
 
-use App\Models\CheckClockSettingTime;
+use App\Models\CheckClock;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class CheckClockSettingTimeSeeder extends Seeder
 {
     public function run(): void
     {
-    CheckClockSettingTime::factory()->create([
-            "id" => "ci3j4k5l-6f6g-77h8-d9i0-012345678901",
-                "ck_settings_id" => "6f7c8d9e-0a1b-42c3-94d5-567890123401",
-                "day" => "2025-05-01",
-                "clock_in" => "09:00:00",
-                "clock_out" => "17:00:00",
-                "break_start" => "12:00:00",
-                "break_end" => "13:00:00",
-        ]);
-    CheckClockSettingTime::factory()->create([
-            "id" => "ci3j4k5l-6f6g-77h8-d9i0-012345678902",
-                "ck_settings_id" => "6f7c8d9e-0a1b-42c3-94d5-567890123402",
-                "day" => "2025-05-01",
-                "clock_in" => "22:00:00",
-                "clock_out" => "06:00:00",
-                "break_start" => "02:00:00",
-                "break_end" => "03:00:00",
+        // Get users to link check clocks
+        $user1 = User::first();
+        $user2 = User::skip(1)->first();
+
+        if (!$user1) {
+            $this->command->info('No users found for CheckClockSeeder.');
+            return;
+        }
+
+        CheckClock::factory()->create([
+            'id' => 'dj4k5l6m-7g7h-88i9-e0j1-123456789001',
+            'user_id' => $user1->id,
+            'check_clock_type' => 1,
+            'check_clock_time' => '09:00:00',
         ]);
 
+        if ($user2) {
+            CheckClock::factory()->create([
+                'id' => 'dj4k5l6m-7g7h-88i9-e0j1-123456789002',
+                'user_id' => $user2->id,
+                'check_clock_type' => 2,
+                'check_clock_time' => '17:00:00',
+            ]);
+        }
     }
 }
