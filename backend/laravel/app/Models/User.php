@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Str;  // <-- Add this
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -17,7 +17,14 @@ class User extends Authenticatable
     public $incrementing = false;
     protected $keyType = "string";
 
-    protected $fillable = ["id", "name", "email", "password", "is_admin"];
+    protected $fillable = [
+        "id",
+        "name",
+        "email",
+        "password",
+        "is_admin",
+        "remember_token"
+    ];
 
     protected $hidden = [
         'password',
@@ -26,6 +33,8 @@ class User extends Authenticatable
 
     protected $casts = [
         "is_admin" => "boolean",
+        "email_verified_at" => "datetime",
+        "password" => "hashed",
     ];
 
     public function employees()
@@ -48,7 +57,6 @@ class User extends Authenticatable
         return $this->hasMany(CheckClock::class, "user_id");
     }
 
-    // Add this boot method to auto-generate UUIDs
     protected static function boot()
     {
         parent::boot();
@@ -56,6 +64,9 @@ class User extends Authenticatable
         static::creating(function ($model) {
             if (empty($model->id)) {
                 $model->id = (string) Str::uuid();
+            }
+            if (empty($model->is_admin)) {
+                $model->is_admin = false;
             }
         });
     }

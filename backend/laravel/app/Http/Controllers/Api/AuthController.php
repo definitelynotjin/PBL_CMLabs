@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
-
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -29,20 +30,37 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        try {
+            Log::info('Login attempt', ['email' => $request->email]);
 
-        if (!Auth::attempt($credentials)) {
-            return response()->json(['message' => 'Invalid credentials'], 401);
+            $credentials = $request->only('email', 'password');
+
+            if (!Auth::attempt($credentials)) {
+                return response()->json(['message' => 'Invalid credentials'], 401);
+            }
+
+            $user = Auth::user();
+            if (!$user) {
+                Log::error('User not found after authentication');
+                return response()->json(['message' => 'Authentication error'], 500);
+            }
+
+            $token = $user->createToken('API Token')->plainTextToken;
+
+            Log::info('Login successful', ['user_id' => $user->id]);
+
+            return response()->json([
+                'access_token' => $token,
+                'token_type' => 'Bearer',
+                'user' => $user,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Login failed', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return response()->json(['message' => 'Login failed'], 500);
         }
-
-        $user = Auth::user();
-        $token = $user->createToken('API Token')->plainTextToken;
-
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'Bearer',
-            'user' => $user,
-        ]);
     }
 
     public function logout(Request $request)
