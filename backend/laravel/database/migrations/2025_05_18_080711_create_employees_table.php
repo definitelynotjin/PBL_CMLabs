@@ -6,22 +6,22 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
+        // Optional: disable constraints temporarily (for safety in some edge cases)
+        Schema::disableForeignKeyConstraints();
+
         Schema::dropIfExists('employees');
+
+        Schema::enableForeignKeyConstraints();
     }
 };
