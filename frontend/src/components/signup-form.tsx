@@ -62,7 +62,11 @@ export function SignUpForm({
     try {
       const response = await fetch("http://localhost:8000/api/register", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        credentials: "include",
         body: JSON.stringify({
           name: `${formData.firstName} ${formData.lastName}`,
           email: formData.email,

@@ -4,52 +4,63 @@ namespace App\Http\Controllers;
 
 use App\Models\LetterFormat;
 use Illuminate\Http\Request;
+use Ramsey\Uuid\Uuid;
 
 class LetterFormatController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return LetterFormat::all();
+        $letterFormats = LetterFormat::query()
+            ->when($request->search, fn($query, $search) => $query->where('name', 'like', "%{$search}%"))
+            ->paginate(10);
+
+        return response()->json($letterFormats);
     }
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            "name" => "required|string|max:100",
-                    "content" => "required|string",
-                    "status" => "required|integer",
+        $data = $request->validate([
+            'name' => 'required|string|max:100',
+            'content' => 'required|string',
+            'status' => 'required|in:0,1,2', // 0: Draft, 1: Active, 2: Archived
         ]);
 
-        $item = LetterFormat::create([
-            'id' => (string) \Illuminate\Support\Str::uuid(),
-            ...$validated,
+        $letterFormat = LetterFormat::create(array_merge($data, [
+            'id' => Uuid::uuid4()->toString(),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]));
+
+        return response()->json([
+            'message' => 'Letter format created successfully',
+            'letter_format' => $letterFormat,
+        ], 201);
+    }
+
+    public function show(LetterFormat $letterFormat)
+    {
+        return response()->json($letterFormat);
+    }
+
+    public function update(Request $request, LetterFormat $letterFormat)
+    {
+        $data = $request->validate([
+            'name' => 'sometimes|required|string|max:100',
+            'content' => 'sometimes|required|string',
+            'status' => 'sometimes|required|in:0,1,2',
         ]);
 
-        return response()->json($item, 201);
-    }
+        $letterFormat->update(array_merge($data, ['updated_at' => now()]));
 
-    public function show($id)
-    {
-        return LetterFormat::findOrFail($id);
-    }
-
-    public function update(Request $request, $id)
-    {
-        $item = LetterFormat::findOrFail($id);
-        $validated = $request->validate([
-            "name" => "sometimes|string|max:100",
-                    "content" => "sometimes|string",
-                    "status" => "sometimes|integer",
+        return response()->json([
+            'message' => 'Letter format updated successfully',
+            'letter_format' => $letterFormat,
         ]);
-
-        $item->update($validated);
-        return response()->json($item);
     }
 
-    public function destroy($id)
+    public function destroy(LetterFormat $letterFormat)
     {
-        $item = LetterFormat::findOrFail($id);
-        $item->delete();
-        return response()->json(null, 204);
+        $letterFormat->delete();
+        return response()->json(['message' => 'Letter format deleted successfully']);
     }
 }

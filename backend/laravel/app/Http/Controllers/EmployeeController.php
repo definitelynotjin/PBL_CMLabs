@@ -4,58 +4,65 @@ namespace App\Http\Controllers;
 
 use App\Models\Employee;
 use Illuminate\Http\Request;
+use Ramsey\Uuid\Uuid;
 
 class EmployeeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return Employee::all();
+        $employees = Employee::with(['user', 'checkClockSetting'])
+            ->when($request->search, fn($query, $search) => $query->where('first_name', 'like', "%{$search}%")
+                ->orWhere('last_name', 'like', "%{$search}%"))
+            ->paginate(10);
+
+        return response()->json($employees);
     }
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            "user_id" => "required|exists:users,id",
-                    "ck_settings_id" => "required|exists:check_clock_settings,id",
-                    "first_name" => "required|string|max:100",
-                    "last_name" => "required|string|max:100",
-                    "gender" => "required|in:M,F",
-                    "address" => "nullable|string",
+        $data = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'ck_settings_id' => 'required|exists:check_clock_settings,id',
+            'first_name' => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
+            'gender' => 'required|in:M,F',
+            'address' => 'required|string',
         ]);
 
-        $item = Employee::create([
-            'id' => (string) \Illuminate\Support\Str::uuid(),
-            ...$validated,
+        $employee = Employee::create(array_merge($data, ['id' => Uuid::uuid4()->toString()]));
+
+        return response()->json([
+            'message' => 'Employee created successfully',
+            'employee' => $employee,
+        ], 201);
+    }
+
+    public function show(Employee $employee)
+    {
+        return response()->json($employee->load(['user', 'checkClockSetting']));
+    }
+
+    public function update(Request $request, Employee $employee)
+    {
+        $data = $request->validate([
+            'first_name' => 'sometimes|required|string|max:100',
+            'last_name' => 'sometimes|required|string|max:100',
+            'gender' => 'sometimes|required|in:M,F',
+            'address' => 'sometimes|required|string',
+            'ck_settings_id' => 'sometimes|required|exists:check_clock_settings,id',
         ]);
 
-        return response()->json($item, 201);
-    }
+        $employee->update($data);
 
-    public function show($id)
-    {
-        return Employee::findOrFail($id);
-    }
-
-    public function update(Request $request, $id)
-    {
-        $item = Employee::findOrFail($id);
-        $validated = $request->validate([
-            "user_id" => "sometimes|exists:users,id",
-                    "ck_settings_id" => "sometimes|exists:check_clock_settings,id",
-                    "first_name" => "sometimes|string|max:100",
-                    "last_name" => "sometimes|string|max:100",
-                    "gender" => "sometimes|in:M,F",
-                    "address" => "nullable|string",
+        return response()->json([
+            'message' => 'Employee updated successfully',
+            'employee' => $employee,
         ]);
-
-        $item->update($validated);
-        return response()->json($item);
     }
 
-    public function destroy($id)
+    public function destroy(Employee $employee)
     {
-        $item = Employee::findOrFail($id);
-        $item->delete();
-        return response()->json(null, 204);
+        $employee->delete();
+        return response()->json(['message' => 'Employee deleted successfully']);
     }
 }

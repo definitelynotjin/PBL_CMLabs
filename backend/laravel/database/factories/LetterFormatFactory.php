@@ -2,23 +2,20 @@
 
 namespace Database\Factories;
 
-use App\Models\LetterFormat;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
+use Ramsey\Uuid\Uuid;
 
 class LetterFormatFactory extends Factory
 {
-    protected $model = LetterFormat::class;
-
-    public function definition(): array
+    public function definition()
     {
         return [
-            "id" => (string) Str::uuid(),
-            "name" => $this->faker->sentence(3),
-            "content" => $this->faker->paragraph,
-            "status" => $this->faker->numberBetween(0, 1),
-            "created_at" => now(),
-            "updated_at" => now(),
+            'id' => Uuid::uuid4()->toString(),
+            'name' => $this->faker->randomElement(['Employment Contract', 'Training Certificate', 'Performance Evaluation']),
+            'content' => $this->faker->paragraph(),
+            'status' => $this->faker->randomElement([0, 1, 2]), // 0: Draft, 1: Active, 2: Archived
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }

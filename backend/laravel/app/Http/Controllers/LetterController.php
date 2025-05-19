@@ -3,53 +3,65 @@
 namespace App\Http\Controllers;
 
 use App\Models\Letter;
+use App\Models\LetterFormat;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Ramsey\Uuid\Uuid;
 
 class LetterController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return Letter::all();
+        $letters = Letter::with(['user.employee', 'letterFormat'])
+            ->when($request->user_id, fn($query, $id) => $query->where('user_id', $id))
+            ->paginate(10);
+
+        return response()->json($letters);
     }
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            "letter_format_id" => "required|exists:letter_formats,id",
-                    "user_id" => "required|exists:users,id",
-                    "name" => "required|string|max:100",
+        $data = $request->validate([
+            'letter_format_id' => 'required|exists:letter_formats,id',
+            'user_id' => 'required|exists:users,id',
+            'name' => 'required|string|max:100',
         ]);
 
-        $item = Letter::create([
-            'id' => (string) \Illuminate\Support\Str::uuid(),
-            ...$validated,
+        $letter = Letter::create(array_merge($data, [
+            'id' => Uuid::uuid4()->toString(),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]));
+
+        return response()->json([
+            'message' => 'Letter created successfully',
+            'letter' => $letter->load(['user.employee', 'letterFormat']),
+        ], 201);
+    }
+
+    public function show(Letter $letter)
+    {
+        return response()->json($letter->load(['user.employee', 'letterFormat']));
+    }
+
+    public function update(Request $request, Letter $letter)
+    {
+        $data = $request->validate([
+            'letter_format_id' => 'sometimes|required|exists:letter_formats,id',
+            'name' => 'sometimes|required|string|max:100',
         ]);
 
-        return response()->json($item, 201);
-    }
+        $letter->update(array_merge($data, ['updated_at' => now()]));
 
-    public function show($id)
-    {
-        return Letter::findOrFail($id);
-    }
-
-    public function update(Request $request, $id)
-    {
-        $item = Letter::findOrFail($id);
-        $validated = $request->validate([
-            "letter_format_id" => "sometimes|exists:letter_formats,id",
-                    "user_id" => "sometimes|exists:users,id",
-                    "name" => "sometimes|string|max:100",
+        return response()->json([
+            'message' => 'Letter updated successfully',
+            'letter' => $letter,
         ]);
-
-        $item->update($validated);
-        return response()->json($item);
     }
 
-    public function destroy($id)
+    public function destroy(Letter $letter)
     {
-        $item = Letter::findOrFail($id);
-        $item->delete();
-        return response()->json(null, 204);
+        $letter->delete();
+        return response()->json(['message' => 'Letter deleted successfully']);
     }
 }

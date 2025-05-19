@@ -2,21 +2,22 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
+use Ramsey\Uuid\Uuid;
 
 class UserFactory extends Factory
 {
     protected $model = User::class;
 
-    public function definition(): array
+    public function definition()
     {
         return [
-            "id" => (string) Str::uuid(),
-            "email" => $this->faker->unique()->safeEmail(),
-            "password" => bcrypt("password"),
-            "is_admin" => false,
+            'id' => Uuid::uuid4()->toString(),
+            'email' => $this->faker->unique()->safeEmail(),
+            'password' => Hash::make('password'),
+            'is_admin' => $this->faker->boolean(10), // 10% chance of being admin
         ];
     }
 }

@@ -2,25 +2,22 @@
 
 namespace Database\Factories;
 
-use App\Models\Letter;
-use App\Models\User;
-use App\Models\LetterFormat;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
+use App\Models\LetterFormat;
+use App\Models\User;
+use Ramsey\Uuid\Uuid;
 
 class LetterFactory extends Factory
 {
-    protected $model = Letter::class;
-
-    public function definition(): array
+    public function definition()
     {
         return [
-            "id" => (string) Str::uuid(),
-            "letter_format_id" => LetterFormat::factory(),
-            "user_id" => User::factory(),
-            "name" => $this->faker->sentence(3),
-            "created_at" => now(),
-            "updated_at" => now(),
+            'id' => Uuid::uuid4()->toString(),
+            'letter_format_id' => LetterFormat::factory(),
+            'user_id' => User::factory(),
+            'name' => $this->faker->sentence(4),
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }

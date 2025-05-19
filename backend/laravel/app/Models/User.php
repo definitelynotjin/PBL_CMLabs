@@ -2,48 +2,57 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Ramsey\Uuid\Uuid;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory;
 
-    protected $table = "users";
-    protected $primaryKey = "id";
+    protected $keyType = 'string';
     public $incrementing = false;
-    protected $keyType = "string";
+    public $timestamps = false; // Disable timestamps
 
-    protected $fillable = ["id", "name", "email", "password", "is_admin"];
+    protected $fillable = [
+        'id', 'email', 'password', 'is_admin',
+    ];
 
     protected $hidden = [
-        'password',
-        'remember_token',
+        'password', 'remember_token',
     ];
 
     protected $casts = [
-        "is_admin" => "boolean",
+        'is_admin' => 'boolean',
     ];
 
-    public function employees()
+    protected static function boot()
     {
-        return $this->hasMany(Employee::class, "user_id");
+        parent::boot();
+        static::creating(function ($model) {
+            if (empty($model->id)) {
+                $model->id = Uuid::uuid4()->toString();
+            }
+        });
     }
 
-    public function letters()
+    public function employee()
     {
-        return $this->hasMany(Letter::class, "user_id");
-    }
-
-    public function salaries()
-    {
-        return $this->hasMany(Salary::class, "user_id");
+        return $this->hasOne(Employee::class, 'user_id');
     }
 
     public function checkClocks()
     {
-        return $this->hasMany(CheckClock::class, "user_id");
+        return $this->hasMany(CheckClock::class, 'user_id');
+    }
+
+    public function salaries()
+    {
+        return $this->hasMany(Salary::class, 'user_id');
+    }
+
+    public function letters()
+    {
+        return $this->hasMany(Letter::class, 'user_id');
     }
 }

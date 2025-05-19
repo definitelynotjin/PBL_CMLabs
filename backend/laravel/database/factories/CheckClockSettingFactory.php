@@ -2,22 +2,19 @@
 
 namespace Database\Factories;
 
-use App\Models\CheckClockSetting;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
+use Ramsey\Uuid\Uuid;
 
 class CheckClockSettingFactory extends Factory
 {
-    protected $model = CheckClockSetting::class;
-
-    public function definition(): array
+    public function definition()
     {
         return [
-            "id" => (string) Str::uuid(),
-            "name" => $this->faker->word,
-            "type" => $this->faker->numberBetween(1, 2),
-            "created_at" => now(),
-            "updated_at" => now(),
+            'id' => Uuid::uuid4()->toString(),
+            'name' => $this->faker->word() . ' Schedule',
+            'type' => $this->faker->randomElement([0, 1, 2]), // 0: WFO, 1: WFA, 2: Hybrid
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }

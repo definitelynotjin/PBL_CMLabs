@@ -2,27 +2,24 @@
 
 namespace Database\Factories;
 
-use App\Models\CheckClockSettingTime;
-use App\Models\CheckClockSetting;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
+use App\Models\CheckClockSetting;
+use Ramsey\Uuid\Uuid;
 
 class CheckClockSettingTimeFactory extends Factory
 {
-    protected $model = CheckClockSettingTime::class;
-
-    public function definition(): array
+    public function definition()
     {
         return [
-            "id" => (string) Str::uuid(),
-            "ck_settings_id" => CheckClockSetting::factory(),
-            "day" => $this->faker->date(),
-            "clock_in" => $this->faker->time("H:i:s", "09:00:00"),
-            "clock_out" => $this->faker->time("H:i:s", "17:00:00"),
-            "break_start" => $this->faker->time("H:i:s", "12:00:00"),
-            "break_end" => $this->faker->time("H:i:s", "13:00:00"),
-            "created_at" => now(),
-            "updated_at" => now(),
+            'id' => Uuid::uuid4()->toString(),
+            'ck_settings_id' => CheckClockSetting::factory(),
+            'day' => $this->faker->date('Y-m-d'),
+            'clock_in' => '08:00:00',
+            'clock_out' => '17:00:00',
+            'break_start' => '12:00:00',
+            'break_end' => '13:00:00',
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }
