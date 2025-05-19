@@ -22,6 +22,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('check_clocks');
+        Schema::table('check_clocks', function (Blueprint $table) {
+            $table->dropForeign(['user_id']); // Replace 'user_id' with the actual foreign key column name
+        });
+
+        Schema::dropIfExists('check_clocks'); // Drop the table
     }
 };
