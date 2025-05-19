@@ -5,21 +5,33 @@ namespace App\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Ramsey\Uuid\Uuid;
+use App\Models\Employee;
+use App\Models\CheckClock;
+use App\Models\Salary;
+use App\Models\Letter;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Illuminate\Testing\Fluent\Concerns\Has;
 
 class User extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, HasApiTokens;
 
     protected $keyType = 'string';
     public $incrementing = false;
     public $timestamps = false; // Disable timestamps
 
     protected $fillable = [
-        'id', 'email', 'password', 'is_admin',
+        'id',
+        'name',
+        'email',
+        'password',
     ];
 
     protected $hidden = [
-        'password', 'remember_token',
+        'password',
+        'remember_token',
     ];
 
     protected $casts = [
@@ -56,3 +68,5 @@ class User extends Authenticatable
         return $this->hasMany(Letter::class, 'user_id');
     }
 }
+
+

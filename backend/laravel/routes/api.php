@@ -6,6 +6,9 @@ use App\Http\Controllers\AuthController;
 
 
 
+
+
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -17,14 +20,19 @@ use App\Http\Controllers\AuthController;
 |
 */
 
+Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+Route::post('/logout', [AuthController::class, 'logout']);
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
+// Route::middleware('auth:sanctum')->group(function () {
+//     Route::get('/user', function (Request $request) {
+//         return $request->user();
+//     });
 
-    // Add other protected routes here
-    Route::get('/protected-data', [YourController::class, 'protectedMethod']);
+//     // Add other protected routes here
+//     // Route::get('/protected-data', [YourController::class, 'protectedMethod']);
+// });
+
+Route::get('/test', function () {
+    return 'API route works!';
 });
