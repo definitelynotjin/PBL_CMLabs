@@ -8,7 +8,6 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useRouter } from "next/navigation";
 
-
 export function SignUpForm({
   className,
   ...props
@@ -60,31 +59,44 @@ export function SignUpForm({
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:8000/api/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          name: `${formData.firstName} ${formData.lastName}`,
-          email: formData.email,
-          password: formData.password,
-          password_confirmation: formData.confirmPassword,
-        }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/register`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            name: `${formData.firstName} ${formData.lastName}`,
+            email: formData.email,
+            password: formData.password,
+            password_confirmation: formData.confirmPassword,
+          }),
+        }
+      );
 
       const data = await response.json();
 
       if (response.ok) {
         console.log("User registered:", data);
-        // Optionally reset form or redirect here
+        alert("Registration successful! Please log in.");
+        setFormData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+          terms: false,
+        });
+        router.push("/signin");
       } else {
         setError(data.message || "Registration failed");
       }
-    } catch {
-      setError("Network error");
+    } catch (err) {
+      console.error("Error during registration:", err);
+      setError("Network error. Please try again later.");
     }
 
     setLoading(false);
@@ -146,34 +158,28 @@ export function SignUpForm({
 
         <div className="grid gap-2">
           <Label htmlFor="password">Password</Label>
-          <div className="relative">
-            <Input
-              id="password"
-              type="password"
-              placeholder="Enter your password"
-              className="p-6"
-              required
-              value={formData.password}
-              onChange={handleInputChange}
-            />
-            {/* Icon here */}
-          </div>
+          <Input
+            id="password"
+            type="password"
+            placeholder="Enter your password"
+            className="p-6"
+            required
+            value={formData.password}
+            onChange={handleInputChange}
+          />
         </div>
 
         <div className="grid gap-2">
           <Label htmlFor="confirmPassword">Confirm Password</Label>
-          <div className="relative">
-            <Input
-              id="confirmPassword"
-              type="password"
-              placeholder="Confirm your password"
-              className="p-6"
-              required
-              value={formData.confirmPassword}
-              onChange={handleInputChange}
-            />
-            {/* Icon here */}
-          </div>
+          <Input
+            id="confirmPassword"
+            type="password"
+            placeholder="Confirm your password"
+            className="p-6"
+            required
+            value={formData.confirmPassword}
+            onChange={handleInputChange}
+          />
         </div>
 
         <div className="flex items-center space-x-2">
@@ -199,19 +205,11 @@ export function SignUpForm({
         >
           {loading ? "Signing up..." : "Sign Up"}
         </Button>
-
-        <Button
-          variant="outline"
-          className="w-full p-6 border-gray-200"
-          type="button"
-        >
-          Sign up with Google
-        </Button>
       </div>
 
       <div className="pt-2 text-center text-sm border-t border-gray-200">
         Already have an account?{" "}
-        <a href="#" className="text-blue-600 hover:underline">
+        <a href="/signin" className="text-blue-600 hover:underline">
           Sign in here
         </a>
       </div>
