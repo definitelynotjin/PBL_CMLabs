@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import Link from 'next/link';
 
 export default function LandingPage() {
   return (
@@ -25,57 +26,51 @@ export default function LandingPage() {
           <span className="text-lg font-semibold">Relative</span>
         </div>
         <div className="hidden md:flex space-x-6">
-          <a href="#" className="text-gray-600 hover:text-gray-900">
-            Features
-          </a>
-          <a href="#" className="text-gray-600 hover:text-gray-900">
-            About us
-          </a>
-          <a href="#" className="text-gray-600 hover:text-gray-900">
-            Pricing
-          </a>
-          <a href="#" className="text-gray-600 hover:text-gray-900">
-            FAQ
-          </a>
-          <a href="#" className="text-gray-600 hover:text-gray-900">
-            Contacts
-          </a>
+          <a href="#" className="text-gray-600 hover:text-gray-900">Features</a>
+          <a href="#" className="text-gray-600 hover:text-gray-900">About us</a>
+          <a href="#" className="text-gray-600 hover:text-gray-900">Pricing</a>
+          <a href="#" className="text-gray-600 hover:text-gray-900">FAQ</a>
+          <a href="#" className="text-gray-600 hover:text-gray-900">Contacts</a>
         </div>
         <div className="flex space-x-3">
-          <Button variant="ghost" className="text-gray-600 hover:text-gray-900">
-            Login
-            <svg
-              className="w-4 h-4 ml-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </Button>
-          <Button className="bg-black text-white hover:bg-gray-800">
-            Sign up
-            <svg
-              className="w-4 h-4 ml-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </Button>
+          <Link href="/signin">
+            <Button variant="ghost" className="text-gray-600 hover:text-gray-900">
+              Login
+              <svg
+                className="w-4 h-4 ml-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </Button>
+          </Link>
+          <Link href="/signup">
+            <Button className="bg-black text-white hover:bg-gray-800">
+              Sign up
+              <svg
+                className="w-4 h-4 ml-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </Button>
+          </Link>
         </div>
       </nav>
 
