@@ -56,7 +56,7 @@ export function SignInForm({
             </label>
           </div>
           <a
-            href="#"
+            href="/dashboard"
             className="text-sm text-blue-600 hover:underline"
           >
             Forgot Password?
