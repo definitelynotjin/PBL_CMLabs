@@ -19,23 +19,23 @@ export function SignInForm({
       <div className="grid gap-6">
         <div className="grid gap-2">
           <Label htmlFor="email">Email or Phone Number</Label>
-          <Input 
-            id="email" 
-            type="email" 
-            placeholder="Enter your email or phone number" 
+          <Input
+            id="email"
+            type="email"
+            placeholder="Enter your email or phone number"
             className="p-6"
-            required 
+            required
           />
         </div>
         <div className="grid gap-2">
           <Label htmlFor="password">Password</Label>
           <div className="relative">
-            <Input 
-              id="password" 
-              type="password" 
-              placeholder="Enter your password" 
+            <Input
+              id="password"
+              type="password"
+              placeholder="Enter your password"
               className="p-6"
-              required 
+              required
             />
             <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-500">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -44,7 +44,7 @@ export function SignInForm({
             </div>
           </div>
         </div>
-        
+
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <Checkbox id="remember" />
@@ -62,22 +62,22 @@ export function SignInForm({
             Forgot Password?
           </a>
         </div>
-        
+
         <Button type="submit" className="w-full p-6 bg-gray-500 hover:bg-gray-600 text-white uppercase">
           Sign In
         </Button>
-        
+
         <div className="grid gap-3">
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             className="w-full p-6 border-gray-200"
             type="button"
           >
             Sign in with Google
           </Button>
-          
-          <Button 
-            variant="outline" 
+
+          <Button
+            variant="outline"
             className="w-full p-6 border-gray-200"
             type="button"
           >
@@ -85,10 +85,10 @@ export function SignInForm({
           </Button>
         </div>
       </div>
-      
+
       <div className="pt-2 text-center text-sm border-t border-gray-200">
         Don&apos;t have an account?{" "}
-        <a href="#" className="text-blue-600 hover:underline">
+        <a href="/signup" className="text-blue-600 hover:underline">
           Sign up now and get started
         </a>
       </div>
