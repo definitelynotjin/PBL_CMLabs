@@ -92,6 +92,6 @@ export function SignInForm({
           Sign up now and get started
         </a>
       </div>
-    </form>
+    </form >
   )
 }
