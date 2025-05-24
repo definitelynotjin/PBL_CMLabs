@@ -1,6 +1,6 @@
 "use client"; // Mark as Client Component for Next.js
 
-import { useEffect } from 'react';
+
 
 
 import * as React from "react";
@@ -37,10 +37,6 @@ interface AbsenceType {
   label: string;
 }
 
-useEffect(() => {
-  // kode ini hanya jalan di client
-  const item = window.localStorage.getItem('someKey');
-}, []);
 
 // Sample data for dropdowns
 const locations: Location[] = [
