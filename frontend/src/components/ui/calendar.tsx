@@ -1,18 +1,31 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { ChevronLeft, ChevronRight } from "lucide-react"
-import { DayPicker } from "react-day-picker"
+import * as React from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { DayPicker } from "react-day-picker";
+import type { LucideProps } from "lucide-react";
 
-import { cn } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
+
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
+import type { DayPickerProps, CustomComponents } from "react-day-picker";
+
+// Extend the CustomComponents type with IconLeft and IconRight keys
+type ExtendedComponents = CustomComponents & {
+  IconLeft?: React.FC<any>;
+  IconRight?: React.FC<any>;
+};
 
 function Calendar({
   className,
   classNames,
   showOutsideDays = true,
+  components,
   ...props
-}: React.ComponentProps<typeof DayPicker>) {
+}: DayPickerProps & {
+  classNames?: Partial<DayPickerClassNames>;
+  components?: ExtendedComponents;
+}) {
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
@@ -60,16 +73,13 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        IconLeft: ({ className, ...props }) => (
-          <ChevronLeft className={cn("size-4", className)} {...props} />
-        ),
-        IconRight: ({ className, ...props }) => (
-          <ChevronRight className={cn("size-4", className)} {...props} />
-        ),
+        IconLeft: () => <ChevronLeft className="size-4" />,
+        IconRight: () => <ChevronRight className="size-4" />,
+        ...components,
       }}
       {...props}
     />
-  )
+  );
 }
 
-export { Calendar }
+export { Calendar };
