@@ -1,21 +1,57 @@
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
+'use client';
+
+import { useState } from "react";
+import { useRouter } from "next/navigation"; // Update this import
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export function SignInForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [remember, setRemember] = useState(false);
+  const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter(); // Using the correct useRouter
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(""); // Clear previous errors
+
+    // Simulate an API call for sign-in
+    try {
+      if (email === "test@example.com" && password === "password") {
+        // Successful sign-in
+        if (remember) {
+          localStorage.setItem("rememberedEmail", email); // Store email if "Remember Me" is checked
+        }
+        router.push("/dashboard"); // Redirect to dashboard
+      } else {
+        throw new Error("Invalid email or password");
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unknown error occurred");
+      }
+    }
+  };
+
   return (
-    <form className={cn("flex flex-col gap-6", className)} {...props}>
+    <form className={cn("flex flex-col gap-6", className)} onSubmit={handleSubmit} {...props}>
       <div className="flex flex-col items-start gap-2">
         <h1 className="text-3xl font-semibold">Sign in</h1>
         <p className="text-muted-foreground text-sm">
           Welcome back to HRIS cmlabs! Manage everything with ease.
         </p>
       </div>
+      {error && <div className="text-red-500">{error}</div>}
       <div className="grid gap-6">
         <div className="grid gap-2">
           <Label htmlFor="email">Email or Phone Number</Label>
@@ -25,6 +61,8 @@ export function SignInForm({
             placeholder="Enter your email or phone number" 
             className="p-6"
             required 
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
         <div className="grid gap-2">
@@ -32,25 +70,33 @@ export function SignInForm({
           <div className="relative">
             <Input 
               id="password" 
-              type="password" 
+              type={showPassword ? "text" : "password"} 
               placeholder="Enter your password" 
               className="p-6"
               required 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
-            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-500">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="currentColor" />
-              </svg>
-            </div>
+            <button
+              type="button"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-500"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? "Hide" : "Show"}
+            </button>
           </div>
         </div>
         
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <Checkbox id="remember" />
+            <Checkbox 
+              id="remember" 
+              checked={remember} 
+              onChange={() => setRemember(!remember)} 
+            />
             <label
               htmlFor="remember"
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              className="text-sm font-medium leading-none"
             >
               Remember Me
             </label>
@@ -93,5 +139,5 @@ export function SignInForm({
         </a>
       </div>
     </form>
-  )
+  );
 }

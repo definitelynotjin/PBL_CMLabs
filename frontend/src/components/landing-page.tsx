@@ -35,7 +35,7 @@ export default function LandingPage() {
         <div className="flex space-x-3">
           <Link href="/signin">
             <Button variant="ghost" className="text-gray-600 hover:text-gray-900">
-              Login
+              Sign in
               <svg
                 className="w-4 h-4 ml-2"
                 fill="none"
