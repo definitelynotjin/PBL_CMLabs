@@ -26,12 +26,12 @@ export function ResetPassword({ className }: ResetPasswordProps) {
         <div className="grid gap-2">
           <Label htmlFor="newPassword">New Password</Label>
           <div className="relative">
-            <Input 
-              id="newPassword" 
-              type="password" 
-              placeholder="Enter your password" 
+            <Input
+              id="newPassword"
+              type="password"
+              placeholder="Enter your password"
               className="p-6 bg-gray-100"
-              required 
+              required
             />
             <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -44,16 +44,16 @@ export function ResetPassword({ className }: ResetPasswordProps) {
 
         <div className="grid gap-2">
           <Label htmlFor="confirmPassword">Confirm Password</Label>
-          <Input 
-            id="confirmPassword" 
-            type="password" 
-            placeholder="Enter your password" 
+          <Input
+            id="confirmPassword"
+            type="password"
+            placeholder="Enter your password"
             className="p-6 bg-gray-100"
-            required 
+            required
           />
         </div>
-        
-        <Button 
+
+        <Button
           className="w-full p-6 bg-gray-600 hover:bg-gray-700 text-white font-medium"
           type="button"
         >
@@ -63,8 +63,8 @@ export function ResetPassword({ className }: ResetPasswordProps) {
 
       <div className="flex items-center justify-center gap-2 mt-4">
         <ArrowLeft className="h-4 w-4" />
-        <a href="#" className="text-gray-600 text-sm hover:underline">
-          Back to log in
+        <a href="/signin" className="text-gray-600 text-sm hover:underline">
+          Back to sign in
         </a>
       </div>
     </div>

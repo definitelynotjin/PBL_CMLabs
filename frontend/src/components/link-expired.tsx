@@ -23,12 +23,14 @@ export function LinkExpired({ className }: LinkExpiredProps) {
         </p>
       </div>
 
-      <Button 
+      <Button
+
         className="w-full p-6 bg-gray-500 hover:bg-gray-600 text-white uppercase"
         type="button"
+        onClick={() => window.location.href = "/signin"}
       >
-        Back to login
-      </Button>
-    </div>
+        Back to Sign In
+      </Button >
+    </div >
   )
 }

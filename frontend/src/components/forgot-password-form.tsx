@@ -17,28 +17,28 @@ export function ForgotPassword({
           send you a link to reset your password.
         </p>
       </div>
-      
+
       <div className="grid gap-4">
         <div className="grid gap-2">
           <Label htmlFor="email">Email</Label>
-          <Input 
-            id="email" 
-            type="email" 
-            placeholder="Enter your email address" 
+          <Input
+            id="email"
+            type="email"
+            placeholder="Enter your email address"
             className="p-6 bg-gray-100"
-            required 
+            required
           />
         </div>
-        
+
         <Button type="submit" className="w-full p-6 bg-gray-600 hover:bg-gray-700 text-white">
           Reset password
         </Button>
       </div>
-      
+
       <div className="flex items-center gap-2 mt-4">
         <ArrowLeft className="h-4 w-4" />
-        <a href="#" className="text-gray-600 text-sm hover:underline">
-          Back to log in
+        <a href="/signin" className="text-gray-600 text-sm hover:underline">
+          Back to sign in
         </a>
       </div>
     </form>
