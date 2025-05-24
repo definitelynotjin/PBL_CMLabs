@@ -1,6 +1,22 @@
-"use client"; // Mark as Client Component for Next.js
+'use client';
 
-import * as React from "react";
+import React from 'react';
+import Image from 'next/image';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
+import Link from 'next/link';
+import {
+  Grid,
+  Users,
+  Clock,
+  Calendar,
+  MessageCircle,
+  Headphones,
+  Settings,
+  Bell,
+  ChevronsUpDown,
+} from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -8,40 +24,16 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/table';
 
-// Define the type for each attendance record
-interface Attendance {
-  date: string;
-  clockIn: string;
-  clockOut: string;
-  workHours: string;
-  status: string;
-}
-
-// Sample data (you can replace this with your API data)
-const attendanceData: Attendance[] = [
+// Sample data (replace with your actual data)
+const attendanceData = [
   { date: "March 01, 2025", clockIn: "09:28 AM", clockOut: "04:00 PM", workHours: "10h 5m", status: "On Time" },
   { date: "March 02, 2025", clockIn: "09:30 AM", clockOut: "04:30 PM", workHours: "9h 50m", status: "Late" },
-  { date: "March 03, 2025", clockIn: "09:00 AM", clockOut: "04:15 PM", workHours: "10h 30m", status: "On Time" },
-  { date: "March 04, 2025", clockIn: "09:15 AM", clockOut: "03:15 PM", workHours: "6h 15m", status: "Late" },
-  { date: "March 05, 2025", clockIn: "0", clockOut: "0", workHours: "0", status: "Sick Leave" },
-  { date: "March 06, 2025", clockIn: "09:00 AM", clockOut: "03:30 PM", workHours: "9h 45m", status: "On Time" },
-  { date: "March 07, 2025", clockIn: "09:30 AM", clockOut: "03:00 PM", workHours: "9h 45m", status: "On Time" },
-  { date: "March 08, 2025", clockIn: "0", clockOut: "0", workHours: "0", status: "Annual Leave" },
-  { date: "March 09, 2025", clockIn: "09:45 AM", clockOut: "04:15 PM", workHours: "10h", status: "Late" },
-  { date: "March 10, 2025", clockIn: "09:30 AM", clockOut: "04:00 PM", workHours: "8h 30m", status: "On Time" },
+  // ... additional records
 ];
 
-const CheckclockUser: React.FC = () => {
+export default function CheckclockUser() {
   const [selectedRows, setSelectedRows] = React.useState<string[]>([]);
 
   const handleSelectRow = (date: string) => {
@@ -51,56 +43,79 @@ const CheckclockUser: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen">
+    <div className="flex min-h-screen bg-white">
       {/* Sidebar */}
-      <div className="w-16 bg-gray-100 p-4 flex flex-col items-center space-y-4">
-        <div className="w-8 h-8 bg-gray-300 rounded-full" />
-        <div className="w-8 h-8 bg-gray-300 rounded-full" />
-        <div className="w-8 h-8 bg-gray-300 rounded-full" />
-        <div className="w-8 h-8 bg-gray-300 rounded-full" />
-      </div>
+      <aside className="w-16 flex flex-col justify-between items-center bg-gray-100 py-4">
+        <div className="flex flex-col items-center gap-6">
+          <Image src="/HRIS.png" alt="Logo" width={32} height={32} />
+          <Link href="/dashboard">
+            <Grid className="w-5 h-5 text-gray-600 cursor-pointer" />
+          </Link>
+          <Link href="/employee-database">
+            <Users className="w-5 h-5 text-gray-600 cursor-pointer" />
+          </Link>
+          <Link href="/checkclock">
+            <Clock className="w-5 h-5 text-gray-600 cursor-pointer" />
+          </Link>
+          <Link href="/pricing-package">
+            <Calendar className="w-5 h-5 text-gray-600 cursor-pointer" />
+          </Link>
+          <Link href="/order-summary">
+            <MessageCircle className="w-5 h-5 text-gray-600 cursor-pointer" />
+          </Link>
+        </div>
+        <div className="flex flex-col items-center gap-4 mb-4">
+          <Link href="/headphones">
+            <Headphones className="w-5 h-5 text-gray-600 cursor-pointer" />
+          </Link>
+          <Link href="/settings">
+            <Settings className="w-5 h-5 text-gray-600 cursor-pointer" />
+          </Link>
+        </div>
+      </aside>
 
-      {/* Main Content */}
-      <div className="flex-1 p-4">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-4 border-b pb-2">
-          <div className="flex items-center space-x-2">
-            <h2 className="text-xl font-semibold">Checkclock</h2>
-            <input
-              type="text"
-              placeholder="Search"
-              className="p-2 border rounded-md"
-            />
+      {/* Main content */}
+      <div className="flex-1 p-4 md:p-6 space-y-6">
+        {/* Top bar */}
+        <div className="flex justify-between items-center border-b pb-4">
+          <div className="flex items-center gap-4">
+            <h1 className="text-2xl font-bold">Checkclock Overview</h1>
+            <Input placeholder="Search" className="w-72" />
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gray-300 rounded-full" />
-                <span>username</span>
-                <span className="w-4 h-4 bg-gray-300 rounded-full" />
+          <div className="flex items-center gap-4">
+            <Bell className="w-5 h-5 text-gray-600" />
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-gray-300 rounded-full" />
+              <div className="text-sm text-right leading-tight">
+                <p className="font-medium">username</p>
+                <p className="text-gray-500 text-xs">roles user</p>
               </div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem>roles user</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            </div>
+          </div>
+        </div>
+
+        {/* Stats */}
+        <div className="flex justify-between mb-4">
+          <div className="border rounded-lg p-4 flex flex-col w-1/3">
+            <p className="text-sm text-muted-foreground">Total Records</p>
+            <p className="text-lg font-semibold">{attendanceData.length}</p>
+          </div>
+          {/* Add more stats as needed */}
+        </div>
+
+        {/* Actions */}
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-semibold">All Attendance Records</h2>
+          <div className="flex gap-2">
+            <Button variant="outline"><Grid className="w-4 h-4 mr-2" /> Filter</Button>
+            <Button variant="outline">Export</Button>
+            <Button variant="outline">Import</Button>
+            <Button>+ Tambah Data</Button>
+          </div>
         </div>
 
         {/* Table Section */}
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold">Checkclock Overview</h3>
-            <div className="flex space-x-2">
-              <input
-                type="text"
-                placeholder="Search Employee"
-                className="p-2 border rounded-md"
-              />
-              <Button variant="outline">Filter</Button>
-              <Button>Tambah Data</Button>
-            </div>
-          </div>
-
+        <div className="overflow-x-auto bg-white rounded-lg shadow-md">
           <Table>
             <TableHeader>
               <TableRow>
@@ -142,30 +157,17 @@ const CheckclockUser: React.FC = () => {
             </TableBody>
           </Table>
 
-          {/* Pagination */}
+          {/* Pagination (optional) */}
           <div className="flex justify-between items-center mt-4">
             <div className="flex items-center space-x-2">
               <span>Showing</span>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline">10</Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem>10</DropdownMenuItem>
-                  <DropdownMenuItem>20</DropdownMenuItem>
-                  <DropdownMenuItem>50</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              <span>out of 60 records</span>
+              <Button variant="outline">10</Button>
+              <span>out of {attendanceData.length} records</span>
             </div>
             <div className="flex space-x-2">
-              <Button variant="outline" disabled>
-                {"<"}
-              </Button>
+              <Button variant="outline" disabled>{"<"}</Button>
               <Button variant="outline">1</Button>
-              <Button variant="outline" className="bg-gray-200">
-                2
-              </Button>
+              <Button variant="outline" className="bg-gray-200">2</Button>
               <Button variant="outline">3</Button>
               <Button variant="outline">{">"}</Button>
             </div>
@@ -174,6 +176,4 @@ const CheckclockUser: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default CheckclockUser;
+}

@@ -1,5 +1,5 @@
 "use client"; // Mark as Client Component for Next.js
-
+import Image from 'next/image';
 import * as React from "react";
 import {
   Table,
@@ -25,6 +25,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Card } from "@/components/ui/card";
+import Link from 'next/link';
+import { Grid, Users, Clock, Calendar, MessageCircle, Headphones, Settings } from 'lucide-react';
 
 // Define the type for each employee record
 interface Employee {
@@ -58,12 +60,36 @@ const Checkclock: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
-      <div className="w-20 flex flex-col items-center py-6 bg-white border-r">
-        <div className="mb-8 font-bold">LOGO</div>
-        {/* Add navigation buttons here */}
-      </div>
+    <div className="flex min-h-screen bg-white">
+          {/* Sidebar */}
+          <aside className="w-16 flex flex-col justify-between items-center bg-gray-100 py-4">
+            <div className="flex flex-col items-center gap-6">
+              <Image src="/HRIS.png" alt="Logo" width={32} height={32} />
+              <Link href="/dashboard">
+                <Grid className="w-5 h-5 text-gray-600 cursor-pointer" />
+              </Link>
+              <Link href="/employee-database">
+                <Users className="w-5 h-5 text-gray-600 cursor-pointer" />
+              </Link>
+              <Link href="/checkclock">
+                <Clock className="w-5 h-5 text-gray-600 cursor-pointer" />
+              </Link>
+              <Link href="/pricing-package">
+                <Calendar className="w-5 h-5 text-gray-600 cursor-pointer" />
+              </Link>
+              <Link href="/order-summary">
+                <MessageCircle className="w-5 h-5 text-gray-600 cursor-pointer" />
+              </Link>
+            </div>
+            <div className="flex flex-col items-center gap-4 mb-4">
+              <Link href="/headphones">
+                <Headphones className="w-5 h-5 text-gray-600 cursor-pointer" />
+              </Link>
+              <Link href="/settings">
+                <Settings className="w-5 h-5 text-gray-600 cursor-pointer" />
+              </Link>
+            </div>
+          </aside>
 
       {/* Main Content */}
       <div className="flex-1 p-6">

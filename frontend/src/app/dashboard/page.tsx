@@ -1,7 +1,8 @@
 import React from "react";
+import Image from 'next/image';
+import Link from 'next/link';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { AppSidebar } from "@/components/app-sidebar"; // Import AppSidebar
 import { 
   Select, 
   SelectContent, 
@@ -19,7 +20,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Search, Bell, ChevronDown, Edit, Grid, Users, Clock, Calendar, FileText, Speaker, Settings } from "lucide-react";
+import { Search, Bell, ChevronDown, Edit, Grid, User, Users, Clock, Calendar, FileText, Speaker, Settings, MessageCircle, Headphones } from "lucide-react";;
 
 // TypeScript interfaces for our data structures
 interface EmployeeTotals {
@@ -305,32 +306,34 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({ data }) => (
 );
 
 const Sidebar: React.FC = () => (
-  <div className="w-20 flex flex-col items-center py-6 bg-white border-r">
-    <div className="mb-8 font-bold">LOGO</div>
-    <div className="flex flex-col gap-6">
-      <Button variant="ghost" size="icon" className="bg-gray-200">
-        <Grid className="h-5 w-5" />
-      </Button>
-      <Button variant="ghost" size="icon">
-        <Users className="h-5 w-5" />
-      </Button>
-      <Button variant="ghost" size="icon">
-        <Clock className="h-5 w-5" />
-      </Button>
-      <Button variant="ghost" size="icon">
-        <Calendar className="h-5 w-5" />
-      </Button>
-      <Button variant="ghost" size="icon">
-        <FileText className="h-5 w-5" />
-      </Button>
-      <Button variant="ghost" size="icon" className="mt-auto">
-        <Speaker className="h-5 w-5" />
-      </Button>
-      <Button variant="ghost" size="icon">
-        <Settings className="h-5 w-5" />
-      </Button>
-    </div>
-  </div>
+  <aside className="w-16 flex flex-col justify-between items-center bg-gray-100 py-4">
+            <div className="flex flex-col items-center gap-6">
+              <Image src="/HRIS.png" alt="Logo" width={32} height={32} />
+              <Link href="/dashboard">
+                <Grid className="w-5 h-5 text-gray-600 cursor-pointer" />
+              </Link>
+              <Link href="/employee-database">
+                <Users className="w-5 h-5 text-gray-600 cursor-pointer" />
+              </Link>
+              <Link href="/checkclock">
+                <Clock className="w-5 h-5 text-gray-600 cursor-pointer" />
+              </Link>
+              <Link href="/pricing-package">
+                <Calendar className="w-5 h-5 text-gray-600 cursor-pointer" />
+              </Link>
+              <Link href="/order-summary">
+                <MessageCircle className="w-5 h-5 text-gray-600 cursor-pointer" />
+              </Link>
+            </div>
+            <div className="flex flex-col items-center gap-4 mb-4">
+              <Link href="/headphones">
+                <Headphones className="w-5 h-5 text-gray-600 cursor-pointer" />
+              </Link>
+              <Link href="/settings">
+                <Settings className="w-5 h-5 text-gray-600 cursor-pointer" />
+              </Link>
+            </div>
+          </aside>
 );
 
 const Header: React.FC = () => (

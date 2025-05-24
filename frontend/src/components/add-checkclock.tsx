@@ -1,6 +1,7 @@
 "use client"; // Mark as Client Component for Next.js
 
 import * as React from "react";
+import Image from 'next/image';
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { LatLngTuple } from "leaflet";
 import {
@@ -19,6 +20,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Link from 'next/link';
+import { Grid, Users, Clock, Calendar, MessageCircle, Headphones, Settings } from 'lucide-react';
 
 // Define types for dropdown options
 interface Location {
@@ -61,33 +64,47 @@ const AddCheckclockUser: React.FC = () => {
   const center: LatLngTuple = [-7.9826, 112.6308]; // Coordinates for Malang, Jawa Timur
 
   return (
-    <div className="flex h-screen">
-      {/* Sidebar */}
-      <div className="w-16 bg-gray-100 p-4 flex flex-col items-center space-y-4">
-        <div className="w-8 h-8 bg-gray-300 rounded-full" />
-        <div className="w-8 h-8 bg-gray-300 rounded-full" />
-        <div className="w-8 h-8 bg-gray-300 rounded-full" />
-        <div className="w-8 h-8 bg-gray-300 rounded-full" />
-      </div>
+    <div className="flex min-h-screen bg-white">
+          {/* Sidebar */}
+          <aside className="w-16 flex flex-col justify-between items-center bg-gray-100 py-4">
+              <div className="flex flex-col items-center gap-6">
+                <Image src="/HRIS.png" alt="Logo" width={32} height={32} />
+                <Link href="/dashboard">
+                  <Grid className="w-5 h-5 text-gray-600 cursor-pointer" />
+                </Link>
+                <Link href="/employee-database">
+                  <Users className="w-5 h-5 text-gray-600 cursor-pointer" />
+                </Link>
+                <Link href="/checkclock">
+                  <Clock className="w-5 h-5 text-gray-600 cursor-pointer" />
+                </Link>
+                <Link href="/pricing-package">
+                  <Calendar className="w-5 h-5 text-gray-600 cursor-pointer" />
+                </Link>
+                <Link href="/order-summary">
+                  <MessageCircle className="w-5 h-5 text-gray-600 cursor-pointer" />
+                </Link>
+              </div>
+              <div className="flex flex-col items-center gap-4 mb-4">
+                <Link href="/headphones">
+                  <Headphones className="w-5 h-5 text-gray-600 cursor-pointer" />
+                </Link>
+                <Link href="/settings">
+                  <Settings className="w-5 h-5 text-gray-600 cursor-pointer" />
+                </Link>
+              </div>
+            </aside>
 
       {/* Main Content */}
-      <div className="flex-1 p-4">
+      <div className="flex-1 p-6">
         {/* Header */}
         <div className="flex justify-between items-center mb-4 border-b pb-2">
-          <div className="flex items-center space-x-2">
-            <h2 className="text-xl font-semibold">Checkclock</h2>
-            <input
-              type="text"
-              placeholder="Search"
-              className="p-2 border rounded-md"
-            />
-          </div>
+          <h2 className="text-xl font-semibold">Add Checkclock</h2>
           <DropdownMenu>
             <DropdownMenuTrigger>
               <div className="flex items-center space-x-2">
                 <div className="w-8 h-8 bg-gray-300 rounded-full" />
                 <span>username</span>
-                <span className="w-4 h-4 bg-gray-300 rounded-full" />
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
@@ -98,7 +115,6 @@ const AddCheckclockUser: React.FC = () => {
 
         {/* Form Section */}
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-lg font-semibold mb-4">Add Checkclock</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Left Section: Form Inputs */}
             <div className="space-y-6">

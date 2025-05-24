@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
+import Link from 'next/link'
 import {
   Filter,
   Download,
@@ -11,6 +12,7 @@ import {
   Edit2,
   Trash2,
   Copy,
+  Grid,
   Bell,
   User,
   Users,
@@ -50,19 +52,33 @@ export default function EmployeeDatabasePage() {
     <div className="flex min-h-screen bg-white">
       {/* Sidebar */}
       <aside className="w-16 flex flex-col justify-between items-center bg-gray-100 py-4">
-        <div className="flex flex-col items-center gap-6">
-          <Image src="/HRIS.png" alt="Logo" width={32} height={32} />
-          <User className="w-5 h-5 text-gray-600" />
-          <Users className="w-5 h-5 text-gray-600" />
-          <Clock className="w-5 h-5 text-gray-600" />
-          <Calendar className="w-5 h-5 text-gray-600" />
-          <MessageCircle className="w-5 h-5 text-gray-600" />
-        </div>
-        <div className="flex flex-col items-center gap-4 mb-4">
-          <Headphones className="w-5 h-5 text-gray-600" />
-          <Settings className="w-5 h-5 text-gray-600" />
-        </div>
-      </aside>
+          <div className="flex flex-col items-center gap-6">
+            <Image src="/HRIS.png" alt="Logo" width={32} height={32} />
+            <Link href="/dashboard">
+              <Grid className="w-5 h-5 text-gray-600 cursor-pointer" />
+            </Link>
+            <Link href="/employee-database">
+              <Users className="w-5 h-5 text-gray-600 cursor-pointer" />
+            </Link>
+            <Link href="/checkclock">
+              <Clock className="w-5 h-5 text-gray-600 cursor-pointer" />
+            </Link>
+            <Link href="/pricing-package">
+              <Calendar className="w-5 h-5 text-gray-600 cursor-pointer" />
+            </Link>
+            <Link href="/order-summary">
+              <MessageCircle className="w-5 h-5 text-gray-600 cursor-pointer" />
+            </Link>
+          </div>
+          <div className="flex flex-col items-center gap-4 mb-4">
+            <Link href="/headphones">
+              <Headphones className="w-5 h-5 text-gray-600 cursor-pointer" />
+            </Link>
+            <Link href="/settings">
+              <Settings className="w-5 h-5 text-gray-600 cursor-pointer" />
+            </Link>
+          </div>
+        </aside>
 
       {/* Main content */}
       <div className="flex-1 p-4 md:p-6 space-y-6">
