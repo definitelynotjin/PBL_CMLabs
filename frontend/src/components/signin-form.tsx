@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from "react";
-import { useRouter } from "next/navigation"; // Update this import
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,29 +17,37 @@ export function SignInForm({
   const [remember, setRemember] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const router = useRouter(); // Using the correct useRouter
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(""); // Clear previous errors
 
-    // Simulate an API call for sign-in
     try {
-      if (email === "test@example.com" && password === "password") {
-        // Successful sign-in
-        if (remember) {
-          localStorage.setItem("rememberedEmail", email); // Store email if "Remember Me" is checked
-        }
-        router.push("/dashboard"); // Redirect to dashboard
-      } else {
+      // Simulate an API call
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!response.ok) {
         throw new Error("Invalid email or password");
       }
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("An unknown error occurred");
+
+      const data = await response.json();
+
+      // Successful sign-in
+      if (remember) {
+        localStorage.setItem("rememberedEmail", email); // Store email if "Remember Me" is checked
       }
+
+      console.log("Login successful:", data);
+      router.push("/dashboard"); // Redirect to dashboard
+    } catch (err: any) {
+      setError(err.message || "An error occurred during sign-in");
     }
   };
 
@@ -60,6 +68,8 @@ export function SignInForm({
             type="email"
             placeholder="Enter your email or phone number"
             className="p-6"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>
@@ -68,9 +78,11 @@ export function SignInForm({
           <div className="relative">
             <Input
               id="password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Enter your password"
               className="p-6"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
             <button
@@ -85,10 +97,10 @@ export function SignInForm({
 
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <Checkbox 
-              id="remember" 
-              checked={remember} 
-              onChange={() => setRemember(!remember)} 
+            <Checkbox
+              id="remember"
+              checked={remember}
+              onChange={() => setRemember(!remember)}
             />
             <label
               htmlFor="remember"
@@ -134,6 +146,6 @@ export function SignInForm({
           Sign up now and get started
         </a>
       </div>
-    </form >
-  )
+    </form>
+  );
 }
