@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link"; // Import Link from next/link
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -130,13 +131,15 @@ export function SignInForm({
             Sign in with Google
           </Button>
 
-          <Button
-            variant="outline"
-            className="w-full p-6 border-gray-200"
-            type="button"
-          >
-            Sign in with ID Employee
-          </Button>
+          <Link href="/employee-signin" passHref>
+            <Button
+              variant="outline"
+              className="w-full p-6 border-gray-200"
+              asChild
+            >
+              <a>Sign in with ID Employee</a>
+            </Button>
+          </Link>
         </div>
       </div>
 
