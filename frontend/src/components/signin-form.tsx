@@ -13,7 +13,7 @@ export function SignInForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
-  const [email, setEmail] = useState("");
+  const [identifier, setIdentifier] = useState(""); // <-- changed from email
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
   const [error, setError] = useState("");
@@ -25,28 +25,26 @@ export function SignInForm({
     setError(""); // Clear previous errors
 
     try {
-      // Simulate an API call
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ identifier, password }), // <-- changed here
       });
 
       if (!response.ok) {
-        throw new Error("Invalid email or password");
+        throw new Error("Invalid credentials");
       }
 
       const data = await response.json();
 
-      // Successful sign-in
       if (remember) {
-        localStorage.setItem("rememberedEmail", email); // Store email if "Remember Me" is checked
+        localStorage.setItem("rememberedIdentifier", identifier);
       }
 
       console.log("Login successful:", data);
-      router.push("/dashboard"); // Redirect to dashboard
+      router.push("/dashboard");
     } catch (err: any) {
       setError(err.message || "An error occurred during sign-in");
     }
@@ -63,14 +61,14 @@ export function SignInForm({
       {error && <div className="text-red-500">{error}</div>}
       <div className="grid gap-6">
         <div className="grid gap-2">
-          <Label htmlFor="email">Email or Phone Number</Label>
+          <Label htmlFor="identifier">Email or Phone Number</Label>
           <Input
-            id="email"
-            type="email"
+            id="identifier"
+            type="text" // <-- changed from "email"
             placeholder="Enter your email or phone number"
             className="p-6"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={identifier}
+            onChange={(e) => setIdentifier(e.target.value)}
             required
           />
         </div>

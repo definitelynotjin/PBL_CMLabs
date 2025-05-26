@@ -2,32 +2,24 @@
 
 namespace App\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Ramsey\Uuid\Uuid;
-use App\Models\Employee;
-use App\Models\CheckClock;
-use App\Models\Salary;
-use App\Models\Letter;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
-use Illuminate\Testing\Fluent\Concerns\Has;
 
 class User extends Authenticatable
 {
-    use HasFactory, HasApiTokens;
-
-    protected $keyType = 'string';
-    public $incrementing = false;
-    public $timestamps = false; // Disable timestamps
+    use HasApiTokens, HasFactory, Notifiable;
 
     protected $fillable = [
-        'id',
         'name',
         'email',
-        'password',
         'phone',
+        'password',
+        'role',
+        'employee_id',
+        'is_active'
     ];
 
     protected $hidden = [
@@ -36,36 +28,38 @@ class User extends Authenticatable
     ];
 
     protected $casts = [
-        'is_admin' => 'boolean',
+        'email_verified_at' => 'datetime',
+        'phone_verified_at' => 'datetime',
+        'is_active' => 'boolean',
     ];
 
-    protected static function boot()
+    // Check if user can login with email
+    public function hasEmail()
     {
-        parent::boot();
-        static::creating(function ($model) {
-            if (empty($model->id)) {
-                $model->id = Uuid::uuid4()->toString();
-            }
-        });
+        return !empty($this->email);
     }
 
-    public function employee()
+    // Check if user can login with phone
+    public function hasPhone()
     {
-        return $this->hasOne(Employee::class, 'user_id');
+        return !empty($this->phone);
     }
 
-    public function checkClocks()
+    // Check if user is admin
+    public function isAdmin()
     {
-        return $this->hasMany(CheckClock::class, 'user_id');
+        return $this->role === 'admin';
     }
 
-    public function salaries()
+    // Check if user is employee
+    public function isEmployee()
     {
-        return $this->hasMany(Salary::class, 'user_id');
+        return $this->role === 'employee';
     }
 
-    public function letters()
+    // Get display identifier (email or phone)
+    public function getDisplayIdentifierAttribute()
     {
-        return $this->hasMany(Letter::class, 'user_id');
+        return $this->email ?: $this->phone ?: $this->employee_id;
     }
 }

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -11,31 +10,104 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Google_Client;
 
-
-
-
 class AuthController extends Controller
 {
     public function register(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'email' => 'nullable|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
             'phone' => 'nullable|string|unique:users,phone',
+            'role' => 'nullable|in:admin,employee',
+            'employee_id' => 'nullable|string|unique:users,employee_id',
         ]);
+
+        // Custom validation: must have either email or phone
+        if (empty($request->email) && empty($request->phone)) {
+            return response()->json([
+                'message' => 'Either email or phone number is required'
+            ], 422);
+        }
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'phone' => $request->phone, // add phone here
+            'phone' => $request->phone,
+            'role' => $request->role ?? 'admin',
+            'employee_id' => $request->employee_id,
         ]);
 
-        return response()->json(['message' => 'User registered successfully'], 201);
+        // Create a personal access token
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'message' => 'User registered successfully',
+            'token' => $token,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'role' => $user->role,
+                'employee_id' => $user->employee_id,
+            ]
+        ], 201);
     }
 
     public function login(Request $request)
+    {
+        $request->validate([
+            'identifier' => 'required|string', // Can be email, phone, or employee_id
+            'password' => 'required|string',
+        ]);
+
+        $identifier = $request->identifier;
+        $password = $request->password;
+
+        // Find user by email, phone, or employee_id
+        $user = null;
+
+        if (filter_var($identifier, FILTER_VALIDATE_EMAIL)) {
+            // It's an email
+            $user = User::where('email', $identifier)->first();
+        } elseif (preg_match('/^[\+]?[1-9][\d]{0,15}$/', $identifier)) {
+            // It's a phone number (basic validation)
+            $user = User::where('phone', $identifier)->first();
+        } else {
+            // Try employee ID as fallback
+            $user = User::where('employee_id', $identifier)->first();
+        }
+
+        if (!$user || !Hash::check($password, $user->password)) {
+            return response()->json(['message' => 'Invalid credentials'], 401);
+        }
+
+        // Check if user is active (if you have this field)
+        if (isset($user->is_active) && !$user->is_active) {
+            return response()->json(['message' => 'Account is deactivated'], 401);
+        }
+
+        // Create a personal access token
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'token' => $token,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'role' => $user->role,
+                'employee_id' => $user->employee_id,
+            ],
+            'message' => 'Login successful'
+        ]);
+    }
+
+    // Keep your original email-only login as backup (optional)
+    public function loginWithEmail(Request $request)
     {
         $request->validate([
             'email' => 'required|string|email',
@@ -51,7 +123,79 @@ class AuthController extends Controller
         // Create a personal access token
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        return response()->json(['token' => $token, 'user' => $user]);
+        return response()->json([
+            'token' => $token,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'role' => $user->role,
+                'employee_id' => $user->employee_id,
+            ]
+        ]);
+    }
+
+    // New phone login method
+    public function loginWithPhone(Request $request)
+    {
+        $request->validate([
+            'phone' => 'required|string',
+            'password' => 'required|string',
+        ]);
+
+        $user = User::where('phone', $request->phone)->first();
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json(['message' => 'Invalid credentials'], 401);
+        }
+
+        // Create a personal access token
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'token' => $token,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'role' => $user->role,
+                'employee_id' => $user->employee_id,
+            ]
+        ]);
+    }
+
+    // Employee login with Employee ID
+    public function loginEmployee(Request $request)
+    {
+        $request->validate([
+            'employee_id' => 'required|string',
+            'password' => 'required|string',
+        ]);
+
+        $user = User::where('employee_id', $request->employee_id)
+            ->where('role', 'employee')
+            ->first();
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json(['message' => 'Invalid employee credentials'], 401);
+        }
+
+        // Create a personal access token
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'token' => $token,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'role' => $user->role,
+                'employee_id' => $user->employee_id,
+            ]
+        ]);
     }
 
     public function logout(Request $request)
@@ -61,6 +205,24 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Logged out successfully']);
     }
+
+    // Get current authenticated user
+    public function me(Request $request)
+    {
+        $user = $request->user();
+
+        return response()->json([
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'role' => $user->role,
+                'employee_id' => $user->employee_id,
+            ]
+        ]);
+    }
+
     public function googleLogin(Request $request)
     {
         $request->validate([
@@ -82,7 +244,11 @@ class AuthController extends Controller
         // Find or create user by email
         $user = User::firstOrCreate(
             ['email' => $email],
-            ['name' => $name, 'password' => Hash::make(uniqid())]
+            [
+                'name' => $name,
+                'password' => Hash::make(uniqid()),
+                'role' => 'admin' // Default role for Google login
+            ]
         );
 
         // Create personal access token
@@ -90,7 +256,14 @@ class AuthController extends Controller
 
         return response()->json([
             'token' => $authToken,
-            'user' => $user,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'role' => $user->role,
+                'employee_id' => $user->employee_id,
+            ],
             'message' => 'Google login successful',
         ]);
     }

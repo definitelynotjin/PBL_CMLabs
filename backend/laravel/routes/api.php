@@ -20,15 +20,15 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
+// Route::middleware('auth:sanctum')->group(function () {
+//     Route::get('/user', function (Request $request) {
+//         return $request->user();
+//     });
 
     // ✅ You can add more protected routes here
     // Route::get('/dashboard', [DashboardController::class, 'index']);
-});
 
-Route::get('/test', function () {
-    return response()->json(['message' => 'API route works!']);
-});
+
+// Route::get('/test', function () {
+//     return response()->json(['message' => 'API route works!']);
+// });
