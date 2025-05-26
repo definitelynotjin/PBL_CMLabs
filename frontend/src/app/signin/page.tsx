@@ -7,6 +7,8 @@ import { GoogleLogin } from '@react-oauth/google';
 
 export default function SignInPage() {
   const handleLoginSuccess = async (credentialResponse: any) => {
+    console.log('Google credential response:', credentialResponse); // <-- Add this line
+
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/google/callback`, {
         method: "POST",
