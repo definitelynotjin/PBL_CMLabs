@@ -15,7 +15,7 @@ class SalaryFactory extends Factory
             'user_id' => User::factory(),
             'type' => $this->faker->randomElement([0, 1, 2]), // 0: Hourly, 1: Monthly, 2: Contract
             'rate' => $this->faker->randomFloat(2, 500000, 5000000),
-            'efective_date' => $this->faker->date('Y-m-d'),
+            'effective_date' => $this->faker->date('Y-m-d'),
             'created_at' => now(),
             'updated_at' => now(),
         ];

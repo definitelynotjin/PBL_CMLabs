@@ -19,7 +19,7 @@ class Salary extends Model
         'user_id',
         'type',
         'rate',
-        'efective_date',
+        'effective_date',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -28,7 +28,7 @@ class Salary extends Model
     protected $casts = [
         'type' => 'integer', // 0: Hourly, 1: Monthly, 2: Contract
         'rate' => 'float',
-        'efective_date' => 'date',
+        'effective_date' => 'date',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
