@@ -9,6 +9,8 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Google_Client;
+
 
 
 
@@ -46,7 +48,7 @@ class AuthController extends Controller
 
         // Create a personal access token
         $token = $user->createToken('auth_token')->plainTextToken;
-        
+
         return response()->json(['token' => $token, 'user' => $user]);
     }
 
@@ -56,5 +58,38 @@ class AuthController extends Controller
         $request->user()->tokens()->delete();
 
         return response()->json(['message' => 'Logged out successfully']);
+    }
+    public function googleLogin(Request $request)
+    {
+        $request->validate([
+            'token' => 'required|string',
+        ]);
+
+        $token = $request->input('token');
+
+        $client = new Google_Client(['client_id' => env('GOOGLE_CLIENT_ID')]);
+        $payload = $client->verifyIdToken($token);
+
+        if (!$payload) {
+            return response()->json(['message' => 'Invalid Google token'], 401);
+        }
+
+        $email = $payload['email'];
+        $name = $payload['name'] ?? 'No Name';
+
+        // Find or create user by email
+        $user = User::firstOrCreate(
+            ['email' => $email],
+            ['name' => $name, 'password' => Hash::make(uniqid())]
+        );
+
+        // Create personal access token
+        $authToken = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'token' => $authToken,
+            'user' => $user,
+            'message' => 'Google login successful',
+        ]);
     }
 }

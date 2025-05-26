@@ -1,8 +1,19 @@
-import { GalleryVerticalEnd } from "lucide-react"
+'use client';
 
-import { SignInForm } from "@/components/signin-form"
+import { GalleryVerticalEnd } from "lucide-react";
+import { SignInForm } from "@/components/signin-form";
+import { GoogleLogin } from '@react-oauth/google';
 
 export default function SignInPage() {
+  const handleLoginSuccess = (credentialResponse: any) => {
+    console.log('Google login success:', credentialResponse);
+    // TODO: send credentialResponse.credential(JWT token) to your backend for verification / auth
+  };
+
+  const handleLoginError = () => {
+    console.log('Google login failed');
+  };
+
   return (
     <>
       <style>
@@ -35,7 +46,6 @@ export default function SignInPage() {
     filter: brightness(0.85);
   }
       `}
-
       </style>
       <div className="grid min-h-svh lg:grid-cols-2">
         <div className="flex flex-col gap-4 p-6 md:p-10">
@@ -50,6 +60,12 @@ export default function SignInPage() {
           <div className="flex flex-1 items-center justify-center">
             <div className="w-full max-w-xs">
               <SignInForm />
+              <div className="mt-4">
+                <GoogleLogin
+                  onSuccess={handleLoginSuccess}
+                  onError={handleLoginError}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -64,5 +80,5 @@ export default function SignInPage() {
         </div>
       </div>
     </>
-  )
+  );
 }
