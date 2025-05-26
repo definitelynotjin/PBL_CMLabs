@@ -6,9 +6,24 @@ import { GoogleLogin } from '@react-oauth/google';
 
 
 export default function SignInPage() {
-  const handleLoginSuccess = (credentialResponse: any) => {
-    console.log('Google login success:', credentialResponse);
-    // TODO: send credentialResponse.credential(JWT token) to your backend for verification / auth
+  const handleLoginSuccess = async (credentialResponse: any) => {
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/google/callback`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ credential: credentialResponse.credential }),
+      });
+
+      if (!res.ok) throw new Error("Google login failed");
+
+      const data = await res.json();
+      // Save token, redirect, etc.
+      localStorage.setItem("token", data.token);
+      window.location.href = "/dashboard";
+    } catch (err) {
+      console.error(err);
+      // Optionally show error to user
+    }
   };
 
   const handleLoginError = () => {

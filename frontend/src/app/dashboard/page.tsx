@@ -3,20 +3,20 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
 } from "@/components/ui/select";
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -110,14 +110,14 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({ title, value, update }) => 
   </Card>
 );
 
-const EmployeeBarChart: React.FC<{data: ChartDataItem[]}> = ({ data }) => (
+const EmployeeBarChart: React.FC<{ data: ChartDataItem[] }> = ({ data }) => (
   <div className="h-64 w-full pt-4">
     <div className="flex justify-between items-end h-full border-b border-l relative">
       {data.map((item, index) => (
         <div key={index} className="flex flex-col items-center flex-1">
-          <div 
-            className="bg-gray-400 w-4/5" 
-            style={{ 
+          <div
+            className="bg-gray-400 w-4/5"
+            style={{
               height: `${(item.value / 30) * 80}%`,
               maxHeight: "80%"
             }}
@@ -143,7 +143,7 @@ const EmployeeBarChart: React.FC<{data: ChartDataItem[]}> = ({ data }) => (
   </div>
 );
 
-const EmployeeStatusChart: React.FC<{data: ChartDataItem[]}> = ({ data }) => (
+const EmployeeStatusChart: React.FC<{ data: ChartDataItem[] }> = ({ data }) => (
   <div className="mt-4">
     {data.map((item, index) => (
       <div key={index} className="mb-4">
@@ -152,8 +152,8 @@ const EmployeeStatusChart: React.FC<{data: ChartDataItem[]}> = ({ data }) => (
           <span className="text-sm">{item.value}</span>
         </div>
         <div className="h-2 bg-gray-100 rounded-full">
-          <div 
-            className={`h-2 rounded-full ${index === 0 ? 'bg-gray-700' : 'bg-gray-300'}`} 
+          <div
+            className={`h-2 rounded-full ${index === 0 ? 'bg-gray-700' : 'bg-gray-300'}`}
             style={{ width: `${(item.value / 150) * 100}%` }}
           ></div>
         </div>
@@ -169,10 +169,10 @@ const EmployeeStatusChart: React.FC<{data: ChartDataItem[]}> = ({ data }) => (
   </div>
 );
 
-const AttendancePieChart: React.FC<{data: AttendanceChartItem[]}> = ({ data }) => {
+const AttendancePieChart: React.FC<{ data: AttendanceChartItem[] }> = ({ data }) => {
   // Calculate total for percentages
   const total = data.reduce((sum, item) => sum + item.value, 0);
-  
+
   return (
     <div className="flex flex-col h-full">
       <div className="mb-4">
@@ -184,29 +184,29 @@ const AttendancePieChart: React.FC<{data: AttendanceChartItem[]}> = ({ data }) =
         <div className="relative" style={{ width: '200px', height: '200px' }}>
           {/* CSS-based pie chart instead of Recharts */}
           <div className="relative w-40 h-40 rounded-full mx-auto overflow-hidden">
-            <div 
+            <div
               className="absolute w-full h-full bg-gray-700"
-              style={{ 
+              style={{
                 clipPath: 'polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 50% 100%)',
                 transform: 'rotate(0deg)'
               }}
             ></div>
-            <div 
-              className="absolute w-full h-full bg-gray-400" 
-              style={{ 
+            <div
+              className="absolute w-full h-full bg-gray-400"
+              style={{
                 clipPath: 'polygon(50% 50%, 50% 0%, 100% 0%, 100% 30%, 50% 30%)',
                 transform: 'rotate(120deg)'
               }}
             ></div>
-            <div 
-              className="absolute w-full h-full bg-gray-500" 
-              style={{ 
+            <div
+              className="absolute w-full h-full bg-gray-500"
+              style={{
                 clipPath: 'polygon(50% 50%, 50% 0%, 100% 0%, 100% 10%, 50% 10%)',
                 transform: 'rotate(200deg)'
               }}
             ></div>
           </div>
-          <div 
+          <div
             className="absolute inset-0 flex items-center justify-center"
           >
             <div className="text-xl font-medium">41,67%</div>
@@ -230,7 +230,7 @@ const AttendancePieChart: React.FC<{data: AttendanceChartItem[]}> = ({ data }) =
 
 const AttendanceStatusBadge: React.FC<AttendanceStatusBadgeProps> = ({ status }) => {
   let badgeClass = "";
-  
+
   if (status === "On time") {
     badgeClass = "bg-gray-700 text-white";
   } else if (status === "Late") {
@@ -238,7 +238,7 @@ const AttendanceStatusBadge: React.FC<AttendanceStatusBadgeProps> = ({ status })
   } else {
     badgeClass = "bg-gray-400 text-white";
   }
-  
+
   return (
     <div className={`px-4 py-1 rounded-full text-sm inline-block ${badgeClass}`}>
       {status}
@@ -307,33 +307,33 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({ data }) => (
 
 const Sidebar: React.FC = () => (
   <aside className="w-16 flex flex-col justify-between items-center bg-gray-100 py-4">
-            <div className="flex flex-col items-center gap-6">
-              <Image src="/HRIS.png" alt="Logo" width={32} height={32} />
-              <Link href="/dashboard">
-                <Grid className="w-5 h-5 text-gray-600 cursor-pointer" />
-              </Link>
-              <Link href="/employee-database">
-                <Users className="w-5 h-5 text-gray-600 cursor-pointer" />
-              </Link>
-              <Link href="/checkclock">
-                <Clock className="w-5 h-5 text-gray-600 cursor-pointer" />
-              </Link>
-              <Link href="/pricing-package">
-                <Calendar className="w-5 h-5 text-gray-600 cursor-pointer" />
-              </Link>
-              <Link href="/order-summary">
-                <MessageCircle className="w-5 h-5 text-gray-600 cursor-pointer" />
-              </Link>
-            </div>
-            <div className="flex flex-col items-center gap-4 mb-4">
-              <Link href="/headphones">
-                <Headphones className="w-5 h-5 text-gray-600 cursor-pointer" />
-              </Link>
-              <Link href="/settings">
-                <Settings className="w-5 h-5 text-gray-600 cursor-pointer" />
-              </Link>
-            </div>
-          </aside>
+    <div className="flex flex-col items-center gap-6">
+      <Image src="/HRIS.png" alt="Logo" width={32} height={32} />
+      <Link href="/dashboard">
+        <Grid className="w-5 h-5 text-gray-600 cursor-pointer" />
+      </Link>
+      <Link href="/employee-database">
+        <Users className="w-5 h-5 text-gray-600 cursor-pointer" />
+      </Link>
+      <Link href="/checkclock">
+        <Clock className="w-5 h-5 text-gray-600 cursor-pointer" />
+      </Link>
+      <Link href="/pricing-package">
+        <Calendar className="w-5 h-5 text-gray-600 cursor-pointer" />
+      </Link>
+      <Link href="/order-summary">
+        <MessageCircle className="w-5 h-5 text-gray-600 cursor-pointer" />
+      </Link>
+    </div>
+    <div className="flex flex-col items-center gap-4 mb-4">
+      <Link href="/headphones">
+        <Headphones className="w-5 h-5 text-gray-600 cursor-pointer" />
+      </Link>
+      <Link href="/settings">
+        <Settings className="w-5 h-5 text-gray-600 cursor-pointer" />
+      </Link>
+    </div>
+  </aside>
 );
 
 const Header: React.FC = () => (
@@ -359,7 +359,7 @@ const Header: React.FC = () => (
         <div className="flex items-center">
           <div className="w-10 h-10 bg-gray-300 rounded-full mr-2"></div>
           <div>
-            <div className="font-medium">username</div>
+            <div className="font-medium">dadawawd</div>
             <div className="text-sm text-muted-foreground">roles user</div>
           </div>
           <ChevronDown className="ml-2 h-4 w-4" />
@@ -377,28 +377,28 @@ export default function Page() {
         <Header />
         <div className="p-6 flex-1 overflow-auto">
           <div className="grid grid-cols-4 gap-4 mb-6">
-            <EmployeeCard 
-              title="Total Employee" 
-              value={employeeData.totals.total} 
-              update="Update: March 16, 2025" 
+            <EmployeeCard
+              title="Total Employee"
+              value={employeeData.totals.total}
+              update="Update: March 16, 2025"
             />
-            <EmployeeCard 
-              title="New Employees" 
-              value={employeeData.totals.new} 
-              update="Update: March 16, 2025" 
+            <EmployeeCard
+              title="New Employees"
+              value={employeeData.totals.new}
+              update="Update: March 16, 2025"
             />
-            <EmployeeCard 
-              title="Active Employees" 
-              value={employeeData.totals.active} 
-              update="Update: March 16, 2025" 
+            <EmployeeCard
+              title="Active Employees"
+              value={employeeData.totals.active}
+              update="Update: March 16, 2025"
             />
-            <EmployeeCard 
-              title="Resigned Employees" 
-              value={employeeData.totals.resigned} 
-              update="Update: March 16, 2025" 
+            <EmployeeCard
+              title="Resigned Employees"
+              value={employeeData.totals.resigned}
+              update="Update: March 16, 2025"
             />
           </div>
-          
+
           <div className="grid grid-cols-2 gap-6 mb-6">
             <Card className="bg-white">
               <CardHeader className="flex flex-row items-center justify-between p-4 pb-0">
@@ -421,7 +421,7 @@ export default function Page() {
                 <EmployeeBarChart data={employeeData.barChartData} />
               </CardContent>
             </Card>
-            
+
             <Card className="bg-white">
               <CardHeader className="flex flex-row items-center justify-between p-4 pb-0">
                 <div>
@@ -444,14 +444,14 @@ export default function Page() {
               </CardContent>
             </Card>
           </div>
-          
+
           <div className="grid grid-cols-2 gap-6">
             <Card className="bg-white">
               <CardContent className="p-6">
                 <AttendancePieChart data={employeeData.attendanceData} />
               </CardContent>
             </Card>
-            
+
             <Card className="bg-white">
               <CardContent className="p-6">
                 <AttendanceTable data={employeeData.attendanceList} />
