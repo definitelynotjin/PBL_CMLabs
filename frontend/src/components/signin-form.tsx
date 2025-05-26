@@ -30,7 +30,7 @@ export function SignInForm({
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ identifier, password }), // <-- changed here
+        body: JSON.stringify({ login: identifier, password }),
       });
 
       if (!response.ok) {

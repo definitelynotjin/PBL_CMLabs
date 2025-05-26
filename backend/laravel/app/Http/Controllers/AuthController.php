@@ -61,50 +61,27 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'identifier' => 'required|string', // Can be email, phone, or employee_id
-            'password' => 'required|string',
+            'login' => 'required', // can be email or phone
+            'password' => 'required',
         ]);
 
-        $identifier = $request->identifier;
-        $password = $request->password;
+        $login = $request->input('login');
+        $password = $request->input('password');
 
-        // Find user by email, phone, or employee_id
-        $user = null;
+        // Find user by email or phone
+        $user = \App\Models\User::where('email', $login)
+            ->orWhere('phone', $login)
+            ->first();
 
-        if (filter_var($identifier, FILTER_VALIDATE_EMAIL)) {
-            // It's an email
-            $user = User::where('email', $identifier)->first();
-        } elseif (preg_match('/^[\+]?[1-9][\d]{0,15}$/', $identifier)) {
-            // It's a phone number (basic validation)
-            $user = User::where('phone', $identifier)->first();
-        } else {
-            // Try employee ID as fallback
-            $user = User::where('employee_id', $identifier)->first();
-        }
-
-        if (!$user || !Hash::check($password, $user->password)) {
+        if (!$user || !\Hash::check($password, $user->password)) {
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
 
-        // Check if user is active (if you have this field)
-        if (isset($user->is_active) && !$user->is_active) {
-            return response()->json(['message' => 'Account is deactivated'], 401);
-        }
-
-        // Create a personal access token
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'token' => $token,
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'phone' => $user->phone,
-                'role' => $user->role,
-                'employee_id' => $user->employee_id,
-            ],
-            'message' => 'Login successful'
+            'user' => $user,
         ]);
     }
 
