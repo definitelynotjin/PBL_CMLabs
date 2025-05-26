@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Ramsey\Uuid\Uuid;
 
-
 class UserFactory extends Factory
 {
     protected $model = User::class;
@@ -16,10 +15,16 @@ class UserFactory extends Factory
     {
         return [
             'id' => Uuid::uuid4()->toString(),
+            'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
+            'phone' => $this->faker->unique()->numerify('+628##########'),
             'password' => Hash::make('password'),
-            'phone_number' => $this->faker->unique()->numerify('+628##########'), // Indonesian phone number format
-            'is_admin' => $this->faker->boolean(10), // 10% chance of being admin
+            'role' => $this->faker->randomElement(['admin', 'employee']),
+            'employee_id' => $this->faker->unique()->numerify('EMP###'),
+            'is_active' => true,
+            'email_verified_at' => now(),
+            'phone_verified_at' => null,
+            'remember_token' => \Str::random(10),
         ];
     }
 }

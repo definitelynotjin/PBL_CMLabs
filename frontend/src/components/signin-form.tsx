@@ -109,7 +109,7 @@ export function SignInForm({
             </label>
           </div>
           <a
-            href="/dashboard"
+            href="/forgot-password"
             className="text-sm text-blue-600 hover:underline"
           >
             Forgot Password?
