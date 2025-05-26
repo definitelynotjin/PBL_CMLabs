@@ -4,6 +4,7 @@ import { GalleryVerticalEnd } from "lucide-react";
 import { SignInForm } from "@/components/signin-form";
 import { GoogleLogin } from '@react-oauth/google';
 
+
 export default function SignInPage() {
   const handleLoginSuccess = (credentialResponse: any) => {
     console.log('Google login success:', credentialResponse);

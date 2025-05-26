@@ -17,6 +17,7 @@ export function SignUpForm({
     firstName: "",
     lastName: "",
     email: "",
+    phone: "",  // <-- added phone here
     password: "",
     confirmPassword: "",
     terms: false,
@@ -71,6 +72,7 @@ export function SignUpForm({
           body: JSON.stringify({
             name: `${formData.firstName} ${formData.lastName}`,
             email: formData.email,
+            phone: formData.phone || undefined, // include phone if filled
             password: formData.password,
             password_confirmation: formData.confirmPassword,
           }),
@@ -86,6 +88,7 @@ export function SignUpForm({
           firstName: "",
           lastName: "",
           email: "",
+          phone: "",
           password: "",
           confirmPassword: "",
           terms: false,
@@ -152,6 +155,19 @@ export function SignUpForm({
             className="p-6"
             required
             value={formData.email}
+            onChange={handleInputChange}
+          />
+        </div>
+
+        {/* New phone input */}
+        <div className="grid gap-2">
+          <Label htmlFor="phone">Phone Number (optional)</Label>
+          <Input
+            id="phone"
+            type="tel"
+            placeholder="Enter your phone number"
+            className="p-6"
+            value={formData.phone}
             onChange={handleInputChange}
           />
         </div>
