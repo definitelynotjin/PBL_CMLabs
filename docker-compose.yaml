@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: hris_mysql
+    environment:
+      MYSQL_DATABASE: PBL_CMLabs
+      MYSQL_USER: root
+      MYSQL_PASSWORD: rootpassword
+      MYSQL_ROOT_PASSWORD: rootpassword
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - hris_network
+
+  backend:
+    build:
+      context: ./backend
+    container_name: hris_backend
+    volumes:
+      - ./backend:/var/www/html
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mysql
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: PBL_CMLabs
+      DB_USERNAME: root
+      DB_PASSWORD: rootpassword
+    networks:
+      - hris_network
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: hris_frontend
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: http://backend:8000/api
+    depends_on:
+      - backend
+    networks:
+      - hris_network
+
+volumes:
+  mysql_data:
+
+networks:
+  hris_network:
