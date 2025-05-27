@@ -23,62 +23,56 @@ import {
   Settings,
   ChevronsUpDown,
 } from 'lucide-react'
-
-const employeeData = [
-  {
-    avatar: '/avatar1.png',
-    name: 'Juanita',
-    gender: 'Perempuan',
-    phone: '081280331011',
-    branch: 'Bekasi',
-    position: 'CEO',
-    grade: 'Management',
-    status: true,
-  },
-  {
-    avatar: '/avatar2.png',
-    name: 'Shane',
-    gender: 'Laki-Laki',
-    phone: '081280331012',
-    branch: 'Malang',
-    position: 'OB',
-    grade: 'Staff',
-    status: false,
-  },
-]
+import { useEffect, useState } from 'react'
 
 export default function EmployeeDatabasePage() {
+  const [employees, setEmployees] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [search, setSearch] = useState('')
+
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    if (!token) return
+    setLoading(true)
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/employees?search=${encodeURIComponent(search)}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => res.json())
+      .then((data) => setEmployees(data.data.data))
+      .finally(() => setLoading(false))
+  }, [search])
+
   return (
     <div className="flex min-h-screen bg-white">
       {/* Sidebar */}
       <aside className="w-16 flex flex-col justify-between items-center bg-gray-100 py-4">
-          <div className="flex flex-col items-center gap-6">
-            <Image src="/HRIS.png" alt="Logo" width={32} height={32} />
-            <Link href="/dashboard">
-              <Grid className="w-5 h-5 text-gray-600 cursor-pointer" />
-            </Link>
-            <Link href="/employee-database">
-              <Users className="w-5 h-5 text-gray-600 cursor-pointer" />
-            </Link>
-            <Link href="/checkclock">
-              <Clock className="w-5 h-5 text-gray-600 cursor-pointer" />
-            </Link>
-            <Link href="/pricing-package">
-              <Calendar className="w-5 h-5 text-gray-600 cursor-pointer" />
-            </Link>
-            <Link href="/order-summary">
-              <MessageCircle className="w-5 h-5 text-gray-600 cursor-pointer" />
-            </Link>
-          </div>
-          <div className="flex flex-col items-center gap-4 mb-4">
-            <Link href="/headphones">
-              <Headphones className="w-5 h-5 text-gray-600 cursor-pointer" />
-            </Link>
-            <Link href="/settings">
-              <Settings className="w-5 h-5 text-gray-600 cursor-pointer" />
-            </Link>
-          </div>
-        </aside>
+        <div className="flex flex-col items-center gap-6">
+          <Image src="/HRIS.png" alt="Logo" width={32} height={32} />
+          <Link href="/dashboard">
+            <Grid className="w-5 h-5 text-gray-600 cursor-pointer" />
+          </Link>
+          <Link href="/employee-database">
+            <Users className="w-5 h-5 text-gray-600 cursor-pointer" />
+          </Link>
+          <Link href="/checkclock">
+            <Clock className="w-5 h-5 text-gray-600 cursor-pointer" />
+          </Link>
+          <Link href="/pricing-package">
+            <Calendar className="w-5 h-5 text-gray-600 cursor-pointer" />
+          </Link>
+          <Link href="/order-summary">
+            <MessageCircle className="w-5 h-5 text-gray-600 cursor-pointer" />
+          </Link>
+        </div>
+        <div className="flex flex-col items-center gap-4 mb-4">
+          <Link href="/headphones">
+            <Headphones className="w-5 h-5 text-gray-600 cursor-pointer" />
+          </Link>
+          <Link href="/settings">
+            <Settings className="w-5 h-5 text-gray-600 cursor-pointer" />
+          </Link>
+        </div>
+      </aside>
 
       {/* Main content */}
       <div className="flex-1 p-4 md:p-6 space-y-6">
@@ -86,7 +80,12 @@ export default function EmployeeDatabasePage() {
         <div className="flex justify-between items-center border-b pb-4">
           <div className="flex items-center gap-4">
             <h1 className="text-2xl font-bold">Employee Database</h1>
-            <Input placeholder="Search" className="w-72" />
+            <Input
+              placeholder="Search"
+              className="w-72"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+            />
           </div>
           <div className="flex items-center gap-4">
             <Bell className="w-5 h-5 text-gray-600" />
@@ -129,7 +128,9 @@ export default function EmployeeDatabasePage() {
             <Button variant="outline"><Filter className="w-4 h-4 mr-2" /> Filter</Button>
             <Button variant="outline"><Download className="w-4 h-4 mr-2" /> Export</Button>
             <Button variant="outline"><Upload className="w-4 h-4 mr-2" /> Import</Button>
-            <Button>+ Tambah Data</Button>
+            <Link href="/add-new-employee" passHref>
+              <Button>+ Tambah Data</Button>
+            </Link>
           </div>
         </div>
 
@@ -148,32 +149,43 @@ export default function EmployeeDatabasePage() {
               </tr>
             </thead>
             <tbody>
-              {employeeData.map((emp, index) => (
-                <tr key={index} className="border-t">
-                  <td className="p-2">{index + 1}</td>
-                  <td className="p-2">
-                    <div className="w-8 h-8 bg-gray-300 rounded-full" />
-                  </td>
-                  <td className="p-2">{emp.name}</td>
-                  <td className="p-2">
-                    <span className="bg-muted px-2 py-1 rounded text-xs font-medium">
-                      {emp.gender}
-                    </span>
-                  </td>
-                  <td className="p-2">{emp.phone}</td>
-                  <td className="p-2">{emp.branch}</td>
-                  <td className="p-2">{emp.position}</td>
-                  <td className="p-2">{emp.grade}</td>
-                  <td className="p-2">
-                    <Switch checked={emp.status} disabled />
-                  </td>
-                  <td className="p-2 flex gap-2">
-                    <Button size="icon" variant="ghost"><Copy className="w-4 h-4" /></Button>
-                    <Button size="icon" variant="ghost"><Edit2 className="w-4 h-4" /></Button>
-                    <Button size="icon" variant="ghost"><Trash2 className="w-4 h-4" /></Button>
-                  </td>
+              {loading ? (
+                <tr>
+                  <td colSpan={10} className="text-center p-4">Loading...</td>
                 </tr>
-              ))}
+              ) : (
+                employees.map((emp, index) => (
+                  <tr key={emp.id} className="border-t">
+                    <td className="p-2">{index + 1}</td>
+                    <td className="p-2">
+                      <div className="w-8 h-8 bg-gray-300 rounded-full" />
+                    </td>
+                    <td className="p-2">{emp.first_name} {emp.last_name}</td>
+                    <td className="p-2">
+                      <span className="bg-muted px-2 py-1 rounded text-xs font-medium">
+                        {emp.gender}
+                      </span>
+                    </td>
+                    <td className="p-2">{emp.phone}</td>
+                    <td className="p-2">{emp.branch || '-'}</td>
+                    <td className="p-2">{emp.position}</td>
+                    <td className="p-2">{emp.grade || '-'}</td>
+                    <td className="p-2">
+                      <Switch checked={emp.status} disabled />
+                    </td>
+                    <td className="p-2 flex gap-2">
+                      <Button size="icon" variant="ghost"><Copy className="w-4 h-4" /></Button>
+                      <Button size="icon" variant="ghost"><Edit2 className="w-4 h-4" /></Button>
+                      <Button size="icon" variant="ghost"><Trash2 className="w-4 h-4" /></Button>
+                    </td>
+                  </tr>
+                ))
+              )}
+              {!loading && employees.length === 0 && (
+                <tr>
+                  <td colSpan={10} className="text-center p-4">No employees found.</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

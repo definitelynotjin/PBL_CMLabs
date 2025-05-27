@@ -16,11 +16,27 @@ class Employee extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'id', 'user_id', 'ck_settings_id', 'first_name', 'last_name', 'gender', 'address',
+        'id',
+        'user_id',
+        'ck_settings_id',
+        'first_name',
+        'last_name',
+        'gender',
+        'address',
+        'email',
+        'phone',
+        'position',
+        'department',
+        'birth_date',
+        'join_date',
+        'employment_status',
+        // add more as needed
     ];
 
     protected $casts = [
         'gender' => 'string',
+        'birth_date' => 'date',
+        'join_date' => 'date',
     ];
 
     protected static function boot()
