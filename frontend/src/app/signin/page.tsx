@@ -2,7 +2,6 @@
 
 import { GalleryVerticalEnd } from "lucide-react";
 import { SignInForm } from "@/components/signin-form";
-import { GoogleLogin } from '@react-oauth/google';
 
 
 export default function SignInPage() {
@@ -78,12 +77,6 @@ export default function SignInPage() {
           <div className="flex flex-1 items-center justify-center">
             <div className="w-full max-w-xs">
               <SignInForm />
-              <div className="mt-4">
-                <GoogleLogin
-                  onSuccess={handleLoginSuccess}
-                  onError={handleLoginError}
-                />
-              </div>
             </div>
           </div>
         </div>

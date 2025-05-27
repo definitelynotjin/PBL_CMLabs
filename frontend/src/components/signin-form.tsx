@@ -2,18 +2,19 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link"; // Import Link from next/link
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { GoogleLogin } from '@react-oauth/google'; // Ensure this component is imported
 
 export function SignInForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
-  const [identifier, setIdentifier] = useState(""); // <-- changed from email
+  const [identifier, setIdentifier] = useState(""); 
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
   const [error, setError] = useState("");
@@ -22,7 +23,7 @@ export function SignInForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(""); // Clear previous errors
+    setError("");
 
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/login`, {
@@ -50,6 +51,15 @@ export function SignInForm({
     }
   };
 
+  const handleLoginSuccess = (response: any) => {
+    console.log("Google login success:", response);
+    // Add further handling here, such as sending the token to your API
+  };
+
+  const handleLoginError = () => {
+    setError("Failed to sign in with Google.");
+  };
+
   return (
     <form className={cn("flex flex-col gap-6", className)} onSubmit={handleSubmit} {...props}>
       <div className="flex flex-col items-start gap-2">
@@ -64,7 +74,7 @@ export function SignInForm({
           <Label htmlFor="identifier">Email or Phone Number</Label>
           <Input
             id="identifier"
-            type="text" // <-- changed from "email"
+            type="text"
             placeholder="Enter your email or phone number"
             className="p-6"
             value={identifier}
@@ -108,12 +118,9 @@ export function SignInForm({
               Remember Me
             </label>
           </div>
-          <a
-            href="/forgot-password"
-            className="text-sm text-blue-600 hover:underline"
-          >
+          <Link href="/forgot-password" className="text-sm text-blue-600 hover:underline">
             Forgot Password?
-          </a>
+          </Link>
         </div>
 
         <Button type="submit" className="w-full p-6 bg-gray-500 hover:bg-gray-600 text-white uppercase">
@@ -121,13 +128,12 @@ export function SignInForm({
         </Button>
 
         <div className="grid gap-3">
-          <Button
-            variant="outline"
-            className="w-full p-6 border-gray-200"
-            type="button"
-          >
-            Sign in with Google
-          </Button>
+          <div className="mt-4">
+            <GoogleLogin
+              onSuccess={handleLoginSuccess}
+              onError={handleLoginError} // Adjusted to match signature
+            />
+          </div>
 
           <Link href="/employee-signin" passHref>
             <Button
@@ -143,9 +149,9 @@ export function SignInForm({
 
       <div className="pt-2 text-center text-sm border-t border-gray-200">
         Don&apos;t have an account?{" "}
-        <a href="/signup" className="text-blue-600 hover:underline">
+        <Link href="/signup" className="text-blue-600 hover:underline">
           Sign up now and get started
-        </a>
+        </Link>
       </div>
     </form>
   );
