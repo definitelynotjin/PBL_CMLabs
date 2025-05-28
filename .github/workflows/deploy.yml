@@ -22,5 +22,5 @@ jobs:
 
     - name: Deploy via SSH
       run: |
-        ssh azureuser@20.70.233.45 "cd /home/azureuser/PBL_CMLabs && git pull origin main && ./deploy.sh"
+        ssh azureuser@20.70.233.45 "cd /home/azureuser/PBL_CMLabs && git pull origin main"
 
