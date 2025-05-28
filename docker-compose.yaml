@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
   mysql:
@@ -6,7 +5,6 @@ services:
     container_name: hris_mysql
     environment:
       MYSQL_DATABASE: PBL_CMLabs
-      MYSQL_USER: root
       MYSQL_PASSWORD: rootpassword
       MYSQL_ROOT_PASSWORD: rootpassword
     volumes:
@@ -32,7 +30,6 @@ services:
       DB_HOST: mysql
       DB_PORT: 3306
       DB_DATABASE: PBL_CMLabs
-      DB_USERNAME: root
       DB_PASSWORD: rootpassword
     networks:
       - hris_network
