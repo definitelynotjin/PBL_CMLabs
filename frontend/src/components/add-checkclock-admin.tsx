@@ -1,11 +1,8 @@
 "use client"; // Mark as Client Component for Next.js
 
-
-
 import dynamic from "next/dynamic";
 import * as React from "react";
-import Image from 'next/image';
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import Image from "next/image";
 import { LatLngTuple } from "leaflet";
 import {
   Select,
@@ -23,11 +20,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import Link from 'next/link';
-import { Grid, Users, Clock, Calendar, MessageCircle, Headphones, Settings } from 'lucide-react';
-
-
-
+import Link from "next/link";
+import { Grid, Users, Clock, Calendar, MessageCircle, Headphones, Settings } from "lucide-react";
 
 // Define types for dropdown options
 interface Location {
@@ -39,7 +33,6 @@ interface AbsenceType {
   value: string;
   label: string;
 }
-
 
 // Sample data for dropdowns
 const locations: Location[] = [
@@ -58,10 +51,18 @@ const absenceTypes: AbsenceType[] = [
 
 const MapComponent = dynamic(() => import("components/mapcomponent"), { ssr: false });
 
-
 const AddCheckclockAdmin: React.FC = () => {
-  const [selectedLocation, setSelectedLocation] = React.useState("");
+  // Client-side rendering guard
+  const [isClient, setIsClient] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // Separate states for dropdowns
+  const [selectedEmployee, setSelectedEmployee] = React.useState("");
   const [selectedAbsenceType, setSelectedAbsenceType] = React.useState("");
+  const [selectedLocation, setSelectedLocation] = React.useState("");
   const [file, setFile] = React.useState<File | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -131,16 +132,15 @@ const AddCheckclockAdmin: React.FC = () => {
               {/* Karyawan Dropdown */}
               <div>
                 <Label htmlFor="employee">Karyawan</Label>
-                <Select onValueChange={setSelectedAbsenceType} value={selectedAbsenceType}>
+                <Select onValueChange={setSelectedEmployee} value={selectedEmployee}>
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Pilih Karyawan" />
                   </SelectTrigger>
                   <SelectContent>
-                    {absenceTypes.map((type) => (
-                      <SelectItem key={type.value} value={type.value}>
-                        {type.label}
-                      </SelectItem>
-                    ))}
+                    {/* Replace with actual employee list */}
+                    <SelectItem value="employee1">Employee 1</SelectItem>
+                    <SelectItem value="employee2">Employee 2</SelectItem>
+                    <SelectItem value="employee3">Employee 3</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -206,17 +206,13 @@ const AddCheckclockAdmin: React.FC = () => {
 
               {/* Map */}
               <div className="h-64">
-                <MapComponent />
+                {isClient && <MapComponent />}
               </div>
 
               {/* Detail Alamat */}
               <div>
                 <Label>Detail Alamat</Label>
-                <Input
-                  value="Kota Malang, Jawa Timur"
-                  readOnly
-                  className="w-full mb-2"
-                />
+                <Input value="Kota Malang, Jawa Timur" readOnly className="w-full mb-2" />
                 <div className="grid grid-cols-2 gap-2">
                   <div>
                     <Label>Lat Lokasi</Label>
