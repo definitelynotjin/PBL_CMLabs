@@ -18,12 +18,12 @@ WORKDIR /app
 
 # Copy only production dependencies
 COPY package.json package-lock.json* yarn.lock* ./
-RUN npm install --production
+RUN npm install ci
 
 # Copy build output and source files needed to run
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/src ./src       # your actual source code
+COPY --from=builder /app/src ./src
 COPY --from=builder /app/next.config.ts ./next.config.ts
 
 EXPOSE 3000

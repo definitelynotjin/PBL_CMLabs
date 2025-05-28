@@ -34,13 +34,10 @@ services:
     networks:
       - hris_network
 
-
   frontend:
     build:
       context: ./frontend
     container_name: hris_frontend
-    volumes:
-      - ./frontend:/app
     ports:
       - "3000:3000"
     environment:
