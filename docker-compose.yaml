@@ -1,4 +1,3 @@
-
 services:
   mysql:
     image: mysql:8.0
@@ -44,6 +43,20 @@ services:
       NEXT_PUBLIC_API_BASE_URL: http://backend:8000/api
     depends_on:
       - backend
+    networks:
+      - hris_network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: hris_phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    depends_on:
+      - mysql
     networks:
       - hris_network
 
