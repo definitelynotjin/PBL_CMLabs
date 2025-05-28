@@ -20,6 +20,18 @@ jobs:
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan -H 20.70.233.45 >> ~/.ssh/known_hosts
 
-    - name: Deploy via SSH
+    - name: Deploy Backend and Frontend via SSH
       run: |
-        ssh azureuser@20.70.233.45 "cd /home/azureuser/PBL_CMLabs && git pull origin main && docker-compose down && docker-compose up -d --build  "
+        ssh azureuser@20.70.233.45 "
+          cd /home/azureuser/PBL_CMLabs &&
+          git pull origin main &&
+
+          # Laravel backend refresh
+          docker exec hris_backend php artisan migrate --force &&
+          docker exec hris_backend php artisan optimize:clear &&
+          docker exec hris_backend php artisan optimize &&
+
+          # Frontend rebuild (if needed)
+          docker exec hris_frontend npm install &&
+          docker exec hris_frontend npm run build
+        "
