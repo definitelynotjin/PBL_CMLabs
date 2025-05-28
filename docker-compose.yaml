@@ -19,9 +19,10 @@ services:
   backend:
     build:
       context: ./backend
+      dockerfile: Dockerfile
     container_name: hris_backend
     volumes:
-      - ./backend:/var/www/html
+      - ./backend:/app
     ports:
       - "8000:8000"
     depends_on:
@@ -35,6 +36,7 @@ services:
       DB_PASSWORD: rootpassword
     networks:
       - hris_network
+
 
   frontend:
     build:
