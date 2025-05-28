@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import Link from 'next/link'
+
 import {
   Filter,
   Download,
@@ -25,22 +26,50 @@ import {
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
+type Employee = {
+  id: number
+  first_name: string
+  last_name: string
+  gender: string
+  phone: string
+  branch?: string
+  position: string
+  grade?: string
+  status: boolean
+}
+
+
 export default function EmployeeDatabasePage() {
-  const [employees, setEmployees] = useState([])
+  const [employees, setEmployees] = useState<Employee[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
+  const [periode, setPeriode] = useState('')
 
   useEffect(() => {
     const token = localStorage.getItem('token')
-    if (!token) return
+    if (!token) {
+      window.location.href = '/login'
+      return
+    }
+
     setLoading(true)
     fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/employees?search=${encodeURIComponent(search)}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error('Gagal mengambil data')
+        return res.json()
+      })
       .then((data) => setEmployees(data.data.data))
+      .catch((err) => console.error('Fetch error:', err))
       .finally(() => setLoading(false))
   }, [search])
+
+  useEffect(() => {
+    const today = new Date()
+    const formatted = today.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })
+    setPeriode(formatted)
+  }, [])
 
   return (
     <div className="flex min-h-screen bg-white">
@@ -103,7 +132,7 @@ export default function EmployeeDatabasePage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="border rounded-lg p-4">
             <p className="text-sm text-muted-foreground">Periode</p>
-            <p className="text-lg font-semibold">Bulan Tahun</p>
+            <p className="text-lg font-semibold">{periode}</p>
           </div>
           <div className="border rounded-lg p-4">
             <p className="text-sm text-muted-foreground">Total Employee</p>
@@ -171,7 +200,12 @@ export default function EmployeeDatabasePage() {
                     <td className="p-2">{emp.position}</td>
                     <td className="p-2">{emp.grade || '-'}</td>
                     <td className="p-2">
-                      <Switch checked={emp.status} disabled />
+                      <div className="flex items-center gap-2">
+                        <Switch checked={emp.status} disabled />
+                        <span className="text-xs text-muted-foreground">
+                          {emp.status ? 'Aktif' : 'Tidak Aktif'}
+                        </span>
+                      </div>
                     </td>
                     <td className="p-2 flex gap-2">
                       <Button size="icon" variant="ghost"><Copy className="w-4 h-4" /></Button>
