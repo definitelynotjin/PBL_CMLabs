@@ -1,5 +1,6 @@
 "use client"; // Mark as Client Component for Next.js
 
+import dynamic from "next/dynamic";
 import * as React from "react";
 import Image from 'next/image';
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
@@ -49,9 +50,12 @@ const absenceTypes: AbsenceType[] = [
   { value: "sick-leave", label: "Sick Leave" },
 ];
 
+const MapComponent = dynamic(() => import("./mapcomponent.tsx"), { ssr: false });
+
+
 const AddCheckclockUser: React.FC = () => {
-  const [selectedLocation, setSelectedLocation] = React.useState("");
-  const [selectedAbsenceType, setSelectedAbsenceType] = React.useState("");
+  const [selectedLocation, setSelectedLocation] = React.useState<string>("");
+  const [selectedAbsenceType, setSelectedAbsenceType] = React.useState<string>("");
   const [file, setFile] = React.useState<File | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,35 +69,35 @@ const AddCheckclockUser: React.FC = () => {
 
   return (
     <div className="flex min-h-screen bg-white">
-          {/* Sidebar */}
-          <aside className="w-16 flex flex-col justify-between items-center bg-gray-100 py-4">
-              <div className="flex flex-col items-center gap-6">
-                <Image src="/HRIS.png" alt="Logo" width={32} height={32} />
-                <Link href="/dashboard">
-                  <Grid className="w-5 h-5 text-gray-600 cursor-pointer" />
-                </Link>
-                <Link href="/employee-database">
-                  <Users className="w-5 h-5 text-gray-600 cursor-pointer" />
-                </Link>
-                <Link href="/checkclock">
-                  <Clock className="w-5 h-5 text-gray-600 cursor-pointer" />
-                </Link>
-                <Link href="/pricing-package">
-                  <Calendar className="w-5 h-5 text-gray-600 cursor-pointer" />
-                </Link>
-                <Link href="/order-summary">
-                  <MessageCircle className="w-5 h-5 text-gray-600 cursor-pointer" />
-                </Link>
-              </div>
-              <div className="flex flex-col items-center gap-4 mb-4">
-                <Link href="/headphones">
-                  <Headphones className="w-5 h-5 text-gray-600 cursor-pointer" />
-                </Link>
-                <Link href="/settings">
-                  <Settings className="w-5 h-5 text-gray-600 cursor-pointer" />
-                </Link>
-              </div>
-            </aside>
+      {/* Sidebar */}
+      <aside className="w-16 flex flex-col justify-between items-center bg-gray-100 py-4">
+        <div className="flex flex-col items-center gap-6">
+          <Image src="/HRIS.png" alt="Logo" width={32} height={32} />
+          <Link href="/dashboard">
+            <Grid className="w-5 h-5 text-gray-600 cursor-pointer" />
+          </Link>
+          <Link href="/employee-database">
+            <Users className="w-5 h-5 text-gray-600 cursor-pointer" />
+          </Link>
+          <Link href="/checkclock">
+            <Clock className="w-5 h-5 text-gray-600 cursor-pointer" />
+          </Link>
+          <Link href="/pricing-package">
+            <Calendar className="w-5 h-5 text-gray-600 cursor-pointer" />
+          </Link>
+          <Link href="/order-summary">
+            <MessageCircle className="w-5 h-5 text-gray-600 cursor-pointer" />
+          </Link>
+        </div>
+        <div className="flex flex-col items-center gap-4 mb-4">
+          <Link href="/headphones">
+            <Headphones className="w-5 h-5 text-gray-600 cursor-pointer" />
+          </Link>
+          <Link href="/settings">
+            <Settings className="w-5 h-5 text-gray-600 cursor-pointer" />
+          </Link>
+        </div>
+      </aside>
 
       {/* Main Content */}
       <div className="flex-1 p-6">
@@ -121,7 +125,10 @@ const AddCheckclockUser: React.FC = () => {
               {/* Tipe Absensi Dropdown */}
               <div>
                 <Label htmlFor="absence-type">Tipe Absensi</Label>
-                <Select onValueChange={setSelectedAbsenceType} value={selectedAbsenceType}>
+                <Select
+                  onValueChange={(value: string) => setSelectedAbsenceType(value)}
+                  value={selectedAbsenceType}
+                >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Pilih Tipe Absensi" />
                   </SelectTrigger>
@@ -163,7 +170,10 @@ const AddCheckclockUser: React.FC = () => {
               {/* Lokasi Dropdown */}
               <div>
                 <Label htmlFor="location">Lokasi</Label>
-                <Select onValueChange={setSelectedLocation} value={selectedLocation}>
+                <Select
+                  onValueChange={(value: string) => setSelectedLocation(value)}
+                  value={selectedLocation}
+                >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Pilih Lokasi" />
                   </SelectTrigger>
@@ -178,20 +188,8 @@ const AddCheckclockUser: React.FC = () => {
               </div>
 
               {/* Map */}
-              <div className="h-64">
-                <MapContainer
-                  center={center}
-                  zoom={13}
-                  className="h-full w-full rounded-md"
-                >
-                  <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                  />
-                  <Marker position={center}>
-                    <Popup>Malang</Popup>
-                  </Marker>
-                </MapContainer>
+              <div className="h-64 w-full">
+                <MapComponent center={center} markerPopupText="Malang" />
               </div>
 
               {/* Detail Alamat */}

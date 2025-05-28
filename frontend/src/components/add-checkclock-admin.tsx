@@ -1,5 +1,6 @@
 "use client"; // Mark as Client Component for Next.js
 
+
 import dynamic from "next/dynamic";
 import * as React from "react";
 import Image from "next/image";
@@ -49,7 +50,9 @@ const absenceTypes: AbsenceType[] = [
   { value: "sick-leave", label: "Sick Leave" },
 ];
 
-const MapComponent = dynamic(() => import("components/mapcomponent"), { ssr: false });
+const MapComponent = dynamic(() => import("./mapcomponent.tsx"), { ssr: false });
+
+
 
 const AddCheckclockAdmin: React.FC = () => {
   // Client-side rendering guard
