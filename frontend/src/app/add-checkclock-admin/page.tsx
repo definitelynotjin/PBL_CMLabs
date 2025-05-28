@@ -1,3 +1,5 @@
+"use client";
+
 import AddCheckclock from "@/components/add-checkclock-admin";
 
 export default function App() {
