@@ -2,7 +2,7 @@
 
 
 
-
+import dynamic from "next/dynamic";
 import * as React from "react";
 import Image from 'next/image';
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
@@ -25,6 +25,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Link from 'next/link';
 import { Grid, Users, Clock, Calendar, MessageCircle, Headphones, Settings } from 'lucide-react';
+
+
+
 
 // Define types for dropdown options
 interface Location {
@@ -52,6 +55,9 @@ const absenceTypes: AbsenceType[] = [
   { value: "annual-leave", label: "Annual Leave" },
   { value: "sick-leave", label: "Sick Leave" },
 ];
+
+const MapComponent = dynamic(() => import("components/mapcomponent"), { ssr: false });
+
 
 const AddCheckclockAdmin: React.FC = () => {
   const [selectedLocation, setSelectedLocation] = React.useState("");
@@ -200,19 +206,7 @@ const AddCheckclockAdmin: React.FC = () => {
 
               {/* Map */}
               <div className="h-64">
-                <MapContainer
-                  center={center}
-                  zoom={13}
-                  className="h-full w-full rounded-md"
-                >
-                  <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                  />
-                  <Marker position={center}>
-                    <Popup>Malang</Popup>
-                  </Marker>
-                </MapContainer>
+                <MapComponent />
               </div>
 
               {/* Detail Alamat */}
