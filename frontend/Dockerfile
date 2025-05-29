@@ -1,26 +1,12 @@
-# Build stage
-FROM node:18-alpine AS builder
-WORKDIR /app
-
-# Install dependencies
-COPY package.json package-lock.json* yarn.lock* ./
-RUN npm install
-
-# Copy the rest of the application
-COPY . .
-
-# Build the Next.js app
-RUN npm run build
-
 # Runner stage
 FROM node:18-alpine AS runner
 WORKDIR /app
 
-# Only copy the necessary files for running the app
+# Copy dependencies and install everything (including optional like @next/swc)
 COPY package.json package-lock.json* yarn.lock* ./
-RUN npm ci --omit=dev
+RUN npm install --omit=dev  # instead of `npm ci --omit=dev`
 
-# Copy built output from builder
+# Copy built output
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/src ./src
