@@ -22,16 +22,22 @@ jobs:
 
     - name: Deploy Backend and Frontend via SSH
       run: |
-        ssh azureuser@20.70.233.45 "
-          cd /home/azureuser/PBL_CMLabs &&
-          git pull origin main &&
+        ssh -o StrictHostKeyChecking=no azureuser@20.70.233.45 << 'EOF'
+          set -e  # Exit immediately if a command exits with a non-zero status
 
-          # Laravel backend refresh
-          docker exec hris_backend php artisan migrate --force &&
-          docker exec hris_backend php artisan optimize:clear &&
-          docker exec hris_backend php artisan optimize &&
+          cd /home/azureuser/PBL_CMLabs
 
-          # Frontend rebuild (if needed)
-          docker exec hris_frontend npm install &&
+          echo "Pulling latest code..."
+          git pull origin main
+
+          echo "Running Laravel backend migrations and optimizations..."
+          docker exec hris_backend php artisan migrate --force
+          docker exec hris_backend php artisan optimize:clear
+          docker exec hris_backend php artisan optimize
+
+          echo "Installing frontend dependencies and building..."
+          docker exec hris_frontend npm install
           docker exec hris_frontend npm run build
-        "
+
+          echo "Deployment completed."
+        EOF
