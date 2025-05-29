@@ -32,10 +32,10 @@ jobs:
 
           echo "Building and restarting Docker containers..."
           # Build and restart with docker-compose
-          docker-compose build
+          docker compose build
 
           # Restart containers, recreating them
-          docker-compose up -d --remove-orphans
+          docker compose up -d --remove-orphans
 
           echo "Running Laravel backend migrations and optimizations..."
           docker exec hris_backend php artisan migrate --force
