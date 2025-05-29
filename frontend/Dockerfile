@@ -14,11 +14,8 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-COPY package.json package-lock.json ./
-RUN npm install --omit=dev
-
-COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/next.config.js ./next.config.js
@@ -29,5 +26,3 @@ CMD ["npm", "start"]
 
 # Optional healthcheck
 # HEALTHCHECK --interval=30s --timeout=10s --start-period=5s CMD wget --no-verbose --tries=1 --spider http://localhost:3000 || exit 1
-# Optional metadata
-# LABEL org.opencontainers.image.authors="Your Name <
