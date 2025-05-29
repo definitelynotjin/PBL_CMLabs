@@ -15,16 +15,22 @@ class EmployeeFactory extends Factory
     {
         return [
             'id' => Uuid::uuid4()->toString(),
-            'user_id' => null, // Set by seeder
-            'ck_settings_id' => null, // Set by seeder
+            'user_id' => null, // To be set by seeder or explicitly
+            'ck_settings_id' => null, // To be set by seeder or explicitly
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
-            'gender' => $this->faker->randomElement(['M', 'F', 'O']),
+            'gender' => $this->faker->randomElement(['M', 'F']),
             'address' => $this->faker->address(),
+            'email' => $this->faker->unique()->safeEmail(),
+            'phone' => $this->faker->unique()->phoneNumber(),
+            'position' => $this->faker->jobTitle(),
+            'department' => $this->faker->randomElement(['HR', 'Engineering', 'Sales', 'Marketing']),
+            'birth_date' => $this->faker->date('Y-m-d', '2000-01-01'),
+            'join_date' => $this->faker->date('Y-m-d', 'now'),
+            'employment_status' => $this->faker->randomElement(['Permanent', 'Contract', 'Intern']),
         ];
     }
 
-    // Optional: Define a state to create related models if needed outside the seeder
     public function withRelatedModels()
     {
         return $this->state(function (array $attributes) {

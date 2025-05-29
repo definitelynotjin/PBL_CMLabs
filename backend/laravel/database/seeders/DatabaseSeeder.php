@@ -17,28 +17,27 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // Create users
-        User::factory()->count(5)->create(['is_admin' => true]);
-        User::factory()->count(20)->create(['is_admin' => false]);
+        $adminUsers = User::factory()->count(5)->create(['is_admin' => true]);
+        $normalUsers = User::factory()->count(20)->create(['is_admin' => false]);
+
+        $allUsers = $adminUsers->concat($normalUsers);
 
         // Create check clock settings
-        CheckClockSetting::factory()->count(3)->create();
+        $checkClockSettings = CheckClockSetting::factory()->count(3)->create();
 
-        // Create employees
-        Employee::factory()->count(20)->create();
+        // Create employees linked to existing users and check clock settings
+        foreach ($allUsers as $user) {
+            Employee::factory()->create([
+                'user_id' => $user->id,
+                'ck_settings_id' => $checkClockSettings->random()->id,
+            ]);
+        }
 
-        // Create check clock setting times
+        // Create other data
         CheckClockSettingTime::factory()->count(10)->create();
-
-        // Create check clocks
         CheckClock::factory()->count(50)->create();
-
-        // Create salaries
         Salary::factory()->count(20)->create();
-
-        // Create letter formats
         LetterFormat::factory()->count(5)->create();
-
-        // Create letters
         Letter::factory()->count(15)->create();
     }
 }
