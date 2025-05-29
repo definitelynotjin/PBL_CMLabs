@@ -3,7 +3,7 @@ FROM node:18-alpine AS builder
 WORKDIR /app
 
 # Copy package files and install all dependencies (including dev for building)
-COPY package.json package-lock.json* yarn.lock* ./
+COPY package.json package-lock.json ./
 RUN npm install
 
 # Copy all source files
@@ -17,7 +17,7 @@ FROM node:18-alpine AS runner
 WORKDIR /app
 
 # Copy only production dependencies (avoid reinstalling dev deps)
-COPY package.json package-lock.json* yarn.lock* ./
+COPY package.json package-lock.json ./
 RUN npm install --omit=dev
 
 # Copy build output and public folder from builder
