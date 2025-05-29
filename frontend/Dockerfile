@@ -2,11 +2,11 @@
 FROM node:18-alpine AS builder
 WORKDIR /app
 
-# Copy package files and install all dependencies (including dev)
+# Install dependencies
 COPY package.json package-lock.json* yarn.lock* ./
 RUN npm install
 
-# Copy all source files
+# Copy the rest of the application
 COPY . .
 
 # Build the Next.js app
@@ -16,11 +16,11 @@ RUN npm run build
 FROM node:18-alpine AS runner
 WORKDIR /app
 
-# Copy only production dependencies
+# Only copy the necessary files for running the app
 COPY package.json package-lock.json* yarn.lock* ./
-RUN npm install ci
+RUN npm ci --omit=dev
 
-# Copy build output and source files needed to run
+# Copy built output from builder
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/src ./src
