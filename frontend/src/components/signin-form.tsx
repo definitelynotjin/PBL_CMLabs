@@ -14,7 +14,7 @@ export function SignInForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
-  const [identifier, setIdentifier] = useState(""); 
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
   const [error, setError] = useState("");
@@ -75,7 +75,7 @@ export function SignInForm({
           <Input
             id="identifier"
             type="text"
-            placeholder="Enter your email or phone number"
+            placeholder="Enter your emailw or phone number"
             className="p-6"
             value={identifier}
             onChange={(e) => setIdentifier(e.target.value)}
