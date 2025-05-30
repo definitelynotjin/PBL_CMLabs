@@ -8,21 +8,21 @@ RUN apt-get update && apt-get install -y \
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy Laravel project into container
+# Copy Laravel project (make sure this includes artisan!)
 COPY ./laravel/ /var/www/html/
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Install PHP dependencies inside the Laravel project
+# Install PHP dependencies
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# Set permissions (optional but recommended)
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html
+# OPTIONAL: Set permissions (skip if slow on build)
+# RUN chown -R www-data:www-data /var/www/html \
+#     && chmod -R 755 /var/www/html
 
 # Expose port
 EXPOSE 8000
 
-# Start Laravel development server
+# Run Laravel dev server
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
