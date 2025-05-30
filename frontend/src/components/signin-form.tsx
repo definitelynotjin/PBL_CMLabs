@@ -65,7 +65,7 @@ export function SignInForm({
       <div className="flex flex-col items-start gap-2">
         <h1 className="text-3xl font-semibold">Sign in</h1>
         <p className="text-muted-foreground text-sm">
-          Welcome backwwwwWWW to HRIS cmlabs! Manage everything with ease.
+          Welcome back to HRIS cmlabs! Manage everything with ease.
         </p>
       </div>
       {error && <div className="text-red-500">{error}</div>}
@@ -75,7 +75,7 @@ export function SignInForm({
           <Input
             id="identifier"
             type="text"
-            placeholder="Enter your emailw or phone number"
+            placeholder="Enter your email or phone number"
             className="p-6"
             value={identifier}
             onChange={(e) => setIdentifier(e.target.value)}
