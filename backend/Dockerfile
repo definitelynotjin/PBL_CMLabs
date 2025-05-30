@@ -11,6 +11,9 @@ WORKDIR /var/www/html
 # Copy Laravel project (make sure this includes artisan!)
 COPY ./laravel/ /var/www/html/
 
+# Make artisan executable
+RUN chmod +x /var/www/html/artisan
+
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
