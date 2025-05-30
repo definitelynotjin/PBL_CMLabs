@@ -1,37 +1,38 @@
-name: Deploy via SSH
+name: CI/CD - Deploy to Azure VM
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   deploy:
+    name: Build & Deploy
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    - name: 🔄 Checkout repo
       uses: actions/checkout@v3
 
-    - name: Setup SSH key
-      run: |
-        mkdir -p $HOME/.ssh
-        printf "%s\n" "${{ secrets.SSH_PRIVATE_KEY }}" > $HOME/.ssh/id_rsa
-        chmod 600 $HOME/.ssh/id_rsa
-        ssh-keyscan -H 20.189.126.184 >> $HOME/.ssh/known_hosts
+    - name: 🔐 Set up SSH
+      uses: webfactory/ssh-agent@v0.7.0
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-    - name: Deploy Backend and Frontend via SSH
+    - name: 🚀 Deploy to Azure VM
       run: |
         ssh -o StrictHostKeyChecking=no azureuser@20.189.126.184 << 'EOF'
-          set -e
-          cd /home/azureuser/PBL_CMLabs
-          echo "Pulling latest code..."
+          cd ~/PBL_CMLabs
+          echo "📥 Pulling latest code..."
           git pull origin main
-          echo "Building and restarting Docker containers..."
-          docker compose build
-          docker compose up -d --remove-orphans
-          echo "Running Laravel backend migrations and optimizations..."
-          docker exec hris_backend php artisan optimize:clear
-          docker exec hris_backend php artisan optimize
-          echo "Deployment completed successfully."
+
+          echo "🔧 Stopping running containers..."
+          docker compose down
+
+          echo "🛠 Building containers..."
+          docker compose build --no-cache
+
+          echo "🚀 Starting containers..."
+          docker compose up -d --force-recreate --remove-orphans
+
+          echo "✅ Deployment completed."
         EOF
