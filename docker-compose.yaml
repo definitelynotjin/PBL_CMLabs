@@ -30,7 +30,7 @@ services:
       DB_USERNAME: root
       DB_PASSWORD: rootpassword
     volumes:
-      - ./backend:/var/www/html       # <-- Added volume mount here
+      - ./backend/laravel:/var/www/html       # <-- Added volume mount here
     networks:
       - hris_network
 
