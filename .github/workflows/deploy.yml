@@ -22,7 +22,7 @@ jobs:
 
     - name: Deploy Backend and Frontend via SSH
       run: |
-        ssh -o StrictHostKeyChecking=no azureuser@20.70.233.45 << 'EOF'
+        ssh -o StrictHostKeyChecking=no azureuser@20.189.126.184 << 'EOF'
           set -e
 
           cd /home/azureuser/PBL_CMLabs
