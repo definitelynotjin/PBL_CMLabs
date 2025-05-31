@@ -294,4 +294,19 @@ class AuthController extends Controller
             'message' => 'Google login successful',
         ]);
     }
+
+    public function forgotPassword(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+
+        // Send the password reset link to the user
+        $status = Password::sendResetLink(
+            $request->only('email')
+        );
+
+        if ($status == Password::RESET_LINK_SENT) {
+            return response()->json(['message' => __($status)], 200);
+        } else {
+            return response()->json(['message' => __($status)], 400);
+        }
 }
