@@ -6,11 +6,11 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
 use Google_Client;
 use Illuminate\Support\Str;
 use Ramsey\Uuid\Uuid;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Auth\Passwords\CanResetPassword;
 
 class AuthController extends Controller
 {
@@ -38,7 +38,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'phone' => $request->phone,
-            'role' => $request->role ?? 'admin',
+            'role' => $request->role ?? 'employee', // Default to 'employee' if not provided
             'employee_id' => $request->employee_id,
         ]);
 
@@ -227,7 +227,7 @@ class AuthController extends Controller
             [
                 'name' => $name,
                 'password' => Hash::make(uniqid()),
-                'role' => 'admin' // Default role for Google login
+                'role' => 'employee' // Default role for Google login
             ]
         );
 
@@ -273,7 +273,7 @@ class AuthController extends Controller
                 'id' => Str::uuid()->toString(),
                 'name' => $name,
                 'password' => bcrypt(Str::random(32)),
-                'role' => 'admin', // or 'employee' if you want
+                'role' => 'employee', // Default role for Google login
                 'is_active' => true,
             ]
         );
@@ -293,5 +293,21 @@ class AuthController extends Controller
             ],
             'message' => 'Google login successful',
         ]);
+    }
+
+    public function forgotPassword(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+
+        // Send the password reset link to the user
+        $status = Password::sendResetLink(
+            $request->only('email')
+        );
+
+        if ($status == Password::RESET_LINK_SENT) {
+            return response()->json(['message' => __($status)], 200);
+        } else {
+            return response()->json(['message' => __($status)], 400);
+        }
     }
 }
