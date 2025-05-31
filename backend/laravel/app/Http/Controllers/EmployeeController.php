@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
-use App\Http\Controllers\Controller;
+use Illuminate\Routing\Controller;
 
 
 
