@@ -1,3 +1,5 @@
+"use client";
+
 import { GalleryVerticalEnd } from "lucide-react"
 
 import { ForgotPassword } from "@/components/forgot-password-form"
