@@ -1,7 +1,7 @@
 'use client';
 
 import { GalleryVerticalEnd } from "lucide-react"
-
+import { Suspense } from "react"
 import { ResetPassword } from "@/components/reset-password"
 
 export default function ResetPasswordPage() {
@@ -49,7 +49,9 @@ export default function ResetPasswordPage() {
         </div>
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs">
-            <ResetPassword />
+            <Suspense fallback={<div>Loading...</div>}>
+              <ResetPassword />
+            </Suspense>
           </div>
         </div>
       </div>

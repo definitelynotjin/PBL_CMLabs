@@ -8,9 +8,12 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ArrowLeft, Eye, EyeOff } from "lucide-react"
 
+
 interface ResetPasswordProps {
   className?: string;
 }
+
+
 
 export function ResetPassword({ className }: ResetPasswordProps) {
   const searchParams = useSearchParams()
