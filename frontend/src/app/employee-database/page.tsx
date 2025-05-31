@@ -46,23 +46,15 @@ export default function EmployeeDatabasePage() {
   const [periode, setPeriode] = useState('')
 
   useEffect(() => {
-    const token = localStorage.getItem('token')
-    if (!token) {
-      window.location.href = '/signin'
-      return
-    }
-
-    setLoading(true)
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/employees?search=${encodeURIComponent(search)}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error('Gagal mengambil data')
-        return res.json()
-      })
-      .then((data) => setEmployees(data.data.data))
-      .catch((err) => console.error('Fetch error:', err))
-      .finally(() => setLoading(false))
+      setLoading(true)
+      fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/employees?search=${encodeURIComponent(search)}`)
+        .then((res) => {
+          if (!res.ok) throw new Error('Gagal mengambil data')
+          return res.json()
+        })
+        .then((data) => setEmployees(data.data.data))
+        .catch((err) => console.error('Fetch error:', err))
+        .finally(() => setLoading(false))
   }, [search])
 
   useEffect(() => {
