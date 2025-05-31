@@ -45,15 +45,15 @@ export default function EmployeeDatabasePage() {
   const [periode, setPeriode] = useState('')
 
   useEffect(() => {
-    setLoading(true)
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/employees?search=${encodeURIComponent(search)}`)
-      .then((res) => {
-        if (!res.ok) throw new Error('Gagal mengambil data')
-        return res.json()
-      })
-      .then((data) => setEmployees(data.data.data))
-      .catch((err) => console.error('Fetch error:', err))
-      .finally(() => setLoading(false))
+      setLoading(true)
+      fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/employees?search=${encodeURIComponent(search)}`)
+        .then((res) => {
+          if (!res.ok) throw new Error('Gagal mengambil data')
+          return res.json()
+        })
+        .then((data) => setEmployees(data.data.data))
+        .catch((err) => console.error('Fetch error:', err))
+        .finally(() => setLoading(false))
   }, [search])
 
   useEffect(() => {
