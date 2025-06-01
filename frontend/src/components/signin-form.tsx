@@ -26,7 +26,7 @@ export function SignInForm({
     setError("");
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/login`, {
+      const response = await fetch(`https://pblcmlabs.duckdns.org/api/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
