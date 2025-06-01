@@ -61,7 +61,7 @@ export function SignUpForm({
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/register`,
+        `https://pblcmlabs.duckdns.org/api/register`,
         {
           method: "POST",
           headers: {
