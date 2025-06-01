@@ -359,7 +359,7 @@ const Header: React.FC = () => (
         <div className="flex items-center">
           <div className="w-10 h-10 bg-gray-300 rounded-full mr-2"></div>
           <div>
-            <div className="font-medium">dadawawd</div>
+            <div className="font-medium">username</div>
             <div className="text-sm text-muted-foreground">roles user</div>
           </div>
           <ChevronDown className="ml-2 h-4 w-4" />
