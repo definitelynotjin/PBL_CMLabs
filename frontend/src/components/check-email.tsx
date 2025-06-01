@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 
 interface CheckEmailProps {
@@ -12,7 +12,6 @@ interface CheckEmailProps {
 }
 
 export function CheckEmail({ email: propEmail, className }: CheckEmailProps) {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const emailFromQuery = searchParams.get("email") || propEmail || "uremail@gmail.com";
 
@@ -86,13 +85,12 @@ export function CheckEmail({ email: propEmail, className }: CheckEmailProps) {
 
         <div className="flex items-center justify-center gap-2">
           <ArrowLeft className="h-4 w-4 text-muted-foreground" />
-          <button
-            type="button"
-            onClick={() => router.push("/signin")}
+          <a
+            href="/signin"
             className="text-muted-foreground text-sm hover:text-foreground transition-colors"
           >
             Back to Sign in
-          </button>
+          </a>
         </div>
       </div>
     </div>
