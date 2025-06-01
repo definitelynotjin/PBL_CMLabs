@@ -73,8 +73,9 @@ export function CheckEmail({ email: propEmail, className }: CheckEmailProps) {
 
       <div className="space-y-6">
         <div className="text-center text-sm">
-          Don&apost receive the email?{" "}
+          Don't receive the email?{" "}
           <button
+            type="button"
             onClick={handleResend}
             disabled={loading}
             className="text-primary hover:text-primary/90 underline-offset-4 hover:underline"
@@ -86,10 +87,11 @@ export function CheckEmail({ email: propEmail, className }: CheckEmailProps) {
         <div className="flex items-center justify-center gap-2">
           <ArrowLeft className="h-4 w-4 text-muted-foreground" />
           <button
+            type="button"
             onClick={() => router.push("/signin")}
             className="text-muted-foreground text-sm hover:text-foreground transition-colors"
           >
-            Back to login
+            Back to Sign in
           </button>
         </div>
       </div>
