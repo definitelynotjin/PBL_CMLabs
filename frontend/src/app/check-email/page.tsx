@@ -1,10 +1,11 @@
 import { GalleryVerticalEnd } from "lucide-react";
 import { CheckEmail } from "@/components/check-email";
+import { Suspense } from "react";
 
 export default function CheckEmailPage() {
   return (
-      <div className="grid min-h-svh lg:grid-cols-2">
-        <style>
+    <div className="grid min-h-svh lg:grid-cols-2">
+      <style>
         {`
           .animated-gradient {
             background: linear-gradient(
@@ -35,30 +36,35 @@ export default function CheckEmailPage() {
           }
         `}
       </style>
-        <div className="flex flex-col gap-4 p-6 md:p-10">
-          <div className="flex justify-center gap-2 md:justify-start">
-            <a href="#" className="flex items-center gap-2 font-medium">
-              <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
-                <GalleryVerticalEnd className="size-4" />
-              </div>
-              Acme Inc.
-            </a>
-          </div>
-          <div className="flex flex-1 items-center justify-center">
-            <div className="w-full max-w-xs">
-              <CheckEmail />
+
+      <div className="flex flex-col gap-4 p-6 md:p-10">
+        <div className="flex justify-center gap-2 md:justify-start">
+          <a href="#" className="flex items-center gap-2 font-medium">
+            <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
+              <GalleryVerticalEnd className="size-4" />
             </div>
-          </div>
+            Acme Inc.
+          </a>
         </div>
-        <div className="relative hidden lg:block h-full animated-gradient">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <img
-              src="/HRIS.png"
-              alt="Acme Inc. Logo"
-              className="w-auto h-auto max-w-[16rem] max-h-[16rem] md:max-w-[20rem] md:max-h-[20rem] object-contain"
-            />
+
+        <div className="flex flex-1 items-center justify-center">
+          <div className="w-full max-w-xs">
+            <Suspense fallback={<div>Loading...</div>}>
+              <CheckEmail />
+            </Suspense>
           </div>
         </div>
       </div>
+
+      <div className="relative hidden lg:block h-full animated-gradient">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <img
+            src="/HRIS.png"
+            alt="Acme Inc. Logo"
+            className="w-auto h-auto max-w-[16rem] max-h-[16rem] md:max-w-[20rem] md:max-h-[20rem] object-contain"
+          />
+        </div>
+      </div>
+    </div>
   );
 }
