@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { GoogleLogin } from '@react-oauth/google'; // Ensure this component is imported
+import { GoogleLogin } from '@react-oauth/google';
 
 export function SignInForm({
   className,
@@ -131,7 +131,17 @@ export function SignInForm({
           <div className="mt-4">
             <GoogleLogin
               onSuccess={handleLoginSuccess}
-              onError={handleLoginError} // Adjusted to match signature
+              onError={handleLoginError}
+              render={({ onClick, disabled }) => (
+                <Button
+                  variant="outline"
+                  className="w-full p-6 border-gray-200"
+                  onClick={onClick}
+                  disabled={disabled}
+                >
+                  Sign in with Google
+                </Button>
+              )}
             />
           </div>
 
