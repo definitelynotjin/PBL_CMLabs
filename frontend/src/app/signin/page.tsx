@@ -9,7 +9,7 @@ export default function SignInPage() {
     console.log('Google credential response:', credentialResponse);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/google/callback`, {
+      const res = await fetch(`https://pblcmlabs.duckdns.org/api/auth/google/callback`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ credential: credentialResponse.credential }),
