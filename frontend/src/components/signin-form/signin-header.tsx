@@ -2,13 +2,11 @@ import { GalleryVerticalEnd } from "lucide-react";
 
 const SignInHeader = () => {
   return (
-    <div className="flex justify-center gap-2 md:justify-start">
-      <a href="#" className="flex items-center gap-2 font-medium">
-        <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
-          <GalleryVerticalEnd className="size-4" />
-        </div>
-        Acme Inc.
-      </a>
+    <div className="flex flex-col items-start gap-2">
+      <h1 className="text-3xl font-semibold">Sign In</h1>
+      <p className="text-muted-foreground text-sm">
+        Welcome back to HRIS CMLabs! Manage verything with ease.
+      </p>
     </div>
   );
 };
