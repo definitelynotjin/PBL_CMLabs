@@ -45,15 +45,15 @@ export default function EmployeeDatabasePage() {
   const [periode, setPeriode] = useState('')
 
   useEffect(() => {
-      setLoading(true)
-      fetch(`https://pblcmlabs.duckdns.org/api/employees?search=${encodeURIComponent(search)}`)
-        .then((res) => {
-          if (!res.ok) throw new Error('Gagal mengambil data')
-          return res.json()
-        })
-        .then((data) => setEmployees(data.data.data))
-        .catch((err) => console.error('Fetch error:', err))
-        .finally(() => setLoading(false))
+    setLoading(true)
+    fetch(`https://pblcmlabs.duckdns.org/api/employees?search=${encodeURIComponent(search)}`)
+      .then((res) => {
+        if (!res.ok) throw new Error('Gagal mengambil data')
+        return res.json()
+      })
+      .then((data) => setEmployees(data.data.data))
+      .catch((err) => console.error('Fetch error:', err))
+      .finally(() => setLoading(false))
   }, [search])
 
   useEffect(() => {
@@ -100,11 +100,7 @@ export default function EmployeeDatabasePage() {
         <div className="flex justify-between items-center border-b pb-4">
           <div className="flex items-center gap-4">
             <h1 className="text-2xl font-bold">Employee Database</h1>
-            <Input
-              placeholder="Search"
-              className="w-72"
-              value={search}
-              onChange={e => setSearch(e.target.value)}
+            <Input placeholder="Search" className="w-72" value={search} onChange={e => setSearch(e.target.value)}
             />
           </div>
           <div className="flex items-center gap-4">
@@ -145,9 +141,15 @@ export default function EmployeeDatabasePage() {
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold">All Employees Information</h2>
           <div className="flex gap-2">
-            <Button variant="outline"><Filter className="w-4 h-4 mr-2" /> Filter</Button>
-            <Button variant="outline"><Download className="w-4 h-4 mr-2" /> Export</Button>
-            <Button variant="outline"><Upload className="w-4 h-4 mr-2" /> Import</Button>
+            <Button variant="outline">
+              <Filter className="w-4 h-4 mr-2" /> Filter
+            </Button>
+            <Button variant="outline">
+              <Download className="w-4 h-4 mr-2" /> Export
+            </Button>
+            <Button variant="outline">
+              <Upload className="w-4 h-4 mr-2" /> Import
+            </Button>
             <Link href="/add-new-employee" passHref>
               <Button>+ Tambah Data</Button>
             </Link>
@@ -159,13 +161,15 @@ export default function EmployeeDatabasePage() {
           <table className="w-full text-sm border rounded-md">
             <thead>
               <tr className="bg-muted text-left">
-                {['No', 'Avatar', 'Nama', 'Jenis Kelamin', 'Nomor Telepon', 'Cabang', 'Jabatan', 'Grade', 'Status', 'Action'].map((col) => (
-                  <th key={col} className="p-2">
-                    <div className="flex items-center gap-1">
-                      {col} <ChevronsUpDown className="w-4 h-4 text-muted-foreground" />
-                    </div>
-                  </th>
-                ))}
+                {['No', 'Avatar', 'Nama', 'Jenis Kelamin', 'Nomor Telepon', 'Cabang', 'Jabatan', 'Grade',
+                  'Status', 'Action'].map((col) => (
+                    <th key={col} className="p-2">
+                      <div className="flex items-center gap-1">
+                        {col}
+                        <ChevronsUpDown className="w-4 h-4 text-muted-foreground" />
+                      </div>
+                    </th>
+                  ))}
               </tr>
             </thead>
             <tbody>
@@ -199,9 +203,15 @@ export default function EmployeeDatabasePage() {
                       </div>
                     </td>
                     <td className="p-2 flex gap-2">
-                      <Button size="icon" variant="ghost"><Copy className="w-4 h-4" /></Button>
-                      <Button size="icon" variant="ghost"><Edit2 className="w-4 h-4" /></Button>
-                      <Button size="icon" variant="ghost"><Trash2 className="w-4 h-4" /></Button>
+                      <Button size="icon" variant="ghost">
+                        <Copy className="w-4 h-4" />
+                      </Button>
+                      <Button size="icon" variant="ghost">
+                        <Edit2 className="w-4 h-4" />
+                      </Button>
+                      <Button size="icon" variant="ghost">
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
                     </td>
                   </tr>
                 ))
