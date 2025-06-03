@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('email', 100)->unique();
             $table->string('phone', 20)->unique()->nullable();
             $table->string('password', 255);
-            $table->string('role', 20)->default('admin');
+            $table->string('role', 20)->default('admin'); // Default role is 'employee'
             $table->string('employee_id', 50)->unique()->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamp('email_verified_at')->nullable();
