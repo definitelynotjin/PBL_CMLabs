@@ -8,7 +8,7 @@ use App\Http\Controllers\GoogleAuthController;
 
 Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/auth/reset-password', [AuthController::class, 'resetPassword']);
-Route::post('/auth/google/login', [GoogleAuthController::class, 'redirect']);
+// Route::post('/auth/google/login', [GoogleAuthController::class, 'redirect']);
 Route::post('/auth/google/callback', [GoogleAuthController::class, 'callback']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
