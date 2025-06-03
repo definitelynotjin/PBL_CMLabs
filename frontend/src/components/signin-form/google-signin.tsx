@@ -1,52 +1,47 @@
-import { Button } from "@/components/ui/button";
-import { useGoogleLogin } from '@react-oauth/google';
+"use client";
+
+import { GoogleLogin } from "@react-oauth/google";
+import { useRouter } from "next/navigation";
 
 const GoogleSignIn = () => {
-  const handleLoginSuccess = async (response: any) => {
-    console.log("Google login success:", response);
+  const router = useRouter();
+
+  const handleLoginSuccess = async (credentialResponse: any) => {
+    const credential = credentialResponse.credential; // this is the ID token (JWT)
 
     try {
-      const res = await fetch('https://pblcmlabs.duckdns.org/api/auth/google/callback', {
-        method: 'POST',
+      const res = await fetch("https://pblcmlabs.duckdns.org/api/auth/google/callback", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ credential: response.credential }),  // <-- important!
+        body: JSON.stringify({ credential }),
       });
 
       const data = await res.json();
 
       if (res.ok) {
-        console.log('Logged in user:', data.user);
-        // TODO: Save token (data.token) to localStorage or context, then redirect or update UI
+        localStorage.setItem("token", data.token);
+        router.push("/dashboard");
       } else {
-        console.error('Backend error:', data.message);
+        console.error("Google login failed:", data.message);
+        alert(data.message || "Google login failed");
       }
     } catch (error) {
-      console.error('Network or server error:', error);
+      console.error("Server error:", error);
+      alert("Google login failed due to server error");
     }
   };
 
-  const handleLoginError = () => {
-    console.error("Failed to sign in with Google.");
-  };
-
-  const login = useGoogleLogin({
-    onSuccess: handleLoginSuccess,
-    onError: handleLoginError,
-  });
-
   return (
-    <div className="grid gap-3">
-      <div className="mt-4">
-        <Button
-          variant="outline"
-          className="w-full p-6 border-gray-200"
-          onClick={() => login()}
-        >
-          Sign in with Google
-        </Button>
-      </div>
+    <div className="w-full p-6 border border-gray-200">
+      <GoogleLogin
+        onSuccess={handleLoginSuccess}
+        onError={() => {
+          console.error("Google login popup failed");
+          alert("Google login popup failed");
+        }}
+      />
     </div>
   );
 };
