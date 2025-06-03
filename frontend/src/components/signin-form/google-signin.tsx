@@ -2,8 +2,29 @@ import { Button } from "@/components/ui/button";
 import { useGoogleLogin } from '@react-oauth/google';
 
 const GoogleSignIn = () => {
-  const handleLoginSuccess = (response: any) => {
+  const handleLoginSuccess = async (response: any) => {
     console.log("Google login success:", response);
+
+    try {
+      const res = await fetch('https://pblcmlabs.duckdns.org/auth/google/callback', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ credential: response.credential }),  // <-- important!
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        console.log('Logged in user:', data.user);
+        // TODO: Save token (data.token) to localStorage or context, then redirect or update UI
+      } else {
+        console.error('Backend error:', data.message);
+      }
+    } catch (error) {
+      console.error('Network or server error:', error);
+    }
   };
 
   const handleLoginError = () => {
