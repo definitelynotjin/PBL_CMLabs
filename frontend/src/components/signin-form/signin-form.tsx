@@ -63,6 +63,10 @@ export function SignInForm({
           Sign In
         </Button>
         <GoogleSignIn />
+        <Button type="button" variant="outline" className="w-full p-6 uppercase" onClick={() => { router.push("/employee-signin");}}
+        >
+          Sign In with ID Employee
+        </Button>
       </div>
       <Footer />
     </form>

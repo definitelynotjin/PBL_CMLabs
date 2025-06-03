@@ -1,48 +1,52 @@
 "use client";
 
-import { GoogleLogin } from "@react-oauth/google";
+import { useGoogleLogin } from "@react-oauth/google";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { FcGoogle } from "react-icons/fc"; // Google icon
 
 const GoogleSignIn = () => {
   const router = useRouter();
 
-  const handleLoginSuccess = async (credentialResponse: any) => {
-    const credential = credentialResponse.credential; // this is the ID token (JWT)
+  const login = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        const res = await fetch("https://pblcmlabs.duckdns.org/api/auth/google/callback", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ credential: tokenResponse.access_token }), // atau tokenResponse.credential jika pakai flow "id_token"
+        });
 
-    try {
-      const res = await fetch("https://pblcmlabs.duckdns.org/api/auth/google/callback", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ credential }),
-      });
+        const data = await res.json();
 
-      const data = await res.json();
-
-      if (res.ok) {
-        localStorage.setItem("token", data.token);
-        router.push("/dashboard");
-      } else {
-        console.error("Google login failed:", data.message);
-        alert(data.message || "Google login failed");
+        if (res.ok) {
+          localStorage.setItem("token", data.token);
+          router.push("/dashboard");
+        } else {
+          alert(data.message || "Google login failed");
+        }
+      } catch (error) {
+        alert("Google login failed due to server error");
       }
-    } catch (error) {
-      console.error("Server error:", error);
-      alert("Google login failed due to server error");
-    }
-  };
+    },
+    onError: () => {
+      alert("Google login popup failed");
+    },
+    flow: "implicit", // atau "auth-code" jika backend kamu pakai code flow
+  });
 
   return (
-    <div className="w-full p-6 border border-gray-200">
-      <GoogleLogin
-        onSuccess={handleLoginSuccess}
-        onError={() => {
-          console.error("Google login popup failed");
-          alert("Google login popup failed");
-        }}
-      />
-    </div>
+    <Button
+      type="button"
+      variant="outline"
+      className="w-full p-6 uppercase flex items-center justify-center gap-2"
+      onClick={() => login()}
+    >
+      <FcGoogle className="text-xl" />
+      Login dengan Google
+    </Button>
   );
 };
 
