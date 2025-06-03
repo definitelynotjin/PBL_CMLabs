@@ -46,7 +46,7 @@ export default function EmployeeDatabasePage() {
 
   useEffect(() => {
       setLoading(true)
-      fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/employees?search=${encodeURIComponent(search)}`)
+      fetch(`https://pblcmlabs.duckdns.org/api/employees?search=${encodeURIComponent(search)}`)
         .then((res) => {
           if (!res.ok) throw new Error('Gagal mengambil data')
           return res.json()
