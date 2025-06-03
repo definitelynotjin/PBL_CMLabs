@@ -21,10 +21,10 @@ class GoogleAuthController extends Controller
     public function callback(Request $request)
     {
         $request->validate([
-            'token' => 'required|string',
+            'credential' => 'required|string',
         ]);
 
-        $token = $request->input('token');
+        $token = $request->input('credential');
         $payload = $this->googleClient->verifyIdToken($token);
 
         if (!$payload) {
