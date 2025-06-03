@@ -68,4 +68,6 @@ class GoogleAuthController extends Controller
             'message' => 'Google login successful',
         ]);
     }
+
+    
 }
