@@ -6,7 +6,7 @@ const GoogleSignIn = () => {
     console.log("Google login success:", response);
 
     try {
-      const res = await fetch('https://pblcmlabs.duckdns.org/auth/google/callback', {
+      const res = await fetch('https://pblcmlabs.duckdns.org/api/auth/google/callback', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
