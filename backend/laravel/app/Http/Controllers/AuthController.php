@@ -256,29 +256,36 @@ class AuthController extends Controller
 
         $credential = $request->input('credential');
 
-        $client = new Google_Client(['client_id' => env('GOOGLE_CLIENT_ID')]);
+        $client = new Google_Client();
+        $client->setClientId(env('GOOGLE_CLIENT_ID'));
+
+
         $payload = $client->verifyIdToken($credential);
 
         if (!$payload) {
             return response()->json(['message' => 'Invalid Google token'], 401);
         }
 
+        \Log::info('Google token payload', ['payload' => $payload]);
+
         $email = $payload['email'];
         $name = $payload['name'] ?? $email;
 
-        // Find or create user by email
         $user = User::firstOrCreate(
             ['email' => $email],
             [
                 'id' => Str::uuid()->toString(),
                 'name' => $name,
                 'password' => bcrypt(Str::random(32)),
-                'role' => 'employee', // Default role for Google login
+                'role' => 'employee',
                 'is_active' => true,
             ]
         );
 
-        // Create personal access token
+        if (!$user->is_active) {
+            return response()->json(['message' => 'User account inactive'], 403);
+        }
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
@@ -294,6 +301,7 @@ class AuthController extends Controller
             'message' => 'Google login successful',
         ]);
     }
+
 
     public function forgotPassword(Request $request)
     {
