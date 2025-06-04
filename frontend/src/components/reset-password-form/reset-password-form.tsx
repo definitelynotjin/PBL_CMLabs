@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from "react"
+import { useSearchParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { PasswordInput } from "./password-input"
 import { SuccessMessage } from "./success-message"
@@ -6,7 +7,7 @@ import { ErrorMessage } from "./error-message"
 
 interface ResetPasswordFormProps {
   token: string | null | undefined
-  router: any
+  router: ReturnType<typeof useRouter>
 }
 
 export function ResetPasswordForm({ token, router }: ResetPasswordFormProps) {
@@ -17,16 +18,12 @@ export function ResetPasswordForm({ token, router }: ResetPasswordFormProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [email, setEmail] = useState("")
 
+  const searchParams = useSearchParams()
+  const emailFromParams = searchParams.get("email") ?? ""
 
   useEffect(() => {
-  if (router?.query?.email) {
-    setEmail(router.query.email as string)
-  } else {
-    setEmail("")
-  }
-}, [router?.query?.email])
-
-
+    setEmail(emailFromParams)
+  }, [emailFromParams])
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -61,12 +58,11 @@ export function ResetPasswordForm({ token, router }: ResetPasswordFormProps) {
             password: newPassword,
             password_confirmation: confirmPassword,
           }),
-          redirect: "manual", // <-- prevent automatic redirect
+          redirect: "manual",
         })
 
         const contentType = res.headers.get("content-type")
 
-        // Check if response is HTML (probably redirected)
         if (contentType && contentType.includes("text/html")) {
           throw new Error("Received HTML instead of JSON. You may have been redirected.")
         }
@@ -96,13 +92,13 @@ export function ResetPasswordForm({ token, router }: ResetPasswordFormProps) {
         setIsLoading(false)
       }
     },
-    [token, newPassword, confirmPassword, router]
+    [token, newPassword, confirmPassword, router, email]
   )
 
   return (
     <form
       onSubmit={handleSubmit}
-      style={{ pointerEvents: "auto" }} // force pointer events on form
+      style={{ pointerEvents: "auto" }}
       className="flex flex-col gap-6"
     >
       <PasswordInput
@@ -123,8 +119,7 @@ export function ResetPasswordForm({ token, router }: ResetPasswordFormProps) {
       <Button
         className="w-full p-6 bg-gray-600 hover:bg-gray-700 text-white font-medium"
         type="submit"
-        onClick={() => console.log("Button clicked!")}
-        style={{ pointerEvents: "auto" }} // force pointer events on button
+        style={{ pointerEvents: "auto" }}
       >
         {isLoading ? "Resetting..." : "Reset password"}
       </Button>
