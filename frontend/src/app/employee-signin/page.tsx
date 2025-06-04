@@ -1,4 +1,5 @@
-"use client";
+export const dynamic = "force-dynamic"; // 👈 Add this line first
+'use client';
 
 import { GalleryVerticalEnd } from "lucide-react";
 import { EmployeeSignInForm } from "@/components/employee-form/employee-form";
