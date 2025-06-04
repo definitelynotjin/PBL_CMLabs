@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import { GalleryVerticalEnd } from "lucide-react"
 import { Suspense } from "react"
@@ -6,38 +6,27 @@ import { ResetPassword } from "@/components/reset-password-form/reset-password"
 
 export default function ResetPasswordPage() {
   return (
-    <div className="grid min-h-svh lg:grid-cols-2">
-      <style>
-        {`
-          .animated-gradient {
-            background: linear-gradient(
-              45deg,
-              #1E3A5F,
-              #7CA5BF,
-              #BA3C54,
-              #7CA5BF
-            );
-            background-size: 400%;
-            animation: gradientAnimation 15s ease infinite;
-          }
+    <div className="grid min-h-screen lg:grid-cols-2">
+      <style>{`
+        .animated-gradient {
+          background: linear-gradient(
+            45deg,
+            #1E3A5F,
+            #7CA5BF,
+            #BA3C54,
+            #7CA5BF
+          );
+          background-size: 400%;
+          animation: gradientAnimation 15s ease infinite;
+        }
+        @keyframes gradientAnimation {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+        .dark .animated-gradient { filter: brightness(0.75); }
+      `}</style>
 
-          @keyframes gradientAnimation {
-            0% {
-              background-position: 0% 50%;
-            }
-            50% {
-              background-position: 100% 50%;
-            }
-            100% {
-              background-position: 0% 50%;
-            }
-          }
-
-          .dark .animated-gradient {
-            filter: brightness(0.75);
-          }
-        `}
-      </style>
       <div className="flex flex-col gap-4 p-6 md:p-10">
         <div className="flex justify-center gap-2 md:justify-start">
           <a href="#" className="flex items-center gap-2 font-medium">
@@ -50,11 +39,13 @@ export default function ResetPasswordPage() {
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs">
             <Suspense fallback={<div>Loading...</div>}>
+              {/* No props here */}
               <ResetPassword />
             </Suspense>
           </div>
         </div>
       </div>
+
       <div className="relative hidden lg:block h-full animated-gradient">
         <div className="absolute inset-0 flex items-center justify-center">
           <img
