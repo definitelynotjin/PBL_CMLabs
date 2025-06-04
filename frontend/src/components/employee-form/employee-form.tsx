@@ -23,11 +23,19 @@ export function EmployeeSignInForm({
     setError("");
 
     try {
+      if (!employeeId || !password) {
+        throw new Error("Employee ID and password are required");
+      } 
+      await fetch("https://pblcmlabs.duckdns.org/sanctum/csrf-cookie", {
+        credentials: "include",
+      });
+
       const res = await fetch("https://pblcmlabs.duckdns.org/api/auth/login-employee", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({
           employee_id: employeeId,
           password: password,
@@ -42,7 +50,7 @@ export function EmployeeSignInForm({
       const data = await res.json();
 
       // Optionally store token if returned
-      localStorage.setItem("token", data.access_token); // if your backend returns JWT
+      localStorage.setItem("token", data.access_token);
 
       // Redirect to dashboard
       router.push("/dashboard");
