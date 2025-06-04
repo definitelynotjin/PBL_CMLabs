@@ -1,10 +1,15 @@
 'use client'
 
+import { useParams, useRouter } from 'next/navigation'
 import { GalleryVerticalEnd } from "lucide-react"
 import { Suspense } from "react"
 import { ResetPassword } from "@/components/reset-password-form/reset-password"
 
 export default function ResetPasswordPage() {
+  const params = useParams()
+  const router = useRouter()
+  const token = params.token
+
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
       <style>{`
@@ -39,8 +44,7 @@ export default function ResetPasswordPage() {
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs">
             <Suspense fallback={<div>Loading...</div>}>
-              {/* No props here */}
-              <ResetPassword />
+              <ResetPassword token={token} router={router} />
             </Suspense>
           </div>
         </div>
