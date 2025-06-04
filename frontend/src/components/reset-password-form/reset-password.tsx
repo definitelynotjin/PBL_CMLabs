@@ -5,13 +5,14 @@ import { cn } from "@/lib/utils"
 import { ResetPasswordForm } from "./reset-password-form"
 
 interface ResetPasswordProps {
-  className?: string;
+  className?: string
+  token?: string | null
 }
 
-export function ResetPassword({ className }: ResetPasswordProps) {
+export function ResetPassword({ className, token: tokenFromProps }: ResetPasswordProps) {
   const searchParams = useSearchParams()
   const router = useRouter()
-  const token = searchParams.get("token")
+  const token = tokenFromProps ?? searchParams.get("token") // Prefer props if available
 
   return (
     <div className={cn("flex flex-col gap-6", className)}>

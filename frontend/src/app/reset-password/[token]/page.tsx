@@ -2,7 +2,7 @@
 
 import { GalleryVerticalEnd } from "lucide-react"
 import { Suspense } from "react"
-import { ResetPasswordForm } from "@/components/reset-password-form/reset-password-form"
+import { ResetPassword } from "@/components/reset-password-form/reset-password"
 
 export default function ResetPasswordPage({ params, searchParams, router }: any) {
   // Extract token from URL - example if you get it from params or searchParams
@@ -42,7 +42,7 @@ export default function ResetPasswordPage({ params, searchParams, router }: any)
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs">
             <Suspense fallback={<div>Loading...</div>}>
-              <ResetPasswordForm token={token} router={router} />
+              <ResetPassword token={token} />
             </Suspense>
           </div>
         </div>
