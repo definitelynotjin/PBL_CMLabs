@@ -6,13 +6,38 @@ use App\Models\Employee;
 use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Routing\Controller;
-
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 
 
 
 class EmployeeController extends Controller
 {
+
+    public function loginWithEmployeeId(Request $request)
+    {
+        $request->validate([
+            'employee_id' => 'required|string',
+            'password' => 'required|string',
+        ]);
+
+        $employee = Employee::with('user')->where('id', $request->employee_id)->first();
+
+        if (!$employee || !$employee->user || !Hash::check($request->password, $employee->user->password)) {
+            return response()->json(['message' => 'Invalid employee ID or password'], 401);
+        }
+
+        $token = $employee->user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+            'user' => $employee->user,
+            'employee' => $employee,
+        ]);
+    }
+
     public function index(Request $request)
     {
         $search = $request->search;
