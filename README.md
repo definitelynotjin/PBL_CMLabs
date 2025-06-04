@@ -1,6 +1,6 @@
 # ☁️ Project Overview
 
-This repository contains the codes and shenanigans for our PBL (Project-Based Learning) project in collabrotion with CMLabs Dev. The project utilizes key components of various subjects in our semester, which includes Cloud Computing, Framework Based Programming, Big Data, and Software Analysis
+This repository contains the codes and shenanigans for our PBL (Project-Based Learning) project in collaboration with CMLabs Dev. The project utilizes key components of various subjects in our semester, which includes Cloud Computing, Framework Based Programming, and Software Analysis
 
 
 ## 📅 Timeline and To-Do
