@@ -92,7 +92,7 @@ export default function EmployeeDatabasePage() {
             <Settings className="w-5 h-5 text-gray-600 cursor-pointer" />
           </Link>
         </div>
-      </aside>
+      </a>
 
       {/* Main content */}
       <div className="flex-1 p-4 md:p-6 space-y-6">

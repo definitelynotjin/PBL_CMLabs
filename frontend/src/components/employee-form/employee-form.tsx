@@ -53,7 +53,7 @@ export function EmployeeSignInForm({
       localStorage.setItem("token", data.access_token);
 
       // Redirect to dashboard
-      router.push("/dashboard");
+      router.push("/dashboard-user");
     } catch (err: any) {
       setError(err.message || "Something went wrong");
     }

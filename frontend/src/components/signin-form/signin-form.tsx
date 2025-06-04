@@ -45,7 +45,7 @@ export function SignInForm({
       }
 
       console.log("Login successful:", data);
-      router.push("/dashboard");
+      router.push("/dashboard-user");
     } catch (err: any) {
       setError(err.message || "An error occurred during sign-in");
     }

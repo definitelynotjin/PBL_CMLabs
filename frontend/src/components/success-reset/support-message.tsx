@@ -4,7 +4,7 @@ export function SupportMessage() {
       <p className="text-muted-foreground">
         You can log in with your new password. If you encounter any issues,
         <br />
-        please contact support!
+        Please contact support!
       </p>
     </div>
   )
