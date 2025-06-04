@@ -77,7 +77,11 @@ export function ResetPasswordForm({ token, router }: ResetPasswordFormProps) {
   )
 
   return (
-    <form onSubmit={handleSubmit} className="grid gap-6">
+    <form
+      onSubmit={handleSubmit}
+      style={{ pointerEvents: "auto" }} // force pointer events on form
+      className="flex flex-col gap-6"
+    >
       <PasswordInput
         label="New Password"
         value={newPassword}
@@ -88,7 +92,6 @@ export function ResetPasswordForm({ token, router }: ResetPasswordFormProps) {
         value={confirmPassword}
         onChange={(e) => setConfirmPassword(e.target.value)}
       />
-      {/* Live feedback for password mismatch */}
       {confirmPassword && confirmPassword !== newPassword && (
         <p className="text-red-500 text-sm">Passwords do not match</p>
       )}
@@ -97,7 +100,8 @@ export function ResetPasswordForm({ token, router }: ResetPasswordFormProps) {
       <Button
         className="w-full p-6 bg-gray-600 hover:bg-gray-700 text-white font-medium"
         type="submit"
-        // disabled={isLoading || !token}
+        onClick={() => console.log("Button clicked!")}
+        style={{ pointerEvents: "auto" }} // force pointer events on button
       >
         {isLoading ? "Resetting..." : "Reset password"}
       </Button>

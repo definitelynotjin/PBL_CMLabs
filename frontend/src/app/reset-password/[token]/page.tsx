@@ -1,14 +1,12 @@
 'use client'
 
-import { useParams, useRouter } from 'next/navigation'
 import { GalleryVerticalEnd } from "lucide-react"
 import { Suspense } from "react"
-import { ResetPassword } from "@/components/reset-password-form/reset-password"
+import { ResetPasswordForm } from "@/components/reset-password-form/reset-password-form"
 
-export default function ResetPasswordPage() {
-  const params = useParams()
-  const router = useRouter()
-  const token = params.token
+export default function ResetPasswordPage({ params, searchParams, router }: any) {
+  // Extract token from URL - example if you get it from params or searchParams
+  const token = params?.token || null
 
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
@@ -32,7 +30,7 @@ export default function ResetPasswordPage() {
         .dark .animated-gradient { filter: brightness(0.75); }
       `}</style>
 
-      <div className="flex flex-col gap-4 p-6 md:p-10">
+      <div className="flex flex-col gap-4 p-6 md:p-10" style={{ pointerEvents: "auto", position: "relative", zIndex: 10 }}>
         <div className="flex justify-center gap-2 md:justify-start">
           <a href="#" className="flex items-center gap-2 font-medium">
             <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
@@ -44,7 +42,7 @@ export default function ResetPasswordPage() {
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs">
             <Suspense fallback={<div>Loading...</div>}>
-              <ResetPassword token={token} router={router} />
+              <ResetPasswordForm token={token} router={router} />
             </Suspense>
           </div>
         </div>
