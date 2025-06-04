@@ -40,7 +40,7 @@ export function ResetPasswordForm({ token, router }: ResetPasswordFormProps) {
       setIsLoading(true)
 
       try {
-        const res = await fetch("http://20.189.126.184:8000/api/auth/reset-password", {
+        const res = await fetch("https://pblcmlabs.duckdns.org/api/auth/reset-password", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
