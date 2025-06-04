@@ -16,13 +16,6 @@ export function EmployeeSignInForm({
       <EmployeeSignInHeader />
       <div className="grid gap-6">
         <EmployeeInput
-          id="companyUsername"
-          label="Company Username"
-          type="text"
-          placeholder="Enter your Company Username"
-          required
-        />
-        <EmployeeInput
           id="idEmployee"
           label="ID Employee"
           type="text"
