@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { PasswordInput } from "./password-input"
 import { SuccessMessage } from "./success-message"
@@ -15,6 +15,13 @@ export function ResetPasswordForm({ token, router }: ResetPasswordFormProps) {
   const [error, setError] = useState("")
   const [success, setSuccess] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [email, setEmail] = useState("")
+
+
+  useEffect(() => {
+  setEmail(router.query.email as string || "")
+}, [router.query.email])
+
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -45,10 +52,19 @@ export function ResetPasswordForm({ token, router }: ResetPasswordFormProps) {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             token,
+            email,
             password: newPassword,
             password_confirmation: confirmPassword,
           }),
+          redirect: "manual", // <-- prevent automatic redirect
         })
+
+        const contentType = res.headers.get("content-type")
+
+        // Check if response is HTML (probably redirected)
+        if (contentType && contentType.includes("text/html")) {
+          throw new Error("Received HTML instead of JSON. You may have been redirected.")
+        }
 
         const data = await res.json()
 
@@ -67,7 +83,9 @@ export function ResetPasswordForm({ token, router }: ResetPasswordFormProps) {
 
         setSuccess("Password reset successfully. Redirecting to login...")
         setTimeout(() => router.push("/signin"), 2000)
+
       } catch (err: any) {
+        console.error(err)
         setError(err.message || "Something went wrong. Please try again.")
       } finally {
         setIsLoading(false)
