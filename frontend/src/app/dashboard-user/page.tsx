@@ -1,4 +1,5 @@
-import Sidebar from "@/components/sidebar";
+
+import SidebarUser from "@/components/sidebar-user";
 import { DashboardHeader } from "@/components/dashboard-user/header";
 import DateRangePicker from "@/components/dashboard-user/daterange-picker";
 import SummaryCard from "@/components/dashboard-user/summary-card";
@@ -10,7 +11,7 @@ export default function DashboardUserPage() {
   return (
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
-      <Sidebar />
+      <SidebarUser />
 
       {/* Main Content */}
       <div className="flex flex-col flex-1 p-6 space-y-6">
