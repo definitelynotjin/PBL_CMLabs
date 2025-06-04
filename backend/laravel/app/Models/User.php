@@ -61,7 +61,7 @@ class User extends Authenticatable
     // Check if user is employee
     public function isEmployee()
     {
-        return $this->role === 'employee';
+        return $this->hasOne(Employee::class, 'user_id', 'id');
     }
 
     // Get display identifier (email or phone)

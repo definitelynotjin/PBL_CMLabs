@@ -22,21 +22,28 @@ class EmployeeController extends Controller
             'password' => 'required|string',
         ]);
 
-        $employee = Employee::with('user')->where('id', $request->employee_id)->first();
+        // 1. Find user by employee_id in users table
+        $user = User::where('employee_id', $request->employee_id)->first();
 
-        if (!$employee || !$employee->user || !Hash::check($request->password, $employee->user->password)) {
+        // 2. Validate password & user existence
+        if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(['message' => 'Invalid employee ID or password'], 401);
         }
 
-        $token = $employee->user->createToken('auth_token')->plainTextToken;
+        // 3. Load employee related to this user
+        $employee = $user->employee; // assuming User model has `employee()` relation
+
+        // 4. Generate token (if using Sanctum/Passport)
+        $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'access_token' => $token,
             'token_type' => 'Bearer',
-            'user' => $employee->user,
+            'user' => $user,
             'employee' => $employee,
         ]);
     }
+
 
     public function index(Request $request)
     {

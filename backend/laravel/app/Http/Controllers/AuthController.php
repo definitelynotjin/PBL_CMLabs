@@ -23,10 +23,8 @@ class AuthController extends Controller
             'password' => 'required|string|min:8',
             'phone' => 'nullable|string|unique:users,phone',
             'role' => 'nullable|in:admin,employee',
-            'employee_id' => 'nullable|string|unique:users,employee_id',
         ]);
 
-        // Custom validation: must have either email or phone
         if (empty($request->email) && empty($request->phone)) {
             return response()->json([
                 'message' => 'Either email or phone number is required'
@@ -39,11 +37,15 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'phone' => $request->phone,
-            'role' => $request->role ?? 'employee', // Default to 'employee' if not provided
-            'employee_id' => $request->employee_id,
+            'role' => $request->role ?? 'employee',
         ]);
 
-        // Create a personal access token
+        // Only assign employee_id if role is employee
+        if ($user->role === 'employee') {
+            $user->employee_id = $this->generateUniqueEmployeeId();
+            $user->save();
+        }
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
@@ -60,6 +62,23 @@ class AuthController extends Controller
         ], 201);
     }
 
+    private function generateUniqueEmployeeId()
+    {
+        // Example: Find last employee_id and increment
+        $lastUser = User::whereNotNull('employee_id')
+            ->orderBy('employee_id', 'desc')
+            ->first();
+
+        if (!$lastUser || !$lastUser->employee_id) {
+            return 'EMP001';
+        }
+
+        // Extract number from employee_id string like EMP001
+        $lastNumber = (int) filter_var($lastUser->employee_id, FILTER_SANITIZE_NUMBER_INT);
+        $nextNumber = $lastNumber + 1;
+
+        return 'EMP' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+    }
     public function login(Request $request)
     {
         $request->validate([
