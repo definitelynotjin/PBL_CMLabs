@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";  // use next/navigation for app router
 import { Button } from "@/components/ui/button";
 import EmployeeSignInHeader from "./employee-header";
 import EmployeeInput from "./employee-input";
@@ -16,7 +16,7 @@ export function EmployeeSignInForm({
   const [employeeId, setEmployeeId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const router = useRouter();
+  const router = useRouter();  // Correct place for useRouter hook
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,7 +25,7 @@ export function EmployeeSignInForm({
     try {
       if (!employeeId || !password) {
         throw new Error("Employee ID and password are required");
-      } 
+      }
       await fetch("https://pblcmlabs.duckdns.org/sanctum/csrf-cookie", {
         credentials: "include",
       });
@@ -83,7 +83,10 @@ export function EmployeeSignInForm({
         />
         <EmployeeCheckbox />
         {error && <p className="text-red-500 text-sm">{error}</p>}
-        <Button type="submit" className="w-full p-6 bg-gray-500 hover:bg-gray-600 text-white uppercase">
+        <Button
+          type="submit"
+          className="w-full p-6 bg-gray-500 hover:bg-gray-600 text-white uppercase"
+        >
           Sign In
         </Button>
         <Button

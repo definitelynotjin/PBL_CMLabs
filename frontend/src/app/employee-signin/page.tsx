@@ -1,4 +1,3 @@
-export const dynamic = "force-dynamic"; // 👈 Add this line first
 'use client';
 
 import { GalleryVerticalEnd } from "lucide-react";
