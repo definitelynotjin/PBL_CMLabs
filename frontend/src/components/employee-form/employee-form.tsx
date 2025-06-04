@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { cn } from "@/lib/utils";
 import { useState } from "react";
@@ -23,7 +23,7 @@ export function EmployeeSignInForm({
     setError("");
 
     try {
-      const res = await fetch("`https://pblcmlabs.duckdns.org/api/auth/login-employee", {
+      const res = await fetch("https://pblcmlabs.duckdns.org/api/auth/login-employee", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -42,7 +42,7 @@ export function EmployeeSignInForm({
       const data = await res.json();
 
       // Optionally store token if returned
-      localStorage.setItem("token", data.token); // if your backend returns JWT
+      localStorage.setItem("token", data.access_token); // if your backend returns JWT
 
       // Redirect to dashboard
       router.push("/dashboard");
