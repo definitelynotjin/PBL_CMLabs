@@ -23,7 +23,7 @@ export function EmployeeSignInForm({
     setError("");
 
     try {
-      const res = await fetch("/api/auth/employee-login", {
+      const res = await fetch("/api/auth/login-employee", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
