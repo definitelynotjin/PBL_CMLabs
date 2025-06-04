@@ -97,7 +97,7 @@ export function ResetPasswordForm({ token, router }: ResetPasswordFormProps) {
       <Button
         className="w-full p-6 bg-gray-600 hover:bg-gray-700 text-white font-medium"
         type="submit"
-        disabled={isLoading || !token}
+        // disabled={isLoading || !token}
       >
         {isLoading ? "Resetting..." : "Reset password"}
       </Button>
