@@ -19,8 +19,13 @@ export function ResetPasswordForm({ token, router }: ResetPasswordFormProps) {
 
 
   useEffect(() => {
-  setEmail(router.query.email as string || "")
-}, [router.query.email])
+  if (router?.query?.email) {
+    setEmail(router.query.email as string)
+  } else {
+    setEmail("")
+  }
+}, [router?.query?.email])
+
 
 
   const handleSubmit = useCallback(
