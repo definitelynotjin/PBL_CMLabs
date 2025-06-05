@@ -45,10 +45,14 @@ export function DashboardHeader() {
     };
   }, [isDropdownOpen]);
 
+  const handleLogout = () => {
+    // Example logout: clear token & reload or redirect
+    localStorage.removeItem("token");
+    window.location.href = "/signin";
+  };
+
   return (
     <header className="flex items-center justify-between px-6 py-4 border-b bg-white relative">
-
-      
       {/* Left - Title */}
       <h1 className="text-xl font-bold">Dashboard</h1>
 
@@ -72,10 +76,11 @@ export function DashboardHeader() {
 
         {/* Avatar and Dropdown Toggle */}
         <button
-          className="flex items-center space-x-2"
+          className="flex items-center space-x-2 focus:outline-none"
           onClick={() => setDropdownOpen(!isDropdownOpen)}
           aria-expanded={isDropdownOpen}
           aria-haspopup="true"
+          type="button"
         >
           <div className="w-8 h-8 rounded-full bg-gray-400" />
           <div className="text-sm text-right">
@@ -87,12 +92,18 @@ export function DashboardHeader() {
 
         {/* Dropdown Menu */}
         {isDropdownOpen && (
-          <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 z-50 p-4">
-            <div className="flex flex-col items-center space-y-2">
+          <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-md shadow-lg border border-gray-200 z-50 p-4">
+            <div className="flex flex-col items-center space-y-2 mb-4">
               <div className="w-20 h-20 rounded-full bg-gray-400" />
               <div className="text-lg font-semibold">{user?.name}</div>
               <div className="text-sm text-gray-600">{user?.employee_id}</div>
             </div>
+            <button
+              onClick={handleLogout}
+              className="w-full px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-md text-center font-semibold"
+            >
+              Logout
+            </button>
           </div>
         )}
       </div>
