@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Database\Eloquent\Model;
 
-
 class CheckClockSettingTime extends Model
 {
     use HasFactory, SoftDeletes;
@@ -18,8 +17,8 @@ class CheckClockSettingTime extends Model
     protected $fillable = [
         'id',
         'ck_settings_id',
-        'day',
-        'clock_in',
+        'day',           // e.g. "Monday", "Tuesday", etc.
+        'clock_in',      // time only
         'clock_out',
         'break_start',
         'break_end',
@@ -29,15 +28,15 @@ class CheckClockSettingTime extends Model
     ];
 
     protected $casts = [
-        'day' => 'date',
-        'clock_in' => 'datetime',
-        'clock_out' => 'datetime',
-        'break_start' => 'datetime',
-        'break_end' => 'datetime',
+        'clock_in' => 'string',
+        'clock_out' => 'string',
+        'break_start' => 'string',
+        'break_end' => 'string',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
     ];
+
 
     protected static function boot()
     {
@@ -49,7 +48,6 @@ class CheckClockSettingTime extends Model
         });
     }
 
-    // Relationship: CheckClockSettingTime belongs to a CheckClockSetting
     public function checkClockSetting()
     {
         return $this->belongsTo(CheckClockSetting::class, 'ck_settings_id');

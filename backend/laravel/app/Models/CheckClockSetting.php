@@ -18,6 +18,9 @@ class CheckClockSetting extends Model
         'id',
         'name',
         'type',
+        'latitude',
+        'longitude',
+        'radius',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -25,6 +28,9 @@ class CheckClockSetting extends Model
 
     protected $casts = [
         'type' => 'integer', // 0: WFO, 1: WFA, 2: Hybrid
+        'latitude' => 'float',
+        'longitude' => 'float',
+        'radius' => 'integer',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
@@ -33,6 +39,7 @@ class CheckClockSetting extends Model
     protected static function boot()
     {
         parent::boot();
+
         static::creating(function ($model) {
             if (empty($model->id)) {
                 $model->id = Uuid::uuid4()->toString();

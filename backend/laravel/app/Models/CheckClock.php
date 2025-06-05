@@ -17,12 +17,18 @@ class CheckClock extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'id', 'user_id', 'check_clock_type', 'check_clock_time', 'created_at', 'updated_at', 'deleted_at',
+        'id',
+        'user_id',
+        'check_clock_type',
+        'check_clock_time',
+        'created_at',
+        'updated_at',
+        'deleted_at',
     ];
 
     protected $casts = [
-        'check_clock_type' => 'integer', // 0: In, 1: Out
-        'check_clock_time' => 'datetime',
+        'check_clock_type' => 'integer', // 1: In, 2: Out
+        'check_clock_time' => 'string',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
