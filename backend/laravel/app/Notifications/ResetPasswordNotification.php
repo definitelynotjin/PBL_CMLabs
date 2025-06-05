@@ -31,6 +31,8 @@ class ResetPasswordNotification extends Notification
     }
 
     /**
+     *
+
      * Get the mail representation of the notification.
      */
     public function toMail(object $notifiable): MailMessage
