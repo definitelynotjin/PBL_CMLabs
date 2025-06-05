@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
@@ -19,7 +19,7 @@ export function DashboardHeader() {
         });
 
         const data = await response.json();
-        setUser(data);
+        setUser(data.user);
       } catch (error) {
         console.error("Failed to fetch user data:", error);
       }
@@ -54,11 +54,11 @@ export function DashboardHeader() {
         {/* Username and Role */}
         <div className="text-sm text-right">
           <div className="font-medium">
-            {user?.employee
-              ? `${user.employee.first_name} ${user.employee.last_name}`
-              : "Loading..."}
+            {user?.name || "Loading..."}
           </div>
-          <div className="text-xs text-gray-500">{user?.employee_id || ""}</div>
+          <div className="text-xs text-gray-500">
+            {user?.employee_id || ""}
+          </div>
         </div>
 
         {/* Dropdown Icon */}
