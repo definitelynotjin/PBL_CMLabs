@@ -100,10 +100,12 @@ export function DashboardHeader() {
             </div>
             <button
               onClick={handleLogout}
-              className="w-full px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-md text-center font-semibold"
+              className="w-full px-4 py-2 rounded-md text-white font-semibold text-center hover:brightness-90 transition"
+              style={{ backgroundColor: '#C11106' }}
             >
               Logout
             </button>
+
           </div>
         )}
       </div>

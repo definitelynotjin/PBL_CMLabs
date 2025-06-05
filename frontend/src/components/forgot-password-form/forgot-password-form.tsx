@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";  // <-- Import this
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import ForgotPasswordHeader from "./forgot-password-header";
@@ -16,6 +17,8 @@ export function ForgotPassword({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  const router = useRouter();  // <-- Initialize router
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,6 +47,8 @@ export function ForgotPassword({
       } else {
         setSuccess(data.message || "If that email exists, a reset link has been sent.");
         setEmail(""); // Clear email on success
+
+        router.push(`/check-email?email=${encodeURIComponent(email)}`); 
       }
     } catch (error) {
       console.error(error);
