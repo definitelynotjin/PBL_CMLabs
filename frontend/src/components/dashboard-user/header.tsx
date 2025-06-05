@@ -12,7 +12,7 @@ export function DashboardHeader() {
       try {
         const token = localStorage.getItem("token"); // or wherever you store it
 
-        const response = await fetch("http://your-backend.test/api/me", {
+        const response = await fetch("https://pblcmlabs.duckdns.org/api/me", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
