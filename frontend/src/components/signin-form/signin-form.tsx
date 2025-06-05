@@ -44,12 +44,19 @@ export function SignInForm({
         localStorage.setItem("rememberedIdentifier", identifier);
       }
 
-      console.log("Login successful:", data);
-      router.push("/dashboard-user");
+      if (data.user.role === "admin") {
+        router.push("/dashboard");
+      } else if (data.user.role === "employee") {
+        router.push("/dashboard-user");
+      } else {
+        setError("Unknown role");
+      }
+
     } catch (err: any) {
       setError(err.message || "An error occurred during sign-in");
     }
   };
+
 
   return (
     <form className={cn("flex flex-col gap-6", className)} onSubmit={handleSubmit} {...props}>
@@ -64,7 +71,7 @@ export function SignInForm({
         </Button>
         <GoogleSignIn />
         <Button type="button" variant="outline" className="w-full p-6 uppercase"
-        onClick={() => { router.push("/employee-signin");}}
+          onClick={() => { router.push("/employee-signin"); }}
         >
           Sign In with ID Employee
         </Button>

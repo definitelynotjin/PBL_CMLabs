@@ -85,7 +85,7 @@ export function DashboardHeader() {
           <div className="w-8 h-8 rounded-full bg-gray-400" />
           <div className="text-sm text-right">
             <div className="font-medium">{user?.name || "Loading..."}</div>
-            <div className="text-xs text-gray-500">{user?.employee_id || ""}</div>
+            <div className="text-xs text-gray-500">{user?.role === "admin" ? "ADM" : user?.employee_id || ""}</div>
           </div>
           <ChevronDown className="w-4 h-4 text-gray-500" />
         </button>
@@ -96,7 +96,7 @@ export function DashboardHeader() {
             <div className="flex flex-col items-center space-y-2 mb-4">
               <div className="w-20 h-20 rounded-full bg-gray-400" />
               <div className="text-lg font-semibold">{user?.name}</div>
-              <div className="text-sm text-gray-600">{user?.employee_id}</div>
+              <div className="text-sm text-gray-600">{user?.role === "admin" ? "ADM" : user?.employee_id}</div>
             </div>
             <button
               onClick={handleLogout}

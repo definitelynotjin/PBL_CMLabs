@@ -170,19 +170,25 @@ class AuthController extends Controller
     public function loginEmployee(Request $request)
     {
         $request->validate([
-            'employee_id' => 'required|string',
+            'login' => 'required|string', // can be email or employee_id
             'password' => 'required|string',
         ]);
 
-        $user = User::where('employee_id', $request->employee_id)
-            ->where('role', 'employee')
+        $login = $request->input('login');
+        $password = $request->input('password');
+
+        // Find user by email OR employee_id with role 'employee'
+        $user = User::where('role', 'employee')
+            ->where(function ($query) use ($login) {
+                $query->where('email', $login)
+                    ->orWhere('employee_id', $login);
+            })
             ->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (!$user || !Hash::check($password, $user->password)) {
             return response()->json(['message' => 'Invalid employee credentials'], 401);
         }
 
-        // Create a personal access token
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
@@ -197,6 +203,7 @@ class AuthController extends Controller
             ]
         ]);
     }
+
 
     public function logout(Request $request)
     {

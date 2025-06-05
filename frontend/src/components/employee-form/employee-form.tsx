@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { useRouter } from "next/navigation";  // use next/navigation for app router
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import EmployeeSignInHeader from "./employee-header";
 import EmployeeInput from "./employee-input";
@@ -13,18 +13,18 @@ export function EmployeeSignInForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
-  const [employeeId, setEmployeeId] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const router = useRouter();  // Correct place for useRouter hook
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
 
     try {
-      if (!employeeId || !password) {
-        throw new Error("Employee ID and password are required");
+      if (!identifier || !password) {
+        throw new Error("Employee ID or Email and password are required");
       }
       await fetch("https://pblcmlabs.duckdns.org/sanctum/csrf-cookie", {
         credentials: "include",
@@ -37,7 +37,7 @@ export function EmployeeSignInForm({
         },
         credentials: "include",
         body: JSON.stringify({
-          employee_id: employeeId,
+          login: identifier,
           password: password,
         }),
       });
@@ -49,11 +49,9 @@ export function EmployeeSignInForm({
 
       const data = await res.json();
 
-      // Optionally store token if returned
       localStorage.setItem("token", data.access_token);
 
-      // Redirect to dashboard
-      router.push("/dashboard-user");
+      router.push("/dashboard-user"); // Change if employee dashboard route differs
     } catch (err: any) {
       setError(err.message || "Something went wrong");
     }
@@ -64,12 +62,12 @@ export function EmployeeSignInForm({
       <EmployeeSignInHeader />
       <div className="grid gap-6">
         <EmployeeInput
-          id="employeeId"
-          label="Employee ID"
+          id="identifier"
+          label="Employee ID or Email"
           type="text"
-          placeholder="Enter your Employee ID"
-          value={employeeId}
-          onChange={(e) => setEmployeeId(e.target.value)}
+          placeholder="Enter your Employee ID or Email"
+          value={identifier}
+          onChange={(e) => setIdentifier(e.target.value)}
           required
         />
         <EmployeeInput
