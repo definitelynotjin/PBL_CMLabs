@@ -20,3 +20,6 @@ Route::get('/employees/{employee}', [EmployeeController::class, 'show']);
 Route::put('/employees/{employee}', [EmployeeController::class, 'update']);
 Route::delete('/employees/{employee}', [EmployeeController::class, 'destroy']);
 
+Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
+    return $request->user()->load('employee'); // Include relationship
+});

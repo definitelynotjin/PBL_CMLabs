@@ -1,8 +1,33 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Bell, ChevronDown, Search } from "lucide-react";
-import Image from "next/image";
 
 export function DashboardHeader() {
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const token = localStorage.getItem("token"); // or wherever you store it
+
+        const response = await fetch("http://your-backend.test/api/me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await response.json();
+        setUser(data);
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
   return (
     <header className="flex items-center justify-between px-6 py-4 border-b bg-white">
       {/* Left - Title */}
@@ -12,10 +37,7 @@ export function DashboardHeader() {
       <div className="flex-1 mx-6 max-w-xl">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-          <Input
-            placeholder="Search"
-            className="pl-10 rounded-md border-gray-300"
-          />
+          <Input placeholder="Search" className="pl-10 rounded-md border-gray-300" />
         </div>
       </div>
 
@@ -31,8 +53,12 @@ export function DashboardHeader() {
 
         {/* Username and Role */}
         <div className="text-sm text-right">
-          <div className="font-medium">username</div>
-          <div className="text-xs text-gray-500">roles user</div>
+          <div className="font-medium">
+            {user?.employee
+              ? `${user.employee.first_name} ${user.employee.last_name}`
+              : "Loading..."}
+          </div>
+          <div className="text-xs text-gray-500">{user?.employee_id || ""}</div>
         </div>
 
         {/* Dropdown Icon */}
