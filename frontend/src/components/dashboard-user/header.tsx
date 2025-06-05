@@ -11,7 +11,7 @@ export function DashboardHeader() {
     const fetchUser = async () => {
       try {
         const token = localStorage.getItem("token"); // or wherever you store it
-
+        
         const response = await fetch("https://pblcmlabs.duckdns.org/api/me", {
           headers: {
             Authorization: `Bearer ${token}`,
