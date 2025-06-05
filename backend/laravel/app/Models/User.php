@@ -61,6 +61,11 @@ class User extends Authenticatable
     // Check if user is employee
     public function isEmployee()
     {
+        return $this->employee()->exists();
+    }
+    
+    public function employee()
+    {
         return $this->hasOne(Employee::class, 'user_id', 'id');
     }
 
