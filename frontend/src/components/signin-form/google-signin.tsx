@@ -18,7 +18,7 @@ const GoogleSignIn = () => {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              credential: credentialResponse.credential, // ✅ this is the id_token
+              credential: credentialResponse.credential,
             }),
           });
 
@@ -26,7 +26,7 @@ const GoogleSignIn = () => {
 
           if (res.ok) {
             localStorage.setItem("token", data.token);
-            router.push("/dashboard");
+            router.push("/dashboard-user");
           } else {
             alert(data.message || "Google login failed");
           }
