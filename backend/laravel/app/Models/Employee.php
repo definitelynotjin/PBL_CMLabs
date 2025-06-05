@@ -58,4 +58,9 @@ class Employee extends Model
     {
         return $this->belongsTo(CheckClockSetting::class, 'ck_settings_id', 'id');
     }
+
+    public function getFullNameAttribute()
+    {
+        return "{$this->first_name} {$this->last_name}";
+    }
 }
