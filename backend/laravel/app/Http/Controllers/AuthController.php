@@ -106,79 +106,19 @@ class AuthController extends Controller
         ]);
     }
 
-    // Keep your original email-only login as backup (optional)
-    public function loginWithEmail(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-        ]);
-
-        $user = User::where('email', $request->email)->first();
-
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(['message' => 'Invalid credentials'], 401);
-        }
-
-        // Create a personal access token
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response()->json([
-            'token' => $token,
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'phone' => $user->phone,
-                'role' => $user->role,
-                'employee_id' => $user->employee_id,
-            ]
-        ]);
-    }
-
-    // New phone login method
-    public function loginWithPhone(Request $request)
-    {
-        $request->validate([
-            'phone' => 'required|string',
-            'password' => 'required|string',
-        ]);
-
-        $user = User::where('phone', $request->phone)->first();
-
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(['message' => 'Invalid credentials'], 401);
-        }
-
-        // Create a personal access token
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response()->json([
-            'token' => $token,
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'phone' => $user->phone,
-                'role' => $user->role,
-                'employee_id' => $user->employee_id,
-            ]
-        ]);
-    }
-
-    // Employee login with Employee ID
+    // Employee login with Employee ID or email
     public function loginEmployee(Request $request)
     {
         $request->validate([
-            'login' => 'required|string', // can be email or employee_id
+            'login' => 'required|string', // email or employee_id
             'password' => 'required|string',
         ]);
 
         $login = $request->input('login');
         $password = $request->input('password');
 
-        // Find user by email OR employee_id with role 'employee'
-        $user = User::where('role', 'employee')
+        $user = User::with('employee') // eager load the related employee data
+            ->where('role', 'employee')
             ->where(function ($query) use ($login) {
                 $query->where('email', $login)
                     ->orWhere('employee_id', $login);
@@ -193,16 +133,11 @@ class AuthController extends Controller
 
         return response()->json([
             'token' => $token,
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'phone' => $user->phone,
-                'role' => $user->role,
-                'employee_id' => $user->employee_id,
-            ]
+            'user' => $user,
+            'employee' => $user->employee,
         ]);
     }
+
 
 
     public function logout(Request $request)

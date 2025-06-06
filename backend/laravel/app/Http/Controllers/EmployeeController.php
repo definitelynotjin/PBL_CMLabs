@@ -15,36 +15,6 @@ use Illuminate\Support\Facades\Hash;
 class EmployeeController extends Controller
 {
 
-    public function loginWithEmployeeId(Request $request)
-    {
-        $request->validate([
-            'employee_id' => 'required|string',
-            'password' => 'required|string',
-        ]);
-
-        // 1. Find user by employee_id in users table
-        $user = User::where('employee_id', $request->employee_id)->first();
-
-        // 2. Validate password & user existence
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(['message' => 'Invalid employee ID or password'], 401);
-        }
-
-        // 3. Load employee related to this user
-        $employee = $user->employee; // assuming User model has `employee()` relation
-
-        // 4. Generate token (if using Sanctum/Passport)
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'Bearer',
-            'user' => $user,
-            'employee' => $employee,
-        ]);
-    }
-
-
     public function index(Request $request)
     {
         $search = $request->search;
