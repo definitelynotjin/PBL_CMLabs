@@ -13,7 +13,8 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
 
-Route::post('/auth/login-employee', [EmployeeController::class, 'loginWithEmployeeId']);
+Route::post('/auth/login-employee', [AuthController::class, 'loginWithEmployee']);
+
 Route::get('/employees', [EmployeeController::class, 'index']);
 Route::post('/employees', [EmployeeController::class, 'store']);
 Route::get('/employees/{employee}', [EmployeeController::class, 'show']);
