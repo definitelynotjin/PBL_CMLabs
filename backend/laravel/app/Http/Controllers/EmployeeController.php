@@ -104,16 +104,19 @@ class EmployeeController extends Controller
     }
 
     public function candidates()
-{
+    {
+        // Get all existing employee IDs from employees table
+        $existingEmployeeIds = Employee::pluck('id')->toArray();
 
-    // Get employee_ids from users who *do not* have a corresponding employee record yet.
-    $assignedEmployeeIds = \DB::table('employees')->pluck('employee_id')->toArray();
+        // Get users with role 'employee' whose employee_id is NOT in existing employee IDs
+        $candidates = User::where('role', 'employee')
+            ->whereNotIn('employee_id', $existingEmployeeIds)
+            ->select('id', 'name', 'email', 'employee_id')
+            ->get();
 
-    $candidates = \DB::table('users')
-        ->whereNotIn('employee_id', $assignedEmployeeIds)
-        ->select('employee_id', 'name') // or whatever columns you want to show
-        ->get();
-
-    return response()->json($candidates);
-}
+        return response()->json([
+            'success' => true,
+            'data' => $candidates
+        ]);
+    }
 }
