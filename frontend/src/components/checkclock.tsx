@@ -48,20 +48,11 @@ export default function CheckclockUser() {
       <aside className="w-16 flex flex-col justify-between items-center bg-gray-100 py-4">
         <div className="flex flex-col items-center gap-6">
           <Image src="/HRIS.png" alt="Logo" width={32} height={32} />
-          <Link href="/dashboard">
+          <Link href="/dashboard-user">
             <Grid className="w-5 h-5 text-gray-600 cursor-pointer" />
-          </Link>
-          <Link href="/employee-database">
-            <Users className="w-5 h-5 text-gray-600 cursor-pointer" />
           </Link>
           <Link href="/checkclock">
             <Clock className="w-5 h-5 text-gray-600 cursor-pointer" />
-          </Link>
-          <Link href="/pricing-package">
-            <Calendar className="w-5 h-5 text-gray-600 cursor-pointer" />
-          </Link>
-          <Link href="/order-summary">
-            <MessageCircle className="w-5 h-5 text-gray-600 cursor-pointer" />
           </Link>
         </div>
         <div className="flex flex-col items-center gap-4 mb-4">
