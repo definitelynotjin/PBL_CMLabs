@@ -40,6 +40,8 @@ export function SignInForm({
 
       const data = await response.json();
 
+      localStorage.setItem("token", data.token);
+      
       if (remember) {
         localStorage.setItem("rememberedIdentifier", identifier);
       }

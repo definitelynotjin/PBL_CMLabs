@@ -37,12 +37,20 @@ export function EmployeeSignInForm({
         },
         credentials: "include",
         body: JSON.stringify({
-          login: identifier,
-          password: password,
+          login: identifier, password
         }),
       });
 
+      if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.message || "Invalid credentials");
+    }
+
       const data = await res.json();
+
+      if (!data.token) {
+        throw new Error("No token received from server");
+      }
 
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
