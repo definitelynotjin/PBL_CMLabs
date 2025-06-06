@@ -37,32 +37,32 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
     }
   };
 
-const [userLocation, setUserLocation] = React.useState<LatLngTuple | null>(null);
-const [address, setAddress] = React.useState("");
+  const [userLocation, setUserLocation] = React.useState<LatLngTuple | null>(null);
+  const [address, setAddress] = React.useState("");
 
-React.useEffect(() => {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-        setUserLocation([lat, lng]);
+  React.useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          setUserLocation([lat, lng]);
 
-        // Fetch address from reverse geocoding
-        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`)
-          .then((res) => res.json())
-          .then((data) => {
-            setAddress(data.display_name);
-          })
-          .catch((err) => console.error("Reverse geocoding error:", err));
-      },
-      (err) => {
-        console.error("Geolocation error:", err);
-      }
-    );
-  }
-}, []);
-  
+          // Fetch address from reverse geocoding
+          fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`)
+            .then((res) => res.json())
+            .then((data) => {
+              setAddress(data.display_name);
+            })
+            .catch((err) => console.error("Reverse geocoding error:", err));
+        },
+        (err) => {
+          console.error("Geolocation error:", err);
+        }
+      );
+    }
+  }, []);
+
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -137,27 +137,33 @@ React.useEffect(() => {
           </div>
 
           <div className="h-64">
-            {isClient && <MapComponent />}
+            {isClient && (
+              <MapComponent
+                center={userLocation ?? [-7.9826, 112.6308]}
+                markerPopupText="Lokasi Anda"
+              />
+            )}
           </div>
 
-            <div>
+
+          <div>
             <Label>Detail Alamat</Label>
             <Input
-                value={address || "Mengambil lokasi..."}
-                readOnly
-                className="w-full mb-2"
+              value={address || "Mengambil lokasi..."}
+              readOnly
+              className="w-full mb-2"
             />
             <div className="grid grid-cols-2 gap-2">
-                <div>
+              <div>
                 <Label>Lat Lokasi</Label>
                 <Input value={userLocation ? userLocation[0] : ""} readOnly className="w-full" />
-                </div>
-                <div>
+              </div>
+              <div>
                 <Label>Long Lokasi</Label>
                 <Input value={userLocation ? userLocation[1] : ""} readOnly className="w-full" />
-                </div>
+              </div>
             </div>
-        </div>
+          </div>
         </div>
       </div>
 

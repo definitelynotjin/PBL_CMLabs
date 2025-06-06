@@ -6,6 +6,11 @@ import type { LatLngTuple } from "leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
+interface MapComponentProps {
+  center: LatLngTuple;
+  markerPopupText?: string;
+}
+
 // Custom icon bulat merah untuk lokasi saat ini
 const currentLocationIcon = new L.DivIcon({
   html: `<div style="
@@ -21,7 +26,10 @@ const currentLocationIcon = new L.DivIcon({
   iconAnchor: [6, 6],
 });
 
-export default function MapComponent() {
+export default function MapComponent({
+  center,
+  markerPopupText = "Lokasi Anda Saat Ini",
+}: MapComponentProps) {
   const [userPosition, setUserPosition] = useState<LatLngTuple | null>(null);
 
   useEffect(() => {
@@ -33,17 +41,14 @@ export default function MapComponent() {
             position.coords.longitude,
           ]);
         },
-        (error) => {
-          console.error("Error getting location:", error);
-          // Fallback ke Malang jika gagal
-          setUserPosition([-7.9826, 112.6308]);
+        () => {
+          setUserPosition(center);
         }
       );
     } else {
-      console.warn("Geolocation is not supported by this browser.");
-      setUserPosition([-7.9826, 112.6308]);
+      setUserPosition(center);
     }
-  }, []);
+  }, [center]);
 
   return (
     <div className="h-full w-full rounded-md overflow-hidden">
@@ -59,7 +64,7 @@ export default function MapComponent() {
             attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
           <Marker position={userPosition} icon={currentLocationIcon}>
-            <Popup>Lokasi Anda Saat Ini</Popup>
+            <Popup>{markerPopupText}</Popup>
           </Marker>
         </MapContainer>
       )}
