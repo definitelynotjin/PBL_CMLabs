@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import  Sidebar  from "@/components/sidebar";
-import { CheckclockHeader } from "@/components/checkclock-admin/header";
+import CheckclockHeader from "@/components/checkclock-admin/header";
 import { EmployeeTable } from "@/components/checkclock-admin/employee-table";
 import { ConfirmDialog } from "@/components/checkclock-admin/confirm-dialog";
 import { ViewDialog } from "@/components/checkclock-admin/view-dialog";
