@@ -22,7 +22,7 @@ const Sidebar: React.FC = () => (
       <Link href="/employee-database">
         <Users className="w-5 h-5 text-gray-600 cursor-pointer" />
       </Link>
-      <Link href="/checkclock">
+      <Link href="/checkclock-admin">
         <Clock className="w-5 h-5 text-gray-600 cursor-pointer" />
       </Link>
       <Link href="/pricing-package">
