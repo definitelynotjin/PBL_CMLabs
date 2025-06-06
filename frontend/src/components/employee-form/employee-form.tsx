@@ -45,6 +45,7 @@ export function EmployeeSignInForm({
       const data = await res.json();
 
       localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
 
       router.push("/dashboard-user"); // Change if employee dashboard route differs
     } catch (err: any) {
