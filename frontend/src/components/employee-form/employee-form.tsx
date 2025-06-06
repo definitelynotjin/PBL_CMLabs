@@ -42,14 +42,9 @@ export function EmployeeSignInForm({
         }),
       });
 
-      if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.message || "Login failed");
-      }
-
       const data = await res.json();
 
-      localStorage.setItem("token", data.access_token);
+      localStorage.setItem("token", data.token);
 
       router.push("/dashboard-user"); // Change if employee dashboard route differs
     } catch (err: any) {
