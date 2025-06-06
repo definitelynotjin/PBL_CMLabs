@@ -102,4 +102,18 @@ class EmployeeController extends Controller
             'message' => 'Employee deleted successfully'
         ]);
     }
+
+    public function candidates()
+{
+
+    // Get employee_ids from users who *do not* have a corresponding employee record yet.
+    $assignedEmployeeIds = \DB::table('employees')->pluck('employee_id')->toArray();
+
+    $candidates = \DB::table('users')
+        ->whereNotIn('employee_id', $assignedEmployeeIds)
+        ->select('employee_id', 'name') // or whatever columns you want to show
+        ->get();
+
+    return response()->json($candidates);
+}
 }
