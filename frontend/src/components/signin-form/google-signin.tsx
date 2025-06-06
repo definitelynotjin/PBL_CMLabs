@@ -26,7 +26,16 @@ const GoogleSignIn = () => {
 
           if (res.ok) {
             localStorage.setItem("token", data.token);
-            router.push("/dashboard-user");
+            localStorage.setItem("user", JSON.stringify(data.user));
+
+            // Role-based redirection
+            if (data.user.role === "admin") {
+              router.push("/dashboard");
+            } else if (data.user.role === "employee") {
+              router.push("/dashboard-user");
+            } else {
+              alert("Unknown user role");
+            }
           } else {
             alert(data.message || "Google login failed");
           }
