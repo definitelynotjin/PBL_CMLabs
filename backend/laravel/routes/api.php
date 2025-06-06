@@ -15,6 +15,7 @@ Route::post('/logout', [AuthController::class, 'logout']);
 
 Route::post('/auth/login-employee', [AuthController::class, 'loginEmployee']);
 
+Route::get('/employees/candidates', [EmployeeController::class, 'candidates']);
 Route::get('/employees', [EmployeeController::class, 'index']);
 Route::post('/employees', [EmployeeController::class, 'store']);
 Route::get('/employees/{employee}', [EmployeeController::class, 'show']);
