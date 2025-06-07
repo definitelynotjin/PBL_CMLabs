@@ -26,9 +26,9 @@ import {
 import { useEffect, useState } from 'react'
 
 type User = {
-  id: string;
-  employee_id: string;
-};
+  id: string
+  employee_id: string
+}
 
 type Employee = {
   id: number
@@ -42,6 +42,7 @@ type Employee = {
   grade?: string
   status: boolean
   type?: string
+  user?: User // nested user relation
 }
 
 export default function EmployeeDatabasePage() {
@@ -49,20 +50,6 @@ export default function EmployeeDatabasePage() {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [periode, setPeriode] = useState('')
-  const [users, setUsers] = useState<User[]>([])
-
-  // Fetch users
-  useEffect(() => {
-    fetch('https://pblcmlabs.duckdns.org/api/users')
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to fetch users');
-        return res.json();
-      })
-      .then(data => {
-        setUsers(data.data)
-      })
-      .catch(err => console.error('User fetch error:', err));
-  }, []);
 
   // Fetch employees on search change
   useEffect(() => {
@@ -89,12 +76,6 @@ export default function EmployeeDatabasePage() {
     const formatted = today.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })
     setPeriode(formatted)
   }, [])
-
-  // Helper to get employee_id from user_id
-  const getEmployeeId = (userId: string) => {
-    const user = users.find(u => u.id === userId)
-    return user?.employee_id || '-'
-  }
 
   return (
     <div className="flex min-h-screen bg-white">
@@ -219,7 +200,7 @@ export default function EmployeeDatabasePage() {
                 employees.map((emp, index) => (
                   <tr key={emp.id} className="border-t">
                     <td className="p-2">{index + 1}</td>
-                    <td className="p-2">{getEmployeeId(emp.user_id)}</td> {/* Show employee_id from users */}
+                    <td className="p-2">{emp.user?.employee_id || '-'}</td>
                     <td className="p-2">
                       <div className="w-8 h-8 bg-gray-300 rounded-full" />
                     </td>

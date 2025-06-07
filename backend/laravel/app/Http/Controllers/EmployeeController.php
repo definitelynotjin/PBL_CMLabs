@@ -27,6 +27,11 @@ class EmployeeController extends Controller
             })
             ->paginate(10);
 
+        $employees->getCollection()->transform(function ($employee) {
+            $employee->employee_user_id = $employee->user ? $employee->user->employee_id : null;
+            return $employee;
+        });
+
         return response()->json([
             'success' => true,
             'data' => $employees
