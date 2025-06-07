@@ -1,11 +1,30 @@
-"use client";
+"use client"; // Mark as Client Component for Next.js
 
-import AddCheckclockUser from "@/components/add-checkclock";
+import dynamic from "next/dynamic";
+import * as React from "react";
+import Sidebar from "@/components/sidebar"; // Import the existing Sidebar
+import Header from "@/components/add-checkclock/header";
+import CheckclockForm from "@/components/add-checkclock/checkclock-form";
 
-export default function App() {
+// Dynamically import the MapComponent
+const MapComponent = dynamic(() => import("@/components/mapcomponent"), { ssr: false });
+
+const AddCheckclock: React.FC = () => {
+  const [isClient, setIsClient] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   return (
-    <div>
-      <AddCheckclockUser />
+    <div className="flex min-h-screen bg-white">
+      <Sidebar />
+      <div className="flex-1 p-6">
+        <Header />
+        <CheckclockForm isClient={isClient} />
+      </div>
     </div>
   );
-}
+};
+
+export default AddCheckclock;

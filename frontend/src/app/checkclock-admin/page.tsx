@@ -7,6 +7,7 @@ import { EmployeeTable } from "@/components/checkclock-admin/employee-table";
 import { ConfirmDialog } from "@/components/checkclock-admin/confirm-dialog";
 import { ViewDialog } from "@/components/checkclock-admin/view-dialog";
 import { Employee } from "@/components/checkclock-admin/type"
+import Title from '@/components/checkclock-user/title';
 
 const initialEmployees: Employee[] = [
   { name: "Juanita", position: "CEO", clockIn: "08.00", clockOut: "16.30", workHours: "10h 5m", status: "Waiting Approval", approved: false, rejected: false },
@@ -69,6 +70,7 @@ const Checkclock: React.FC = () => {
       <Sidebar />
       <div className="flex-1 p-6">
         <CheckclockHeader />
+        <Title />
         <EmployeeTable 
           employees={employees} 
           openConfirmDialog={openConfirmDialog}
