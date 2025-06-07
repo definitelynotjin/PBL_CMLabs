@@ -54,23 +54,60 @@ export default function EmployeeDatabasePage() {
 
   // Fetch employees on search change
   useEffect(() => {
-    setLoading(true)
-    fetch(`https://pblcmlabs.duckdns.org/api/employees?search=${encodeURIComponent(search)}&include_all=true`)
-      .then((res) => {
-        if (!res.ok) throw new Error('Gagal mengambil data')
-        return res.json()
-      })
-      .then((data) => {
-        const enriched = data.data.data.map((emp: Employee) => ({
-          ...emp,
-          status: emp.employment_status === 'Active',
-          type: emp.employment_status === 'Active' ? 'Employee' : 'Candidate',
-        }))
-        setEmployees(enriched)
-      })
-      .catch((err) => console.error('Fetch error:', err))
-      .finally(() => setLoading(false))
-  }, [search])
+  setLoading(true)
+
+  // Prepare URLs
+  const employeesUrl = `https://pblcmlabs.duckdns.org/api/employees?search=${encodeURIComponent(search)}&include_all=true`
+  const candidatesUrl = `https://pblcmlabs.duckdns.org/api/employees/candidates?search=${encodeURIComponent(search)}`
+
+  // Fetch both in parallel
+  Promise.all([
+    fetch(employeesUrl).then(res => {
+      if (!res.ok) throw new Error('Failed to fetch employees')
+      return res.json()
+    }),
+    fetch(candidatesUrl).then(res => {
+      if (!res.ok) throw new Error('Failed to fetch candidates')
+      return res.json()
+    }),
+  ])
+  .then(([employeesData, candidatesData]) => {
+    // Map employees: keep your existing mapping for employees
+    const mappedEmployees = employeesData.data.data.map((emp: Employee) => ({
+      ...emp,
+      status: emp.employment_status === 'Active',
+      type: 'Employee',
+    }))
+
+    // Map candidates: adapt based on candidate structure, example:
+    const mappedCandidates = candidatesData.data.map((candidate: any) => ({
+      id: candidate.id || candidate.user_id, // or any unique id
+      user_id: candidate.id || candidate.user_id,
+      first_name: candidate.name?.split(' ')[0] || candidate.name || '-',
+      last_name: candidate.name?.split(' ').slice(1).join(' ') || '',
+      gender: '-',      // candidates might not have gender yet
+      phone: candidate.phone || '-',
+      branch: '-',
+      position: '-',
+      grade: '-',
+      status: false,
+      employment_status: 'Candidate',
+      type: 'Candidate',
+      user: {
+        id: candidate.id || candidate.user_id,
+        employee_id: candidate.employee_id || '-', // probably null
+      }
+    }))
+
+    // Combine both arrays
+    setEmployees([...mappedEmployees, ...mappedCandidates])
+  })
+  .catch(err => {
+    console.error('Fetch error:', err)
+  })
+  .finally(() => setLoading(false))
+}, [search])
+
 
   // Set current periode (month year)
   useEffect(() => {
