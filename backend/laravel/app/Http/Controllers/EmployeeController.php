@@ -49,6 +49,15 @@ class EmployeeController extends Controller
             'birth_date' => 'nullable|date',
             'join_date' => 'nullable|date',
             'employment_status' => 'nullable|string|max:50',
+            'nik' => 'required|string|unique:employees,nik',
+            'pendidikan_terakhir' => 'nullable|string|max:50',
+            'tempat_lahir' => 'nullable|string|max:100',
+            'contract_type' => 'nullable|in:Tetap,Kontrak,Lepas',
+            'grade' => 'nullable|string|max:50',
+            'bank' => 'nullable|string|max:50',
+            'nomor_rekening' => 'nullable|string|max:30',
+            'atas_nama_rekening' => 'nullable|string|max:100',
+            'tipe_sp' => 'nullable|in:SP 1,SP 2,SP 3',
         ]);
 
         $employee = Employee::create(array_merge($data, ['id' => Uuid::uuid4()->toString()]));
@@ -83,6 +92,15 @@ class EmployeeController extends Controller
             'birth_date' => 'nullable|date',
             'join_date' => 'nullable|date',
             'employment_status' => 'nullable|string|max:50',
+            'nik' => 'sometimes|required|string|unique:employees,nik,' . $employee->id,
+            'pendidikan_terakhir' => 'nullable|string|max:50',
+            'tempat_lahir' => 'nullable|string|max:100',
+            'contract_type' => 'nullable|in:Tetap,Kontrak,Lepas',
+            'grade' => 'nullable|string|max:50',
+            'bank' => 'nullable|string|max:50',
+            'nomor_rekening' => 'nullable|string|max:30',
+            'atas_nama_rekening' => 'nullable|string|max:100',
+            'tipe_sp' => 'nullable|in:SP 1,SP 2,SP 3',
         ]);
 
         $employee->update($data);

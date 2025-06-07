@@ -35,6 +35,7 @@ type Employee = {
   position: string
   grade?: string
   status: boolean
+  type?: string
 }
 
 
@@ -51,10 +52,18 @@ export default function EmployeeDatabasePage() {
         if (!res.ok) throw new Error('Gagal mengambil data')
         return res.json()
       })
-      .then((data) => setEmployees(data.data.data))
+      .then((data) => {
+        // Map over fetched data to add `type` based on `status`
+        const enriched = data.data.data.map((emp: Employee) => ({
+          ...emp,
+          type: emp.status ? 'Employee' : 'Candidate',
+        }))
+        setEmployees(enriched)
+      })
       .catch((err) => console.error('Fetch error:', err))
       .finally(() => setLoading(false))
   }, [search])
+
 
   useEffect(() => {
     const today = new Date()
@@ -161,8 +170,8 @@ export default function EmployeeDatabasePage() {
           <table className="w-full text-sm border rounded-md">
             <thead>
               <tr className="bg-muted text-left">
-                {['No', 'Avatar', 'Nama', 'Jenis Kelamin', 'Nomor Telepon', 'Cabang', 'Jabatan', 'Grade',
-                  'Status', 'Action'].map((col) => (
+                {['No', 'ID', 'Avatar', 'Nama', 'Jenis Kelamin', 'Nomor Telepon', 'Cabang', 'Jabatan', 'Grade',
+                  'Status', 'Type', 'Action'].map((col) => (
                     <th key={col} className="p-2">
                       <div className="flex items-center gap-1">
                         {col}
@@ -175,12 +184,13 @@ export default function EmployeeDatabasePage() {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={10} className="text-center p-4">Loading...</td>
+                  <td colSpan={12} className="text-center p-4">Loading...</td>
                 </tr>
               ) : (
                 employees.map((emp, index) => (
                   <tr key={emp.id} className="border-t">
                     <td className="p-2">{index + 1}</td>
+                    <td className="p-2">{emp.id}</td> {/* Employee ID here */}
                     <td className="p-2">
                       <div className="w-8 h-8 bg-gray-300 rounded-full" />
                     </td>
@@ -202,6 +212,7 @@ export default function EmployeeDatabasePage() {
                         </span>
                       </div>
                     </td>
+                    <td className="p-2">{emp.type || '-'}</td>
                     <td className="p-2 flex gap-2">
                       <Button size="icon" variant="ghost">
                         <Copy className="w-4 h-4" />
@@ -218,7 +229,7 @@ export default function EmployeeDatabasePage() {
               )}
               {!loading && employees.length === 0 && (
                 <tr>
-                  <td colSpan={10} className="text-center p-4">No employees found.</td>
+                  <td colSpan={12} className="text-center p-4">No employees found.</td>
                 </tr>
               )}
             </tbody>
