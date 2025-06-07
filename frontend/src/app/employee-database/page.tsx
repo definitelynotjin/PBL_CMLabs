@@ -41,6 +41,7 @@ type Employee = {
   position: string
   grade?: string
   status: boolean
+  employment_status?: string
   type?: string
   user?: User // nested user relation
 }
@@ -62,7 +63,8 @@ export default function EmployeeDatabasePage() {
       .then((data) => {
         const enriched = data.data.data.map((emp: Employee) => ({
           ...emp,
-          type: emp.status ? 'Employee' : 'Candidate',
+          status: emp.employment_status === 'Active',
+          type: emp.employment_status === 'Active' ? 'Employee' : 'Candidate',
         }))
         setEmployees(enriched)
       })
@@ -142,7 +144,7 @@ export default function EmployeeDatabasePage() {
           </div>
           <div className="border rounded-lg p-4">
             <p className="text-sm text-muted-foreground">Total Employee</p>
-            <p className="text-lg font-semibold">208</p>
+            <p className="text-lg font-semibold">{employees.length}</p>
           </div>
           <div className="border rounded-lg p-4 flex justify-between">
             <div>
