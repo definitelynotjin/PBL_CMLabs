@@ -9,45 +9,34 @@ use App\Models\Employee;
 use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
 use Carbon\Carbon;
+use App\Models\User;
+use Illuminate\Support\Str;
 
 class CheckClockController extends Controller
 {
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'check_clock_type' => 'required|in:0,1', // 0: In, 1: Out
+        $validated = $request->validate([
+            'check_clock_type' => 'required|in:1,2',
             'check_clock_time' => 'required|date_format:H:i:s',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
         ]);
 
-        $employee = Employee::where('user_id', $data['user_id'])->firstOrFail();
-        $setting = CheckClockSetting::findOrFail($employee->ck_settings_id);
-        $settingTime = CheckClockSettingTime::where('ck_settings_id', $setting->id)
-            ->where('day', Carbon::today()->toDateString())
-            ->first();
-
-        if (!$settingTime) {
-            return response()->json(['message' => 'No schedule found for today'], 400);
-        }
-
-        $checkTime = Carbon::today()->setTimeFromTimeString($data['check_clock_time']);
-        $status = $this->determineStatus($checkTime, $settingTime, $data['check_clock_type']);
+        $user = auth()->user();
 
         $checkClock = CheckClock::create([
-            'id' => Uuid::uuid4()->toString(),
-            'user_id' => $data['user_id'],
-            'check_clock_type' => $data['check_clock_type'],
-            'check_clock_time' => $data['check_clock_time'],
-            'created_at' => now(),
-            'updated_at' => now(),
+            'id' => Str::uuid(),
+            'user_id' => $user->id,
+            'check_clock_type' => $validated['check_clock_type'],
+            'check_clock_time' => $validated['check_clock_time'],
+            'latitude' => $validated['latitude'],
+            'longitude' => $validated['longitude'],
         ]);
 
-        return response()->json([
-            'message' => 'Check clock recorded',
-            'check_clock' => $checkClock,
-            'status' => $status,
-        ], 201);
+        return response()->json($checkClock, 201);
     }
+
 
     public function report(Request $request)
     {
@@ -60,7 +49,7 @@ class CheckClockController extends Controller
         $query = CheckClock::query()
             ->whereBetween('created_at', [$data['start_date'], $data['end_date']])
             ->when($data['user_id'], fn($q, $id) => $q->where('user_id', $id))
-            ->with('user.employee');
+            ->with('employee'); // <-- here
 
         $report = $query->paginate(10);
 

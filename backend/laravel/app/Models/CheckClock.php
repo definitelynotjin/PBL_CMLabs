@@ -49,4 +49,10 @@ class CheckClock extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    // Relationship: CheckClock belongs to an Employee
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class, 'user_id', 'user_id');
+    }
 }
