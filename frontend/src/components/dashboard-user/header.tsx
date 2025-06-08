@@ -118,7 +118,7 @@ export function DashboardHeader() {
           <div onClick={(e) => { e.stopPropagation(); onAvatarClick(); }} className="cursor-pointer">
             {user?.avatar ? (
               <img
-                src={`https://pblcmlabs.duckdns.org/storage/${user.avatar}`}
+                src={user.avatar?.startsWith("http") ? user.avatar : `https://pblcmlabs.duckdns.org/storage/${user.avatar}`}
                 alt="User Avatar"
                 className="w-8 h-8 rounded-full object-cover"
               />
