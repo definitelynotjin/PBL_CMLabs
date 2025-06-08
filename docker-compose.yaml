@@ -32,6 +32,7 @@ services:
     volumes:
       - ./backend/laravel:/var/www/html
       - ./backend/laravel/.env:/var/www/html/.env
+      - ./backend/storage_public:/var/www/html/storage/app/public
     networks:
       - hris_network
 
