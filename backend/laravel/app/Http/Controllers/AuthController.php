@@ -161,6 +161,7 @@ class AuthController extends Controller
                 'phone' => $user->phone,
                 'role' => $user->role,
                 'employee_id' => $user->employee_id,
+                'avatar' => $user->avatar ? secure_url('storage/' . $user->avatar) : null,
             ]
         ]);
     }
