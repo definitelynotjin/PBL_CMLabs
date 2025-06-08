@@ -149,15 +149,17 @@ export function DashboardHeader() {
         {isDropdownOpen && (
           <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-md shadow-lg border border-gray-200 z-50 p-4">
             <div className="flex flex-col items-center space-y-2 mb-4">
-              {user?.avatar ? (
-                <img
-                  src={`https://pblcmlabs.duckdns.org/storage/${user.avatar}`}
-                  alt="User Avatar"
-                  className="w-20 h-20 rounded-full object-cover"
-                />
-              ) : (
-                <div className="w-20 h-20 rounded-full bg-gray-400" />
-              )}
+              <div onClick={onAvatarClick} className="cursor-pointer">
+                {user?.avatar ? (
+                  <img
+                    src={`https://pblcmlabs.duckdns.org/storage/${user.avatar}`}
+                    alt="User Avatar"
+                    className="w-20 h-20 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-20 h-20 rounded-full bg-gray-400" />
+                )}
+              </div>
               <div className="text-lg font-semibold">{user?.name}</div>
               <div className="text-sm text-gray-600">
                 {user?.role === "admin" ? "ADM" : user?.employee_id}
