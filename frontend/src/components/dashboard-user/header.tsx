@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, ChangeEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { Bell, ChevronDown, Search } from "lucide-react";
 
@@ -8,6 +8,7 @@ export function DashboardHeader() {
   const [user, setUser] = useState<any>(null);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const uploadAvatar = async (file: File) => {
     const token = localStorage.getItem("token");
@@ -71,6 +72,18 @@ export function DashboardHeader() {
     window.location.href = "/signin";
   };
 
+  const onAvatarClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      uploadAvatar(e.target.files[0]);
+    }
+  };
+
   return (
     <header className="flex items-center justify-between px-6 py-4 border-b bg-white relative">
       {/* Left - Title */}
@@ -102,15 +115,18 @@ export function DashboardHeader() {
           aria-haspopup="true"
           type="button"
         >
-          {user?.avatar ? (
-            <img
-              src={`https://pblcmlabs.duckdns.org/storage/${user.avatar}`}
-              alt="User Avatar"
-              className="w-8 h-8 rounded-full object-cover"
-            />
-          ) : (
-            <div className="w-8 h-8 rounded-full bg-gray-400" />
-          )}
+          <div onClick={(e) => { e.stopPropagation(); onAvatarClick(); }} className="cursor-pointer">
+            {user?.avatar ? (
+              <img
+                src={`https://pblcmlabs.duckdns.org/storage/${user.avatar}`}
+                alt="User Avatar"
+                className="w-8 h-8 rounded-full object-cover"
+              />
+            ) : (
+              <div className="w-8 h-8 rounded-full bg-gray-400" />
+            )}
+          </div>
+
           <div className="text-sm text-right">
             <div className="font-medium">{user?.name || "Loading..."}</div>
             <div className="text-xs text-gray-500">
@@ -119,6 +135,15 @@ export function DashboardHeader() {
           </div>
           <ChevronDown className="w-4 h-4 text-gray-500" />
         </button>
+
+        {/* Hidden file input */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={onFileChange}
+        />
 
         {/* Dropdown Menu */}
         {isDropdownOpen && (
@@ -138,18 +163,6 @@ export function DashboardHeader() {
                 {user?.role === "admin" ? "ADM" : user?.employee_id}
               </div>
             </div>
-
-            {/* Avatar Upload Input */}
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => {
-                if (e.target.files && e.target.files[0]) {
-                  uploadAvatar(e.target.files[0]);
-                }
-              }}
-              className="mb-4 w-full"
-            />
 
             <button
               onClick={handleLogout}
