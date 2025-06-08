@@ -50,10 +50,9 @@ const Header = () => {
 
   return (
     <div className="flex justify-between items-center border-b pb-4 relative z-40" ref={dropdownRef}>
-      {/* Title & Search */}
+      {/* Title */}
       <div className="flex items-center gap-4">
         <h1 className="text-2xl font-bold">Add New Employee</h1>
-        <Input placeholder="Search" className="w-72" />
       </div>
 
       {/* Bell & Profile Dropdown */}
