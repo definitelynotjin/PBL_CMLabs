@@ -11,6 +11,7 @@ use Ramsey\Uuid\Uuid;
 use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
 class CheckClockController extends Controller
 {
@@ -23,7 +24,7 @@ class CheckClockController extends Controller
             'longitude' => 'nullable|numeric',
         ]);
 
-        $user = auth()->user();
+        $user = Auth::user();
 
         $checkClock = CheckClock::create([
             'id' => Str::uuid(),
