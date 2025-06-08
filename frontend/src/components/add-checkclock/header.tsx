@@ -64,7 +64,15 @@ const Header: React.FC = () => {
           className="flex items-center gap-2"
           onClick={() => setDropdownOpen(!isDropdownOpen)}
         >
-          <div className="w-8 h-8 bg-gray-400 rounded-full" />
+          {user?.avatar ? (
+            <img
+              src={user.avatar}
+              alt="User Avatar"
+              className="w-8 h-8 rounded-full object-cover"
+            />
+          ) : (
+            <div className="w-8 h-8 bg-gray-400 rounded-full" />
+          )}
           <div className="text-sm text-right leading-tight">
             <p className="font-medium">{user?.name || 'Loading...'}</p>
             <p className="text-gray-500 text-xs">
@@ -77,7 +85,15 @@ const Header: React.FC = () => {
         {isDropdownOpen && (
           <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-md shadow-lg border border-gray-200 z-50 p-4">
             <div className="flex flex-col items-center space-y-2 mb-4">
-              <div className="w-20 h-20 rounded-full bg-gray-400" />
+              {user?.avatar ? (
+                <img
+                  src={user.avatar}
+                  alt="User Avatar"
+                  className="w-20 h-20 rounded-full object-cover"
+                />
+              ) : (
+                <div className="w-20 h-20 rounded-full bg-gray-400" />
+              )}
               <div className="text-lg font-semibold">{user?.name}</div>
               <div className="text-sm text-gray-600">{user?.role === 'admin' ? 'ADM' : user?.employee_id}</div>
             </div>
