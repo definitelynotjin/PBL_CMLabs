@@ -81,4 +81,9 @@ class User extends Authenticatable
     {
         $this->notify(new ResetPasswordNotification($token));
     }
+
+    public function getAvatarAttribute($value)
+    {
+        return $value ? asset('storage/' . $value) : asset('images/default-avatar.png');
+    }
 }
