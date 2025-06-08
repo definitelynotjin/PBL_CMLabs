@@ -9,6 +9,27 @@ export function DashboardHeader() {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  const uploadAvatar = async (file: File) => {
+    const token = localStorage.getItem("token");
+    const formData = new FormData();
+    formData.append("avatar", file);
+    try {
+      const response = await fetch("https://pblcmlabs.duckdns.org/api/user/avatar", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+      if (!response.ok) {
+        throw new Error("Failed to upload avatar");
+      }
+      const data = await response.json();
+      setUser((prevUser: any) => ({ ...prevUser, avatar: data.avatar }));
+    }
+    catch (error) {
+      console.error("Error uploading avatar:", error);
+    }
+  };
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -46,7 +67,6 @@ export function DashboardHeader() {
   }, [isDropdownOpen]);
 
   const handleLogout = () => {
-    // Example logout: clear token & reload or redirect
     localStorage.removeItem("token");
     window.location.href = "/signin";
   };
@@ -82,10 +102,20 @@ export function DashboardHeader() {
           aria-haspopup="true"
           type="button"
         >
-          <div className="w-8 h-8 rounded-full bg-gray-400" />
+          {user?.avatar ? (
+            <img
+              src={`https://pblcmlabs.duckdns.org/storage/${user.avatar}`}
+              alt="User Avatar"
+              className="w-8 h-8 rounded-full object-cover"
+            />
+          ) : (
+            <div className="w-8 h-8 rounded-full bg-gray-400" />
+          )}
           <div className="text-sm text-right">
             <div className="font-medium">{user?.name || "Loading..."}</div>
-            <div className="text-xs text-gray-500">{user?.role === "admin" ? "ADM" : user?.employee_id || ""}</div>
+            <div className="text-xs text-gray-500">
+              {user?.role === "admin" ? "ADM" : user?.employee_id || ""}
+            </div>
           </div>
           <ChevronDown className="w-4 h-4 text-gray-500" />
         </button>
@@ -94,10 +124,33 @@ export function DashboardHeader() {
         {isDropdownOpen && (
           <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-md shadow-lg border border-gray-200 z-50 p-4">
             <div className="flex flex-col items-center space-y-2 mb-4">
-              <div className="w-20 h-20 rounded-full bg-gray-400" />
+              {user?.avatar ? (
+                <img
+                  src={`https://pblcmlabs.duckdns.org/storage/${user.avatar}`}
+                  alt="User Avatar"
+                  className="w-20 h-20 rounded-full object-cover"
+                />
+              ) : (
+                <div className="w-20 h-20 rounded-full bg-gray-400" />
+              )}
               <div className="text-lg font-semibold">{user?.name}</div>
-              <div className="text-sm text-gray-600">{user?.role === "admin" ? "ADM" : user?.employee_id}</div>
+              <div className="text-sm text-gray-600">
+                {user?.role === "admin" ? "ADM" : user?.employee_id}
+              </div>
             </div>
+
+            {/* Avatar Upload Input */}
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                if (e.target.files && e.target.files[0]) {
+                  uploadAvatar(e.target.files[0]);
+                }
+              }}
+              className="mb-4 w-full"
+            />
+
             <button
               onClick={handleLogout}
               className="w-full px-4 py-2 rounded-md text-white font-semibold text-center hover:brightness-90 transition"
@@ -105,7 +158,6 @@ export function DashboardHeader() {
             >
               Logout
             </button>
-
           </div>
         )}
       </div>
