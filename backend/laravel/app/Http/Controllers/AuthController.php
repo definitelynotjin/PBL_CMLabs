@@ -205,4 +205,25 @@ class AuthController extends Controller
             ? response()->json(['message' => __($status)], 200)
             : response()->json(['message' => __($status)], 400);
     }
+
+    public function uploadAvatar(Request $request)
+    {
+        $request->validate([
+            'avatar' => 'required|image|max:2048', 
+        ]);
+
+        $user = $request->user();
+
+        // Store avatar in 'avatars' folder, generate unique filename
+        $path = $request->file('avatar')->store('avatars', 'public');
+
+        // Save avatar path to user model, adjust attribute as needed
+        $user->avatar_url = '/storage/' . $path;
+        $user->save();
+
+        return response()->json([
+            'avatar_url' => $user->avatar_url,
+            'message' => 'Avatar uploaded successfully',
+        ]);
+    }
 }

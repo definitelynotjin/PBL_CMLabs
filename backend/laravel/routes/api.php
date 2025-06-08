@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\GoogleAuthController;
+use App\Http\Controllers\UserController;
 
 Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/auth/reset-password', [AuthController::class, 'resetPassword']);
@@ -12,6 +13,7 @@ Route::post('/auth/google/callback', [GoogleAuthController::class, 'callback']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
+Route::middleware('auth:sanctum')->post('/user/avatar', [AuthController::class, 'uploadAvatar']);
 
 Route::post('/auth/login-employee', [AuthController::class, 'loginEmployee']);
 
