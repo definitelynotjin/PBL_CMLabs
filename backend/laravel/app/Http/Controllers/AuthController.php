@@ -222,7 +222,7 @@ class AuthController extends Controller
         $user->save();
 
         return response()->json([
-            'avatar' => $user->avatar,
+            'avatar' => secure_url('storage/' . $user->avatar),
             'message' => 'Avatar uploaded successfully',
         ]);
     }
