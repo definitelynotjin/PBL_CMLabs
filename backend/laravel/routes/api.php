@@ -5,8 +5,12 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\GoogleAuthController;
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\AbsenceRequestController;
+use App\Http\Controllers\CheckClockController;
+use App\Http\Controllers\CheckClockSettingController;
+use App\Http\Controllers\CheckClockSettingTimeController;
+
+
 
 Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/auth/reset-password', [AuthController::class, 'resetPassword']);
@@ -32,6 +36,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/absence-requests/{id}', [AbsenceRequestController::class, 'update']);
     Route::delete('/absence-requests/{id}', [AbsenceRequestController::class, 'destroy']);
 });
+
+Route::apiResource('checkclocks', CheckClockController::class);
+Route::apiResource('checkclocksettings', CheckClockSettingController::class);
+Route::apiResource('checkclocksettingtimes', CheckClockSettingTimeController::class);
+
 
 Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
     return $request->user()->load('employee');

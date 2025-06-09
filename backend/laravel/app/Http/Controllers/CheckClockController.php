@@ -16,27 +16,52 @@ use Illuminate\Support\Facades\Auth;
 class CheckClockController extends Controller
 {
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'check_clock_type' => 'required|in:1,2',
-            'check_clock_time' => 'required|date_format:H:i:s',
-            'latitude' => 'nullable|numeric',
-            'longitude' => 'nullable|numeric',
-        ]);
+{
+    $validated = $request->validate([
+        'check_clock_type' => 'required|in:1,2',
+        'check_clock_time' => 'required|date_format:H:i:s',
+        'latitude' => 'nullable|numeric',
+        'longitude' => 'nullable|numeric',
+    ]);
 
-        $user = Auth::user();
+    $user = Auth::user();
 
-        $checkClock = CheckClock::create([
-            'id' => Str::uuid(),
-            'user_id' => $user->id,
-            'check_clock_type' => $validated['check_clock_type'],
-            'check_clock_time' => $validated['check_clock_time'],
-            'latitude' => $validated['latitude'],
-            'longitude' => $validated['longitude'],
-        ]);
+    // 1. Get today’s setting time based on weekday
+    $today = now()->format('l'); // E.g., "Monday"
 
-        return response()->json($checkClock, 201);
+    $settingTime = CheckClockSettingTime::whereHas('setting', function ($query) {
+        $query->where('type', 1); // Optional: filter by type
+    })
+    ->where('day', $today)
+    ->first();
+
+    if (!$settingTime) {
+        return response()->json(['message' => 'Schedule not set for today.'], 400);
     }
+
+    // 2. Determine status (on_time, late, early)
+    $checkTime = Carbon::createFromFormat('H:i:s', $validated['check_clock_time']);
+    $status = $this->determineStatus($checkTime, $settingTime, $validated['check_clock_type']);
+
+    // 3. Optionally validate GPS proximity from CheckClockSetting (TODO)
+
+    // 4. Create clock record
+    $checkClock = CheckClock::create([
+        'id' => Str::uuid(),
+        'user_id' => $user->id,
+        'check_clock_type' => $validated['check_clock_type'],
+        'check_clock_time' => $validated['check_clock_time'],
+        'latitude' => $validated['latitude'],
+        'longitude' => $validated['longitude'],
+        // Optionally store `status` if you add column
+    ]);
+
+    return response()->json([
+        'data' => $checkClock,
+        'status' => $status
+    ], 201);
+}
+
 
 
     public function report(Request $request)
