@@ -1,0 +1,130 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\AbsenceRequest;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+
+
+class AbsenceRequestController extends Controller
+{
+    // List absence requests
+    public function index()
+    {
+        $user = Auth::user();
+
+        if ($user->isEmployee()) {
+            // Employees can only view their own requests
+            $absenceRequests = AbsenceRequest::with('employee')
+                ->where('employee_id', $user->employee->id)
+                ->paginate(15);
+        } else {
+            // Admins can view all requests
+            $absenceRequests = AbsenceRequest::with('employee')->paginate(15);
+        }
+
+        return response()->json($absenceRequests);
+    }
+
+    // Show a single absence request
+    public function show($id)
+    {
+        $user = Auth::user();
+        $absenceRequest = AbsenceRequest::with('employee')->findOrFail($id);
+
+        // Employees can only view their own
+        if ($user->isEmployee() && $absenceRequest->employee_id !== $user->employee->id) {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
+        return response()->json($absenceRequest);
+    }
+
+    // Create a new absence request
+    public function store(Request $request)
+    {
+        $user = Auth::user();
+
+        if (!$user->isEmployee()) {
+            return response()->json(['error' => 'Only employees can create absence requests'], 403);
+        }
+
+        $validated = $request->validate([
+            'absence_date' => 'required|date',
+            'absence_type' => 'required|in:annual_leave,sick,permission,other',
+            'reason' => 'nullable|string',
+            'file_path' => 'nullable|string',
+            'location_name' => 'nullable|string',
+            'address' => 'nullable|string',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
+        ]);
+
+        // Force employee_id from authenticated user
+        $validated['employee_id'] = $user->employee->id;
+
+        $absenceRequest = AbsenceRequest::create($validated);
+
+        return response()->json([
+            'message' => 'Absence request created successfully',
+            'data' => $absenceRequest,
+        ], 201);
+    }
+
+    // Update an absence request
+    public function update(Request $request, $id)
+    {
+        $user = Auth::user();
+        $absenceRequest = AbsenceRequest::findOrFail($id);
+
+        // Only the owner or admin can update
+        if ($user->isEmployee() && $absenceRequest->employee_id !== $user->employee->id) {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
+        // Employees cannot update status
+        if ($user->isEmployee() && $request->has('status')) {
+            return response()->json(['error' => 'You cannot update status'], 403);
+        }
+
+        $validated = $request->validate([
+            'absence_type' => 'sometimes|in:annual_leave,sick,permission,other',
+            'status' => 'sometimes|in:pending,approved,rejected',
+            'reason' => 'nullable|string',
+            'file_path' => 'nullable|string',
+            'location_name' => 'nullable|string',
+            'address' => 'nullable|string',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
+        ]);
+
+        $absenceRequest->update($validated);
+
+        return response()->json([
+            'message' => 'Absence request updated successfully',
+            'data' => $absenceRequest,
+        ]);
+    }
+
+    // Delete an absence request
+    public function destroy($id)
+    {
+        $user = Auth::user();
+        $absenceRequest = AbsenceRequest::findOrFail($id);
+
+        // Only the owner or admin can delete
+        if ($user->isEmployee() && $absenceRequest->employee_id !== $user->employee->id) {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
+        $absenceRequest->delete();
+
+        return response()->json([
+            'message' => 'Absence request deleted successfully',
+        ]);
+    }
+}

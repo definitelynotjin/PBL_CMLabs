@@ -6,12 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Hash;
-use Google_Client;
-use Illuminate\Support\Str;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Auth\Passwords\CanResetPassword;
-use Google\Client as GoogleClient;
+
 
 class AuthController extends Controller
 {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CheckClock;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
@@ -140,5 +141,10 @@ class EmployeeController extends Controller
             'success' => true,
             'data' => $candidates
         ]);
+    }
+
+    public function checkClocks()
+    {
+        return $this->hasMany(CheckClock::class, 'user_id', 'user_id');
     }
 }

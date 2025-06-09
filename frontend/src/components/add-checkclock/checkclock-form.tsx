@@ -27,7 +27,6 @@ const absenceTypes = [
 ];
 
 const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
-  const [selectedEmployee, setSelectedEmployee] = React.useState("");
   const [selectedAbsenceType, setSelectedAbsenceType] = React.useState("");
   const [selectedLocation, setSelectedLocation] = React.useState("");
   const [file, setFile] = React.useState<File | null>(null);
@@ -70,19 +69,7 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
     <div className="bg-white p-6 rounded-lg shadow-md">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-6">
-          <div>
-            <Label htmlFor="employee">Karyawan</Label>
-            <Select onValueChange={setSelectedEmployee} value={selectedEmployee}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Pilih Karyawan" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="employee1">Employee 1</SelectItem>
-                <SelectItem value="employee2">Employee 2</SelectItem>
-                <SelectItem value="employee3">Employee 3</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+
 
           <div>
             <Label htmlFor="absence-type">Tipe Absensi</Label>
