@@ -33,12 +33,6 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
   const [startDate, setStartDate] = React.useState("");
   const [endDate, setEndDate] = React.useState("");
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setFile(e.target.files[0]);
-    }
-  };
-
   const [userLocation, setUserLocation] = React.useState<LatLngTuple | null>(null);
   const [address, setAddress] = React.useState("");
 
@@ -65,21 +59,80 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
     }
   }, []);
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setFile(e.target.files[0]);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!selectedAbsenceType) {
+      alert("Please select absence type");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("absence_type", selectedAbsenceType);
+    if (selectedAbsenceType === "annual-leave" || selectedAbsenceType === "sick-leave") {
+      if (!startDate || !endDate) {
+        alert("Please fill in start and end dates for leave");
+        return;
+      }
+      formData.append("start_date", startDate);
+      formData.append("end_date", endDate);
+    }
+    if (file) {
+      formData.append("supporting_document", file);
+    }
+    formData.append("location", selectedLocation);
+    if (userLocation) {
+      formData.append("latitude", userLocation[0].toString());
+      formData.append("longitude", userLocation[1].toString());
+    }
+    formData.append("address", address);
+
+    try {
+      const response = await fetch("/api/checkclocks", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Upload failed");
+      }
+
+      const data = await response.json();
+      alert("Checkclock submitted successfully!");
+      // Optionally reset form
+      setSelectedAbsenceType("");
+      setSelectedLocation("");
+      setFile(null);
+      setStartDate("");
+      setEndDate("");
+    } catch (error: any) {
+      alert("Failed to submit: " + error.message);
+    }
+  };
+
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
+    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-6">
-
-
           <div>
             <Label htmlFor="absence-type">Tipe Absensi</Label>
-            <Select onValueChange={(value) => {
-              setSelectedAbsenceType(value);
-              if (value === "annual-leave" || value === "sick-leave") {
-                setStartDate("");
-                setEndDate("");
-              }
-            }} value={selectedAbsenceType}>
+            <Select
+              onValueChange={(value) => {
+                setSelectedAbsenceType(value);
+                if (value === "annual-leave" || value === "sick-leave") {
+                  setStartDate("");
+                  setEndDate("");
+                }
+              }}
+              value={selectedAbsenceType}
+            >
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Pilih Tipe Absensi" />
               </SelectTrigger>
@@ -93,7 +146,7 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
             </Select>
           </div>
 
-          {selectedAbsenceType === "annual-leave" || selectedAbsenceType === "sick-leave" ? (
+          {(selectedAbsenceType === "annual-leave" || selectedAbsenceType === "sick-leave") && (
             <div className="flex space-x-4">
               <div className="w-full">
                 <Label htmlFor="start-date">Start Date</Label>
@@ -114,7 +167,7 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
                 />
               </div>
             </div>
-          ) : null}
+          )}
 
           <div>
             <Label htmlFor="file-upload">Upload Bukti Pendukung</Label>
@@ -122,7 +175,9 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
               <p>Drag n Drop here</p>
               <p>Or</p>
               <Button variant="outline" asChild>
-                <label htmlFor="file-upload">Browse</label>
+                <label htmlFor="file-upload" className="cursor-pointer">
+                  Browse
+                </label>
               </Button>
               <Input
                 id="file-upload"
@@ -132,9 +187,6 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
               />
               {file && <p className="mt-2">Selected file: {file.name}</p>}
             </div>
-            <Button variant="outline" className="w-full mt-2">
-              Upload Now
-            </Button>
           </div>
         </div>
 
@@ -174,11 +226,19 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
             <div className="grid grid-cols-2 gap-2">
               <div>
                 <Label>Lat Lokasi</Label>
-                <Input value={userLocation ? userLocation[0] : ""} readOnly className="w-full" />
+                <Input
+                  value={userLocation ? userLocation[0] : ""}
+                  readOnly
+                  className="w-full"
+                />
               </div>
               <div>
                 <Label>Long Lokasi</Label>
-                <Input value={userLocation ? userLocation[1] : ""} readOnly className="w-full" />
+                <Input
+                  value={userLocation ? userLocation[1] : ""}
+                  readOnly
+                  className="w-full"
+                />
               </div>
             </div>
           </div>
@@ -186,10 +246,17 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
       </div>
 
       <div className="flex justify-end space-x-2 mt-6">
-        <Button variant="outline">Cancel</Button>
-        <Button>Save</Button>
+        <Button variant="outline" type="button" onClick={() => {
+          // Reset form on Cancel
+          setSelectedAbsenceType("");
+          setSelectedLocation("");
+          setFile(null);
+          setStartDate("");
+          setEndDate("");
+        }}>Cancel</Button>
+        <Button type="submit">Save</Button>
       </div>
-    </div>
+    </form>
   );
 };
 
