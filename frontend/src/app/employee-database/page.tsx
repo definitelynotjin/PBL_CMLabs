@@ -6,6 +6,9 @@ import Header from '@/components/employee-database/header';
 import Stats from '@/components/employee-database/stats';
 import Actions from '@/components/employee-database/actions';
 import EmployeeTable from '@/components/employee-database/employee-table';
+import EmployeeDetail from '@/components/employee-database/employee-detail';
+import TambahDokumen from '@/components/employee-database/tambah-dokumen';
+
 
 type User = {
   id: string;
@@ -33,6 +36,8 @@ export default function EmployeeDatabasePage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [periode, setPeriode] = useState('');
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
+  const [showDetail, setShowDetail] = useState(false);
 
   // Fetch employees on search change
   useEffect(() => {
@@ -92,6 +97,12 @@ export default function EmployeeDatabasePage() {
     setPeriode(formatted);
   }, []);
 
+  // Handler when employee name clicked in table
+  function handleNameClick(emp: Employee) {
+    setSelectedEmployee(emp);
+    setShowDetail(true);
+  }
+
   return (
     <div className="flex min-h-screen bg-white">
       <Sidebar />
@@ -99,7 +110,28 @@ export default function EmployeeDatabasePage() {
         <Header search={search} setSearch={setSearch} />
         <Stats employees={employees} periode={periode} />
         <Actions />
-        <EmployeeTable employees={employees} loading={loading} />
+        <EmployeeTable
+          employees={employees}
+          loading={loading}
+          onNameClick={handleNameClick} // Pass handler to EmployeeTable
+        />
+
+        {/* Modal popup for employee details and document */}
+        {showDetail && selectedEmployee && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+            <div className="bg-white p-6 rounded shadow-lg max-w-3xl w-full relative max-h-[90vh] overflow-auto">
+              <button
+                className="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
+                onClick={() => setShowDetail(false)}
+                aria-label="Close detail modal"
+              >
+                ✕
+              </button>
+              <EmployeeDetail employee={selectedEmployee} />
+              <TambahDokumen employeeId={selectedEmployee.id} />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
