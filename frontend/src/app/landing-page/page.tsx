@@ -19,7 +19,7 @@ import { FAQ } from "@/components/landing-page/FAQ";
 import { Footer } from "@/components/landing-page/Footer";
 import { ScrollToTop } from "@/components/landing-page/ScrollToTop";
 
-function App() {
+export default function LandingPage() {
   return (
     <>
       <Navbar />
@@ -41,4 +41,4 @@ function App() {
   );
 }
 
-export default App;
+
