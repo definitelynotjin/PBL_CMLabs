@@ -9,7 +9,6 @@ import EmployeeTable from '@/components/employee-database/employee-table';
 import EmployeeDetail from '@/components/employee-database/employee-detail';
 import TambahDokumen from '@/components/employee-database/tambah-dokumen';
 
-
 type User = {
   id: string;
   employee_id: string;
@@ -38,8 +37,8 @@ export default function EmployeeDatabasePage() {
   const [periode, setPeriode] = useState('');
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
   const [showDetail, setShowDetail] = useState(false);
+  const [showAddDocument, setShowAddDocument] = useState(false);
 
-  // Fetch employees on search change
   useEffect(() => {
     setLoading(true);
 
@@ -90,17 +89,30 @@ export default function EmployeeDatabasePage() {
       .finally(() => setLoading(false));
   }, [search]);
 
-  // Set current periode (month year)
   useEffect(() => {
     const today = new Date();
     const formatted = today.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
     setPeriode(formatted);
   }, []);
 
-  // Handler when employee name clicked in table
   function handleNameClick(emp: Employee) {
     setSelectedEmployee(emp);
+    setShowAddDocument(false);
     setShowDetail(true);
+  }
+
+  function handleCloseDetail() {
+    setShowDetail(false);
+    setSelectedEmployee(null);
+    setShowAddDocument(false);
+  }
+
+  function handleAddDocument() {
+    setShowAddDocument(true);
+  }
+
+  function handleCloseAddDocument() {
+    setShowAddDocument(false);
   }
 
   return (
@@ -113,22 +125,32 @@ export default function EmployeeDatabasePage() {
         <EmployeeTable
           employees={employees}
           loading={loading}
-          onNameClick={handleNameClick} // Pass handler to EmployeeTable
+          onNameClick={handleNameClick}
         />
 
-        {/* Modal popup for employee details and document */}
         {showDetail && selectedEmployee && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
             <div className="bg-white p-6 rounded shadow-lg max-w-3xl w-full relative max-h-[90vh] overflow-auto">
               <button
                 className="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
-                onClick={() => setShowDetail(false)}
+                onClick={handleCloseDetail}
                 aria-label="Close detail modal"
               >
                 ✕
               </button>
-              <EmployeeDetail employee={selectedEmployee} />
-              <TambahDokumen employeeId={selectedEmployee.id} />
+
+              <EmployeeDetail
+                employee={selectedEmployee}
+                onClose={handleCloseDetail}
+                onAddDocument={handleAddDocument}
+              />
+
+              {showAddDocument && (
+                <TambahDokumen
+                  employee={selectedEmployee}
+                  onClose={handleCloseAddDocument}
+                />
+              )}
             </div>
           </div>
         )}
