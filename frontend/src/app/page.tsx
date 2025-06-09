@@ -1,5 +1,1 @@
-import NewLandingPage from "./landing-page/page";
-
-export default function Home() {
-  return <NewLandingPage />;
-}
+export { default } from "./landing-page/page";
