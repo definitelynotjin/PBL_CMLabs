@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import * as React from "react";
-import Sidebar from "@/components/sidebar"; // Import the existing Sidebar
+import SidebarUser from '@/components/sidebar-user'; // Import the existing Sidebar
 import Header from "@/components/add-checkclock/header";
 import CheckclockForm from "@/components/add-checkclock/checkclock-form";
 
@@ -18,7 +18,7 @@ const AddCheckclock: React.FC = () => {
 
   return (
     <div className="flex min-h-screen bg-white">
-      <Sidebar />
+      <SidebarUser />
       <div className="flex-1 p-6">
         <Header />
         <CheckclockForm isClient={isClient} />
