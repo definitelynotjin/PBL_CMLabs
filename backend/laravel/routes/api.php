@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AbsenceRequestController;
 
 Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/auth/reset-password', [AuthController::class, 'resetPassword']);
@@ -23,6 +24,14 @@ Route::post('/employees', [EmployeeController::class, 'store']);
 Route::get('/employees/{employee}', [EmployeeController::class, 'show']);
 Route::put('/employees/{employee}', [EmployeeController::class, 'update']);
 Route::delete('/employees/{employee}', [EmployeeController::class, 'destroy']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/absence-requests', [AbsenceRequestController::class, 'index']);
+    Route::post('/absence-requests', [AbsenceRequestController::class, 'store']);
+    Route::get('/absence-requests/{id}', [AbsenceRequestController::class, 'show']);
+    Route::put('/absence-requests/{id}', [AbsenceRequestController::class, 'update']);
+    Route::delete('/absence-requests/{id}', [AbsenceRequestController::class, 'destroy']);
+});
 
 Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
     return $request->user()->load('employee');
