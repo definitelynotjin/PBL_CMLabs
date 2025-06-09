@@ -1,14 +1,15 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ChevronsUpDown, Edit2, Trash2, Copy } from 'lucide-react';
-import { Employee } from './types'; // Ensure correct import
+import { Employee } from './types';
 
 interface EmployeeTableProps {
   employees: Employee[];
   loading: boolean;
+  onNameClick?: (emp: Employee) => void;  // single declaration including this
 }
 
-const EmployeeTable: React.FC<EmployeeTableProps> = ({ employees, loading }) => {
+const EmployeeTable: React.FC<EmployeeTableProps> = ({ employees, loading, onNameClick }) => {
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-sm border rounded-md">
@@ -33,11 +34,16 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employees, loading }) => 
             employees.map((emp, index) => (
               <tr key={emp.id} className="border-t">
                 <td className="p-2">{index + 1}</td>
-                <td className="p-2">{emp.user?.employee_id || '-'}</td> {/* Access user property safely */}
+                <td className="p-2">{emp.user?.employee_id || '-'}</td>
                 <td className="p-2">
                   <div className="w-8 h-8 bg-gray-300 rounded-full" />
                 </td>
-                <td className="p-2">{emp.first_name} {emp.last_name}</td>
+                <td
+                  className="p-2 text-blue-600 hover:underline cursor-pointer"
+                  onClick={() => onNameClick?.(emp)}
+                >
+                  {emp.first_name} {emp.last_name}
+                </td>
                 <td className="p-2">
                   <span className="bg-muted px-2 py-1 rounded text-xs font-medium">{emp.gender}</span>
                 </td>
