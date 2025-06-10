@@ -112,8 +112,9 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Submission failed.");
+        const errorText = await response.text();
+        console.error("Server Error (not JSON)", errorText);
+        throw new Error("Submission failed, check console for details.");
       }
 
       alert("Submission successful!");
