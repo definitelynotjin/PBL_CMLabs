@@ -3,6 +3,10 @@ FROM node:18-alpine AS builder
 WORKDIR /app
 
 COPY package.json package-lock.json ./
+
+# Debug: list files in /app to check if package.json is present
+RUN ls -l /app
+
 RUN npm ci
 
 COPY . .
@@ -23,6 +27,3 @@ COPY --from=builder /app/next.config.js ./next.config.js
 EXPOSE 3000
 
 CMD ["npm", "start"]
-
-# Optional healthcheck
-# HEALTHCHECK --interval=30s --timeout=10s --start-period=5s CMD wget --no-verbose --tries=1 --spider http://localhost:3000 || exit 1
