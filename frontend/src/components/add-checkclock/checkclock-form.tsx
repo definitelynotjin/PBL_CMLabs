@@ -4,7 +4,13 @@ import dynamic from "next/dynamic";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface CheckclockFormProps {
   isClient: boolean;
@@ -32,7 +38,6 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
   const [file, setFile] = React.useState<File | null>(null);
   const [startDate, setStartDate] = React.useState("");
   const [endDate, setEndDate] = React.useState("");
-
   const [userLocation, setUserLocation] = React.useState<LatLngTuple | null>(null);
   const [address, setAddress] = React.useState("");
 
@@ -44,7 +49,6 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
           const lng = position.coords.longitude;
           setUserLocation([lat, lng]);
 
-          // Fetch address from reverse geocoding
           fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`)
             .then((res) => res.json())
             .then((data) => {
@@ -69,45 +73,51 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
     e.preventDefault();
 
     if (!selectedAbsenceType) {
-      alert("Please select absence type");
+      alert("Please select an absence type.");
       return;
     }
 
     const formData = new FormData();
     formData.append("absence_type", selectedAbsenceType);
-    if (selectedAbsenceType === "annual-leave" || selectedAbsenceType === "sick-leave") {
-      if (!startDate || !endDate) {
-        alert("Please fill in start and end dates for leave");
-        return;
-      }
-      formData.append("start_date", startDate);
-      formData.append("end_date", endDate);
-    }
-    if (file) {
-      formData.append("supporting_document", file);
-    }
     formData.append("location", selectedLocation);
     if (userLocation) {
       formData.append("latitude", userLocation[0].toString());
       formData.append("longitude", userLocation[1].toString());
     }
     formData.append("address", address);
+    if (file) {
+      formData.append("supporting_document", file);
+    }
+
+    let endpoint = "";
+    if (["annual-leave", "sick-leave"].includes(selectedAbsenceType)) {
+      if (!startDate || !endDate) {
+        alert("Please fill in both start and end dates.");
+        return;
+      }
+      formData.append("start_date", startDate);
+      formData.append("end_date", endDate);
+      endpoint = "https://pblcmlabs.duckdns.org/api/absence-requests";
+    } else if (["absent"].includes(selectedAbsenceType)) {
+      endpoint = "https://pblcmlabs.duckdns.org/api/absence-requests";
+    } else {
+      endpoint = "https://pblcmlabs.duckdns.org/api/checkclocks";
+    }
 
     try {
-      const response = await fetch('https://pblcmlabs.duckdns.org/api/checkclocks', {
+      const response = await fetch(endpoint, {
         method: "POST",
         body: formData,
-        credentials: 'include',
+        credentials: "include",
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Upload failed");
+        throw new Error(errorData.message || "Submission failed.");
       }
 
-      const data = await response.json();
-      alert("Checkclock submitted successfully!");
-      // Optionally reset form
+      alert("Submission successful!");
+      // Reset
       setSelectedAbsenceType("");
       setSelectedLocation("");
       setFile(null);
@@ -127,7 +137,7 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
             <Select
               onValueChange={(value) => {
                 setSelectedAbsenceType(value);
-                if (value === "annual-leave" || value === "sick-leave") {
+                if (["annual-leave", "sick-leave"].includes(value)) {
                   setStartDate("");
                   setEndDate("");
                 }
@@ -147,7 +157,7 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
             </Select>
           </div>
 
-          {(selectedAbsenceType === "annual-leave" || selectedAbsenceType === "sick-leave") && (
+          {["annual-leave", "sick-leave"].includes(selectedAbsenceType) && (
             <div className="flex space-x-4">
               <div className="w-full">
                 <Label htmlFor="start-date">Start Date</Label>
@@ -247,14 +257,19 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
       </div>
 
       <div className="flex justify-end space-x-2 mt-6">
-        <Button variant="outline" type="button" onClick={() => {
-          // Reset form on Cancel
-          setSelectedAbsenceType("");
-          setSelectedLocation("");
-          setFile(null);
-          setStartDate("");
-          setEndDate("");
-        }}>Cancel</Button>
+        <Button
+          variant="outline"
+          type="button"
+          onClick={() => {
+            setSelectedAbsenceType("");
+            setSelectedLocation("");
+            setFile(null);
+            setStartDate("");
+            setEndDate("");
+          }}
+        >
+          Cancel
+        </Button>
         <Button type="submit">Save</Button>
       </div>
     </form>
