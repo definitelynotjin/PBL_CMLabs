@@ -3,15 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\CheckClock;
-use App\Models\CheckClockSetting;
 use App\Models\CheckClockSettingTime;
-use App\Models\Employee;
 use Illuminate\Http\Request;
-use Ramsey\Uuid\Uuid;
 use Carbon\Carbon;
-use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Routing\Controller;
+
 
 class CheckClockController extends Controller
 {

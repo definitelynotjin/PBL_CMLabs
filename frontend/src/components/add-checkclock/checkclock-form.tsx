@@ -94,7 +94,7 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
     formData.append("address", address);
 
     try {
-      const response = await fetch("/api/checkclocks", {
+      const response = await fetch('https://pblcmlabs.duckdns.org/api/checkclocks', {
         method: "POST",
         body: formData,
       });
