@@ -1,6 +1,7 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/preflight";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
 
 /* *=========== Default theme =========== */
 /* @layer base {
@@ -119,26 +120,8 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
-}
-/* Global styles */
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-}
-
-.container {
-  max-width: 1200px; /* Adjust as necessary */
-  margin: 0 auto; /* Center the container */
-  padding: 0 15px; /* Add some padding */
-}
-
-.bg-muted {
-  background-color: rgba(255, 255, 255, 0.8); /* Example muted background */
-}
-
-.rounded-lg {
-  border-radius: 8px; /* Rounded corners */
 }
