@@ -1,3 +1,15 @@
+# Build stage
+FROM node:18 AS builder
+WORKDIR /app
+
+# Copy package files and install dependencies cleanly
+COPY package.json package-lock.json ./
+RUN npm ci
+
+# Copy all source files and build the Next.js app
+COPY . .
+RUN npm run build
+
 # Production stage
 FROM node:18 AS runner
 WORKDIR /app
