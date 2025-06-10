@@ -11,26 +11,26 @@ export const Hero = () => {
           <main className="text-5xl md:text-6xl font-bold leading-tight">
             <h1 className="inline">
               <span className="inline bg-gradient-to-r from-[#F596D3]  to-[#D247BF] text-transparent bg-clip-text">
-                Shadcn
+                HR Tool
               </span>{" "}
-              landing page
+              for
             </h1>{" "}
-            for{" "}
+            Empowering{" "}
             <h2 className="inline">
               <span className="inline bg-gradient-to-r from-[#61DAFB] via-[#1fc0f1] to-[#03a3d7] text-transparent bg-clip-text">
-                React
+                HR
               </span>{" "}
-              developers
+              teams
             </h2>
           </main>
 
           <p className="text-xl text-muted-foreground md:w-10/12 mx-auto lg:mx-0">
-            Build your React landing page effortlessly with the required sections
-            to your project.
+            A modern HRIS platform designed to streamline employee data, attendance, 
+            and legal document management—now with integrated overtime and pay-as-you-go subscriptions.
           </p>
 
           <div className="flex flex-col md:flex-row gap-4 items-center md:items-start justify-center lg:justify-start">
-            <Button className="w-full md:w-auto">Get Started</Button>
+            <Button className="w-full md:w-auto">Sign In</Button>
 
             <a
               rel="noreferrer noopener"
@@ -38,7 +38,7 @@ export const Hero = () => {
               target="_blank"
               className={`${buttonVariants({ variant: "outline" })} w-full md:w-auto flex items-center justify-center`}
             >
-              Github Repository
+              Sign Up
               <GitHubLogoIcon className="ml-2 w-5 h-5" />
             </a>
           </div>

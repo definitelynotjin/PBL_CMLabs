@@ -17,16 +17,16 @@ interface TestimonialProps {
 const testimonials: TestimonialProps[] = [
   {
     image: "https://github.com/shadcn.png",
-    name: "John Doe React",
-    userName: "@john_Doe",
-    comment: "This landing page is awesome!",
+    name: "Michael",
+    userName: "@mickeey",
+    comment: "This HRIS system has transformed our HR operations.",
   },
   {
     image: "https://github.com/shadcn.png",
-    name: "John Doe React",
-    userName: "@john_Doe1",
+    name: "Sarah",
+    userName: "@sarahjohnson",
     comment:
-      "Lorem ipsum dolor sit amet,empor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud.",
+      "a game-changer for our employees. They can access their information and check in easily.",
   },
   {
     image: "https://github.com/shadcn.png",
