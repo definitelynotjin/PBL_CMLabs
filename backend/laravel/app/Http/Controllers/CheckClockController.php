@@ -53,8 +53,8 @@ class CheckClockController extends Controller
             'user_id' => $user->id,
             'check_clock_type' => $validated['check_clock_type'],
             'check_clock_time' => $validated['check_clock_time'],
-            'latitude' => $validated['latitude'],
-            'longitude' => $validated['longitude'],
+            'latitude' => $validated['latitude'] ?? null,
+            'longitude' => $validated['longitude'] ?? null,
             'supporting_document_path' => $filePath,
         ]);
 
@@ -85,11 +85,11 @@ class CheckClockController extends Controller
 
     protected function determineStatus($checkTime, $settingTime, $checkType)
     {
-        if ($checkType == 0) { // Check-in
+        if ($checkType == 1) { // Check-in
             $scheduledIn = Carbon::createFromTimeString($settingTime->clock_in);
             $gracePeriod = $scheduledIn->copy()->addMinutes(15);
             return $checkTime->gt($gracePeriod) ? 'late' : 'on_time';
-        } else { // Check-out
+        } else { // Check-out (2)
             $scheduledOut = Carbon::createFromTimeString($settingTime->clock_out);
             return $checkTime->lt($scheduledOut) ? 'early' : 'on_time';
         }

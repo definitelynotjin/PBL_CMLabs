@@ -21,14 +21,19 @@ class CheckClock extends Model
         'user_id',
         'check_clock_type',
         'check_clock_time',
+        'latitude',
+        'longitude',
+        'supporting_document_path',
         'created_at',
         'updated_at',
         'deleted_at',
     ];
 
     protected $casts = [
-        'check_clock_type' => 'integer', // 1: In, 2: Out
+        'check_clock_type' => 'string', // 1: In, 2: Out
         'check_clock_time' => 'string',
+        'latitude' => 'float',
+        'longitude' => 'float',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
