@@ -9,7 +9,7 @@ interface EmployeeDetailProps {
 
 const EmployeeDetail: React.FC<EmployeeDetailProps> = ({ employee, onClose, onAddDocument }) => {
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+    <div className="fixed inset-0 bg-transparent backdrop-blur-sm flex justify-center items-center z-50">
       <div className="bg-white rounded-lg shadow-lg p-6 w-96 max-w-full">
         <h2 className="text-xl font-bold mb-4">
           Detail Karyawan: {employee.first_name} {employee.last_name}
@@ -30,11 +30,11 @@ const EmployeeDetail: React.FC<EmployeeDetailProps> = ({ employee, onClose, onAd
         <div className="mt-6 flex justify-end gap-2">
           <button
             onClick={onAddDocument}
-            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+            className="px-4 py-2 text-white rounded hover:brightness-90"
+            style={{ backgroundColor: '#257047' }}
           >
             Tambah Dokumen
           </button>
-
           <button
             onClick={onClose}
             className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
