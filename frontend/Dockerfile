@@ -1,5 +1,5 @@
 # Builder stage
-FROM node:18-alpine AS builder
+FROM node:18 AS builder
 WORKDIR /app
 
 COPY package.json package-lock.json ./
@@ -7,13 +7,15 @@ COPY package.json package-lock.json ./
 # Debug: list files in /app to check if package.json is present
 RUN ls -l /app
 
+RUN pwd && ls -la /app && whoami
+
 RUN npm ci
 
 COPY . .
 RUN npm run build
 
 # Runner stage
-FROM node:18-alpine AS runner
+FROM node:18 AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
