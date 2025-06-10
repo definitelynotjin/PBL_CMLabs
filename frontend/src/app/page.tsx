@@ -1,6 +1,6 @@
 "use client";
 
-import "./App.css";
+import "./app.css";
 
 // Landing Page Components
 import { Navbar } from "@/components/landing-page/Navbar";
@@ -40,5 +40,3 @@ export default function LandingPage() {
     </>
   );
 }
-
-
