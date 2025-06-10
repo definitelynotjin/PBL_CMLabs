@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CheckClockSettingTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Routing\Controller;
 
 class CheckClockSettingTimeController extends Controller
 {

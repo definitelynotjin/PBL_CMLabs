@@ -12,7 +12,7 @@ class Authenticate extends Middleware
     protected function redirectTo($request)
     {
         if (! $request->expectsJson()) {
-            // No redirect URL for API; just return null so Laravel throws 401
+
             return null;
         }
     }
