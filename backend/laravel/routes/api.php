@@ -28,6 +28,7 @@ Route::delete('/employees/{employee}', [EmployeeController::class, 'destroy']);
 
 // Protected Routes
 Route::middleware('auth:sanctum')->group(function () {
+
     // User Info & Avatar
     Route::get('/me', fn(Request $request) => $request->user()->load('employee'));
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -44,4 +45,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('checkclocks', CheckClockController::class);
     Route::apiResource('checkclocksettings', CheckClockSettingController::class);
     Route::apiResource('checkclocksettingtimes', CheckClockSettingTimeController::class);
+    
 });
