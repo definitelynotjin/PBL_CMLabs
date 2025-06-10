@@ -64,3 +64,16 @@ html {
     }
   }
 }
+
+/* Specific styles for the landing page */
+h2 {
+  color: #333; /* Example for headings */
+}
+
+.text-muted-foreground {
+  color: #666; /* Example muted text color */
+}
+
+.bg-green-0 {
+  background-color: #e0f7fa; /* Example background color */
+}

@@ -28,7 +28,6 @@ const testimonials: TestimonialProps[] = [
     comment:
       "Lorem ipsum dolor sit amet,empor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud.",
   },
-
   {
     image: "https://github.com/shadcn.png",
     name: "John Doe React",
@@ -63,9 +62,9 @@ export const Testimonials = () => {
   return (
     <section
       id="testimonials"
-      className="container py-24 sm:py-32"
+      className="max-w-6xl mx-auto px-4 py-24 sm:py-32"
     >
-      <h2 className="text-3xl md:text-4xl font-bold">
+      <h2 className="text-3xl md:text-4xl font-bold text-center">
         Discover Why
         <span className="bg-gradient-to-b from-primary/60 to-primary text-transparent bg-clip-text">
           {" "}
@@ -74,37 +73,30 @@ export const Testimonials = () => {
         This Landing Page
       </h2>
 
-      <p className="text-xl text-muted-foreground pt-4 pb-8">
+      <p className="text-xl text-muted-foreground pt-4 pb-8 text-center max-w-2xl mx-auto">
         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Non unde error
         facere hic reiciendis illo
       </p>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 sm:block columns-2  lg:columns-3 lg:gap-6 mx-auto space-y-4 lg:space-y-6">
-        {testimonials.map(
-          ({ image, name, userName, comment }: TestimonialProps) => (
-            <Card
-              key={userName}
-              className="max-w-md md:break-inside-avoid overflow-hidden"
-            >
-              <CardHeader className="flex flex-row items-center gap-4 pb-2">
-                <Avatar>
-                  <AvatarImage
-                    alt=""
-                    src={image}
-                  />
-                  <AvatarFallback>OM</AvatarFallback>
-                </Avatar>
-
-                <div className="flex flex-col">
-                  <CardTitle className="text-lg">{name}</CardTitle>
-                  <CardDescription>{userName}</CardDescription>
-                </div>
-              </CardHeader>
-
-              <CardContent>{comment}</CardContent>
-            </Card>
-          )
-        )}
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 justify-items-center">
+        {testimonials.map(({ image, name, userName, comment }) => (
+          <Card
+            key={userName}
+            className="w-full max-w-md"
+          >
+            <CardHeader className="flex flex-row items-center gap-4 pb-2">
+              <Avatar>
+                <AvatarImage alt="" src={image} />
+                <AvatarFallback>OM</AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col">
+                <CardTitle className="text-lg">{name}</CardTitle>
+                <CardDescription>{userName}</CardDescription>
+              </div>
+            </CardHeader>
+            <CardContent>{comment}</CardContent>
+          </Card>
+        ))}
       </div>
     </section>
   );

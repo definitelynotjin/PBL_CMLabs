@@ -76,71 +76,65 @@ export const Pricing = () => {
   return (
     <section
       id="pricing"
-      className="container py-24 sm:py-32"
+      className="min-h-screen flex items-center justify-center flex-col text-center px-4 py-16"
     >
-      <h2 className="text-3xl md:text-4xl font-bold text-center">
-        Get
-        <span className="bg-gradient-to-b from-primary/60 to-primary text-transparent bg-clip-text">
-          {" "}
-          Unlimited{" "}
-        </span>
-        Access
-      </h2>
-      <h3 className="text-xl text-center text-muted-foreground pt-4 pb-8">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias
-        reiciendis.
-      </h3>
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {pricingList.map((pricing: PricingProps) => (
-          <Card
-            key={pricing.title}
-            className={
-              pricing.popular === PopularPlanType.YES
-                ? "drop-shadow-xl shadow-black/10 dark:shadow-white/10"
-                : ""
-            }
-          >
-            <CardHeader>
-              <CardTitle className="flex item-center justify-between">
-                {pricing.title}
-                {pricing.popular === PopularPlanType.YES ? (
-                  <Badge
-                    variant="secondary"
-                    className="text-sm text-primary"
-                  >
-                    Most popular
-                  </Badge>
-                ) : null}
-              </CardTitle>
-              <div>
-                <span className="text-3xl font-bold">${pricing.price}</span>
-                <span className="text-muted-foreground"> /month</span>
-              </div>
+      <div className="container">
+        <h2 className="text-3xl md:text-4xl font-bold text-center">
+          Get
+          <span className="bg-gradient-to-b from-primary/60 to-primary text-transparent bg-clip-text">
+            {" "}Unlimited{" "}
+          </span>
+          Access
+        </h2>
+        <h3 className="text-xl text-center text-muted-foreground pt-4 pb-8">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias reiciendis.
+        </h3>
 
-              <CardDescription>{pricing.description}</CardDescription>
-            </CardHeader>
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {pricingList.map((pricing: PricingProps) => (
+            <Card
+              key={pricing.title}
+              className={`mx-auto w-full max-w-md ${
+                pricing.popular === PopularPlanType.YES
+                  ? "drop-shadow-xl shadow-black/10 dark:shadow-white/10"
+                  : ""
+              }`}
+            >
+              <CardHeader className="text-center">
+                <CardTitle className="flex items-center justify-center gap-2">
+                  {pricing.title}
+                  {pricing.popular === PopularPlanType.YES && (
+                    <Badge variant="secondary" className="text-sm text-primary">
+                      Most popular
+                    </Badge>
+                  )}
+                </CardTitle>
+                <div className="mt-2">
+                  <span className="text-3xl font-bold">${pricing.price}</span>
+                  <span className="text-muted-foreground"> /month</span>
+                </div>
+                <CardDescription className="mt-2">{pricing.description}</CardDescription>
+              </CardHeader>
 
-            <CardContent>
-              <Button className="w-full">{pricing.buttonText}</Button>
-            </CardContent>
+              <CardContent>
+                <Button className="w-full">{pricing.buttonText}</Button>
+              </CardContent>
 
-            <hr className="w-4/5 m-auto mb-4" />
+              <hr className="w-4/5 mx-auto my-4 border-muted" />
 
-            <CardFooter className="flex">
-              <div className="space-y-4">
-                {pricing.benefitList.map((benefit: string) => (
-                  <span
-                    key={benefit}
-                    className="flex"
-                  >
-                    <Check className="text-green-500" />{" "}
-                    <h3 className="ml-2">{benefit}</h3>
-                  </span>
-                ))}
-              </div>
-            </CardFooter>
-          </Card>
-        ))}
+              <CardFooter className="flex justify-center">
+                <div className="space-y-3">
+                  {pricing.benefitList.map((benefit: string) => (
+                    <div key={benefit} className="flex items-center text-sm">
+                      <Check className="text-green-500 mr-2 w-4 h-4" />
+                      <span>{benefit}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
       </div>
     </section>
   );
