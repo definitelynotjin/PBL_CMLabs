@@ -12,7 +12,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ search, setSearch }) => {
   const [user, setUser] = useState<any>(null);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null); x
 
   useEffect(() => {
     const fetchUser = async () => {
