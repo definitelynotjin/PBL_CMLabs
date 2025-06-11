@@ -9,6 +9,7 @@ use App\Http\Controllers\AbsenceRequestController;
 use App\Http\Controllers\CheckClockController;
 use App\Http\Controllers\CheckClockSettingController;
 use App\Http\Controllers\CheckClockSettingTimeController;
+use App\Http\Controllers\Api\DocumentController;
 
 
 
@@ -31,11 +32,9 @@ Route::put('/employees/{employee}', [EmployeeController::class, 'update']);
 Route::delete('/employees/{employee}', [EmployeeController::class, 'destroy']);
 
 // Documents
-Route::prefix('employees/{id}/documents')->group(function () {
-    Route::get('/', [DocumentController::class, 'index']);
-});
-
+Route::get('/employees/{userId}/documents', [DocumentController::class, 'index']);
 Route::post('/documents', [DocumentController::class, 'store']);
+
 
 // Protected Routes
 Route::middleware('auth:sanctum')->group(function () {
