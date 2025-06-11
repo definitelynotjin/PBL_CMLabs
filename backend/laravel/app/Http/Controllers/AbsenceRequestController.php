@@ -57,15 +57,19 @@ class AbsenceRequestController extends Controller
             'absence_date' => 'required|date',
             'absence_type' => 'required|in:annual_leave,sick,permission,other',
             'reason' => 'nullable|string',
-            'file_path' => 'nullable|string',
             'location_name' => 'nullable|string',
             'address' => 'nullable|string',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
+            'supporting_document' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048', // validate file
         ]);
 
-        // Force employee_id from authenticated user
         $validated['employee_id'] = $user->employee->id;
+
+        if ($request->hasFile('supporting_document')) {
+            $path = $request->file('supporting_document')->store('absence_documents', 'public');
+            $validated['file_path'] = $path;
+        }
 
         $absenceRequest = AbsenceRequest::create($validated);
 
