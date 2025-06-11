@@ -86,7 +86,34 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
     }
 
     const formData = new FormData();
-    formData.append("absence_type", selectedAbsenceType);
+
+    // If the endpoint is checkclocks, send check_clock_type and check_clock_time
+    const isCheckClock = !["annual-leave", "sick-leave", "absent"].includes(selectedAbsenceType);
+
+    if (isCheckClock) {
+      // Map absence type to backend check_clock_type enum "1" or "2"
+      let check_clock_type = "";
+      if (selectedAbsenceType === "clock-in") {
+        check_clock_type = "1";
+      } else if (selectedAbsenceType === "clock-out") {
+        check_clock_type = "2";
+      } else {
+        // fallback or handle other types if needed
+        check_clock_type = "1"; // default to clock-in
+      }
+
+      // Get current time in HH:mm:ss format
+      const now = new Date();
+      const pad = (num: number) => num.toString().padStart(2, "0");
+      const check_clock_time = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+
+      formData.append("check_clock_type", check_clock_type);
+      formData.append("check_clock_time", check_clock_time);
+    } else {
+      // For absence requests, send absence_type
+      formData.append("absence_type", selectedAbsenceType);
+    }
+
     formData.append("location", selectedLocation);
     formData.append("address", address);
 
@@ -127,7 +154,6 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
     }
   };
 
-
   const resetForm = () => {
     setSelectedAbsenceType("");
     setSelectedLocation("");
@@ -144,19 +170,24 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
         <div className="space-y-6">
           <div>
             <Label htmlFor="absence-type">Tipe Absensi</Label>
-            <Select value={selectedAbsenceType} onValueChange={(val) => {
-              setSelectedAbsenceType(val);
-              if (!["annual-leave", "sick-leave"].includes(val)) {
-                setStartDate("");
-                setEndDate("");
-              }
-            }}>
+            <Select
+              value={selectedAbsenceType}
+              onValueChange={(val) => {
+                setSelectedAbsenceType(val);
+                if (!["annual-leave", "sick-leave"].includes(val)) {
+                  setStartDate("");
+                  setEndDate("");
+                }
+              }}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Pilih Tipe Absensi" />
               </SelectTrigger>
               <SelectContent>
                 {absenceTypes.map(({ value, label }) => (
-                  <SelectItem key={value} value={value}>{label}</SelectItem>
+                  <SelectItem key={value} value={value}>
+                    {label}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -190,14 +221,11 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
             <div className="border-2 border-dashed p-4 rounded-md text-center">
               <p>Drag & Drop atau klik Browse</p>
               <Button variant="outline" asChild>
-                <label htmlFor="file-upload" className="cursor-pointer">Browse</label>
+                <label htmlFor="file-upload" className="cursor-pointer">
+                  Browse
+                </label>
               </Button>
-              <Input
-                id="file-upload"
-                type="file"
-                className="hidden"
-                onChange={handleFileChange}
-              />
+              <Input id="file-upload" type="file" className="hidden" onChange={handleFileChange} />
               {file && <p className="mt-2 text-sm text-gray-600">{file.name}</p>}
             </div>
           </div>
@@ -213,7 +241,9 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
               </SelectTrigger>
               <SelectContent>
                 {locations.map(({ value, label }) => (
-                  <SelectItem key={value} value={value}>{label}</SelectItem>
+                  <SelectItem key={value} value={value}>
+                    {label}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -221,10 +251,7 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
 
           <div className="h-64">
             {isClient && userLocation && (
-              <MapComponent
-                center={userLocation}
-                markerPopupText="Lokasi Anda"
-              />
+              <MapComponent center={userLocation} markerPopupText="Lokasi Anda" />
             )}
           </div>
 
@@ -245,9 +272,11 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
         </div>
       </div>
 
-      <div className="flex justify-end gap-2 pt-4">
-        <Button variant="outline" type="button" onClick={resetForm}>Cancel</Button>
-        <Button type="submit">Save</Button>
+      <div className="flex justify-end gap-4">
+        <Button type="button" variant="secondary" onClick={resetForm}>
+          Reset
+        </Button>
+        <Button type="submit">Submit</Button>
       </div>
     </form>
   );
