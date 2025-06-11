@@ -24,7 +24,7 @@ const TambahDokumen: React.FC<TambahDokumenProps> = ({ employee, onClose, onUplo
 
     try {
       setLoading(true);
-      await onUpload(file, documentType, employee.id);
+      await onUpload(file, documentType, employee.id.toString());
       alert('Upload successful!');
       setFile(null);
       setDocumentType('');
