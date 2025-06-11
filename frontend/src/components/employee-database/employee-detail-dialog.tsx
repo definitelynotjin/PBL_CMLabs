@@ -5,7 +5,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Employee } from './types';
 import { EmployeeDocuments } from './employeedocuments';
-import TambahDokumen from './tambah-dokumen';
 
 export default function EmployeeDetailDialog({
   employee,
@@ -19,24 +18,6 @@ export default function EmployeeDetailDialog({
   onShowUpload: () => void;
 }) {
   const [showDocuments, setShowDocuments] = useState(false);
-  const [showUploadDialog, setShowUploadDialog] = useState(false);
-
-  // Upload handler function for TambahDokumen
-  async function handleUpload(file: File, documentType: string, employeeId: string) {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('document_type', documentType);
-    formData.append('user_id', employeeId);
-
-    const res = await fetch('/api/documents', {
-      method: 'POST',
-      body: formData,
-    });
-
-    if (!res.ok) {
-      throw new Error('Upload failed');
-    }
-  }
 
   return (
     <>
@@ -66,22 +47,22 @@ export default function EmployeeDetailDialog({
             </p>
           </div>
           <div className="flex gap-2 pt-4">
-            <Button onClick={onShowUpload}>Tambah Dokumen</Button>
+            <Button
+              onClick={() => {
+                onClose(); // Close this dialog
+                setTimeout(() => {
+                  onShowUpload(); // Trigger parent upload modal
+                }, 50);
+              }}
+            >
+              Tambah Dokumen
+            </Button>
             <Button variant="secondary" onClick={onShowDocuments}>
               Lihat Dokumen
             </Button>
           </div>
         </DialogContent>
       </Dialog>
-
-      {/* Upload Dialog */}
-      {showUploadDialog && (
-        <TambahDokumen
-          employee={employee}
-          onClose={() => setShowUploadDialog(false)}
-          onUpload={handleUpload}
-        />
-      )}
 
       {/* Documents List Dialog */}
       <Dialog open={showDocuments} onOpenChange={setShowDocuments}>
