@@ -100,4 +100,9 @@ class CheckClockController extends Controller
             return $checkTime->lt($scheduledOut) ? 'early' : 'on_time';
         }
     }
+
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum');
+    }
 }
