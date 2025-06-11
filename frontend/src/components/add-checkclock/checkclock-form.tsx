@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import type { LatLngTuple } from "leaflet";
 import dynamic from "next/dynamic";
@@ -44,17 +46,18 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
   React.useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
+        async (position) => {
           const lat = position.coords.latitude;
           const lng = position.coords.longitude;
           setUserLocation([lat, lng]);
 
-          fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`)
-            .then((res) => res.json())
-            .then((data) => {
-              setAddress(data.display_name);
-            })
-            .catch((err) => console.error("Reverse geocoding error:", err));
+          try {
+            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`);
+            const data = await res.json();
+            setAddress(data.display_name || "");
+          } catch (err) {
+            console.error("Reverse geocoding error:", err);
+          }
         },
         (err) => {
           console.error("Geolocation error:", err);
@@ -64,7 +67,7 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
   }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
+    if (e.target.files?.length) {
       setFile(e.target.files[0]);
     }
   };
@@ -77,6 +80,23 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
       return;
     }
 
+    if (!selectedLocation) {
+      alert("Please select a location.");
+      return;
+    }
+
+    if (["annual-leave", "sick-leave"].includes(selectedAbsenceType)) {
+      if (!startDate || !endDate) {
+        alert("Please fill in both start and end dates.");
+        return;
+      }
+
+      if (!file) {
+        alert("Please upload a supporting document for leave.");
+        return;
+      }
+    }
+
     const formData = new FormData();
     formData.append("absence_type", selectedAbsenceType);
     formData.append("location", selectedLocation);
@@ -85,33 +105,25 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
       formData.append("longitude", userLocation[1].toString());
     }
     formData.append("address", address);
+
     if (file) {
       formData.append("supporting_document", file);
     }
 
     if (["annual-leave", "sick-leave"].includes(selectedAbsenceType)) {
-      if (!startDate || !endDate) {
-        alert("Please fill in both start and end dates.");
-        return;
-      }
       formData.append("start_date", startDate);
       formData.append("end_date", endDate);
     }
 
-    let endpoint = "";
-    if (["annual-leave", "sick-leave", "absent"].includes(selectedAbsenceType)) {
-      endpoint = "https://pblcmlabs.duckdns.org/api/absence-requests";
-    } else {
-      endpoint = "https://pblcmlabs.duckdns.org/api/checkclocks";
-    }
+    const endpoint = ["annual-leave", "sick-leave", "absent"].includes(selectedAbsenceType)
+      ? "https://pblcmlabs.duckdns.org/api/absence-requests"
+      : "https://pblcmlabs.duckdns.org/api/checkclocks";
 
     try {
-      // First, fetch the CSRF cookie from Sanctum
       await fetch("https://pblcmlabs.duckdns.org/sanctum/csrf-cookie", {
         credentials: "include",
       });
 
-      // Then, do your POST request
       const response = await fetch(endpoint, {
         method: "POST",
         body: formData,
@@ -120,22 +132,24 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error("Server Error (not JSON)", errorText);
-        throw new Error("Submission failed, check console for details.");
+        console.error("Server Error:", errorText);
+        throw new Error("Submission failed. See console for details.");
       }
 
       alert("Submission successful!");
-      // Reset form
-      setSelectedAbsenceType("");
-      setSelectedLocation("");
-      setFile(null);
-      setStartDate("");
-      setEndDate("");
+      resetForm();
     } catch (error: any) {
       alert("Failed to submit: " + error.message);
     }
   };
 
+  const resetForm = () => {
+    setSelectedAbsenceType("");
+    setSelectedLocation("");
+    setFile(null);
+    setStartDate("");
+    setEndDate("");
+  };
 
   return (
     <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md">
@@ -146,7 +160,7 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
             <Select
               onValueChange={(value) => {
                 setSelectedAbsenceType(value);
-                if (["annual-leave", "sick-leave"].includes(value)) {
+                if (!["annual-leave", "sick-leave"].includes(value)) {
                   setStartDate("");
                   setEndDate("");
                 }
@@ -247,7 +261,7 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
               <div>
                 <Label>Lat Lokasi</Label>
                 <Input
-                  value={userLocation ? userLocation[0] : ""}
+                  value={userLocation?.[0] ?? ""}
                   readOnly
                   className="w-full"
                 />
@@ -255,7 +269,7 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
               <div>
                 <Label>Long Lokasi</Label>
                 <Input
-                  value={userLocation ? userLocation[1] : ""}
+                  value={userLocation?.[1] ?? ""}
                   readOnly
                   className="w-full"
                 />
@@ -266,17 +280,7 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
       </div>
 
       <div className="flex justify-end space-x-2 mt-6">
-        <Button
-          variant="outline"
-          type="button"
-          onClick={() => {
-            setSelectedAbsenceType("");
-            setSelectedLocation("");
-            setFile(null);
-            setStartDate("");
-            setEndDate("");
-          }}
-        >
+        <Button variant="outline" type="button" onClick={resetForm}>
           Cancel
         </Button>
         <Button type="submit">Save</Button>
