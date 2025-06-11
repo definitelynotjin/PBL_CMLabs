@@ -14,14 +14,14 @@ class CheckClockSettingController extends Controller
 {
     public function index()
     {
-        return response()->json(CheckClockSetting::all());
+        return response()->json(CheckClockSetting::with('times')->get());
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'type' => 'required|in:1,2', // 1: Global, 2: Department-specific or other
+            'type' => 'sometimes|in:0,1,2', // 0: WFO, 1: WFA, 2: Hybrid
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
             'radius' => 'nullable|integer',
@@ -36,7 +36,7 @@ class CheckClockSettingController extends Controller
 
     public function show($id)
     {
-        return response()->json(CheckClockSetting::findOrFail($id));
+        return response()->json(CheckClockSetting::with('times')->findOrFail($id));
     }
 
     public function update(Request $request, $id)
