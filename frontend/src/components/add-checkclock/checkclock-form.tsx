@@ -112,6 +112,9 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
         method: "POST",
         body: formData,
         credentials: "include",
+        headers: {
+          Accept: "application/json",
+        }
       });
 
       if (!response.ok) {
