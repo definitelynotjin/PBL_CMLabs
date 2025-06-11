@@ -48,7 +48,7 @@ export default function EmployeeDetailDialog({
               onClose(); // Close the detail dialog first
               setTimeout(() => {
                 onShowUpload(); // Then open the upload dialog
-              }, 100); // Delay slightly (100ms is usually enough)
+              }, 200); // Delay slightly (100ms is usually enough)
             }}
           >
             Tambah Dokumen

@@ -145,14 +145,20 @@ export default function EmployeeDatabasePage() {
       {showDocuments && selectedEmployee && (
         <EmployeeDocumentsDialog
           employeeId={selectedEmployee.id.toString()}
-          onClose={() => setShowDocuments(false)}
+          onClose={() => {
+            setShowDocuments(false);
+            setSelectedEmployee(null);
+          }}
         />
       )}
 
       {showUpload && selectedEmployee && (
         <TambahDokumen
           employee={selectedEmployee}
-          onClose={() => setShowUpload(false)}
+          onClose={() => {
+            setShowUpload(false);
+            setSelectedEmployee(null); // <-- This prevents modal reopening
+          }}
           onUpload={handleUpload}
         />
       )}
