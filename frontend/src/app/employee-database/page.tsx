@@ -7,6 +7,8 @@ import Stats from '@/components/employee-database/stats';
 import Actions from '@/components/employee-database/actions';
 import EmployeeTable from '@/components/employee-database/employee-table';
 import EmployeeDetailDialog from '@/components/employee-database/employee-detail-dialog.tsx';
+import EmployeeDocumentsDialog from '@/components/employee-database/employee-documents-dialog';
+import TambahDokumen from '@/components/employee-database/tambah-dokumen';
 
 type User = {
   id: string;
@@ -36,18 +38,26 @@ export default function EmployeeDatabasePage() {
   const [periode, setPeriode] = useState('');
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
 
+  // New state for dialogs
+  const [showDocuments, setShowDocuments] = useState(false);
+  const [showUpload, setShowUpload] = useState(false);
+
   useEffect(() => {
     setLoading(true);
 
-    const employeesUrl = `https://pblcmlabs.duckdns.org/api/employees?search=${encodeURIComponent(search)}&include_all=true`;
-    const candidatesUrl = `https://pblcmlabs.duckdns.org/api/employees/candidates?search=${encodeURIComponent(search)}`;
+    const employeesUrl = `https://pblcmlabs.duckdns.org/api/employees?search=${encodeURIComponent(
+      search
+    )}&include_all=true`;
+    const candidatesUrl = `https://pblcmlabs.duckdns.org/api/employees/candidates?search=${encodeURIComponent(
+      search
+    )}`;
 
     Promise.all([
-      fetch(employeesUrl).then(res => {
+      fetch(employeesUrl).then((res) => {
         if (!res.ok) throw new Error('Failed to fetch employees');
         return res.json();
       }),
-      fetch(candidatesUrl).then(res => {
+      fetch(candidatesUrl).then((res) => {
         if (!res.ok) throw new Error('Failed to fetch candidates');
         return res.json();
       }),
@@ -80,7 +90,7 @@ export default function EmployeeDatabasePage() {
 
         setEmployees([...mappedEmployees, ...mappedCandidates]);
       })
-      .catch(err => console.error('Fetch error:', err))
+      .catch((err) => console.error('Fetch error:', err))
       .finally(() => setLoading(false));
   }, [search]);
 
@@ -94,8 +104,23 @@ export default function EmployeeDatabasePage() {
     setSelectedEmployee(employee);
   };
 
-  const handleUploadClick = () => {
-    alert('Upload document for ' + selectedEmployee?.first_name);
+  // These handlers open the dialogs
+  const handleShowDocuments = () => {
+    setShowDocuments(true);
+  };
+
+  const handleShowUpload = () => {
+    setShowUpload(true);
+  };
+
+  // This handles the upload completion (adjust as needed)
+  const handleUpload = async (file: File, docType: string, employeeId: string) => {
+    // TODO: your upload API call here
+    alert(`Uploading ${docType} for employee ${employeeId}`);
+
+    // Close upload dialog, open documents dialog to refresh
+    setShowUpload(false);
+    setShowDocuments(true);
   };
 
   return (
@@ -112,7 +137,23 @@ export default function EmployeeDatabasePage() {
         <EmployeeDetailDialog
           employee={selectedEmployee}
           onClose={() => setSelectedEmployee(null)}
-          onUploadClick={handleUploadClick}
+          onShowDocuments={handleShowDocuments}
+          onShowUpload={handleShowUpload}
+        />
+      )}
+
+      {showDocuments && selectedEmployee && (
+        <EmployeeDocumentsDialog
+          employeeId={selectedEmployee.id.toString()}
+          onClose={() => setShowDocuments(false)}
+        />
+      )}
+
+      {showUpload && selectedEmployee && (
+        <TambahDokumen
+          employee={selectedEmployee}
+          onClose={() => setShowUpload(false)}
+          onUpload={handleUpload}
         />
       )}
     </div>

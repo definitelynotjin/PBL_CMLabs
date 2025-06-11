@@ -6,14 +6,18 @@ import { Button } from '@/components/ui/button';
 import { Employee } from './types';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { EmployeeDocuments } from './employeedocuments';
-import TambahDokumen from './TambahDokumen';
+import TambahDokumen from './tambah-dokumen';
 
 export default function EmployeeDetailDialog({
   employee,
   onClose,
+  onShowDocuments,
+  onShowUpload,
 }: {
   employee: Employee;
   onClose: () => void;
+  onShowDocuments: () => void;
+  onShowUpload: () => void;
 }) {
   const [showDocuments, setShowDocuments] = useState(false);
   const [showUploadDialog, setShowUploadDialog] = useState(false);
@@ -63,8 +67,8 @@ export default function EmployeeDetailDialog({
             </p>
           </div>
           <div className="flex gap-2 pt-4">
-            <Button onClick={() => setShowUploadDialog(true)}>Tambah Dokumen</Button>
-            <Button variant="secondary" onClick={() => setShowDocuments(true)}>
+            <Button onClick={onShowUpload}>Tambah Dokumen</Button>
+            <Button variant="secondary" onClick={onShowDocuments}>
               Lihat Dokumen
             </Button>
           </div>
@@ -86,7 +90,7 @@ export default function EmployeeDetailDialog({
           <DialogHeader>
             <DialogTitle>Dokumen Karyawan</DialogTitle>
           </DialogHeader>
-          <EmployeeDocuments employeeId={employee.id} />
+          <EmployeeDocuments employeeId={employee.id.toString()} />
         </DialogContent>
       </Dialog>
     </>

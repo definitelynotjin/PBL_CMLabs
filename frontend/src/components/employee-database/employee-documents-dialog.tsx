@@ -4,8 +4,8 @@ import { Button } from '@/components/ui/button';
 
 interface Document {
     id: string;
-    type: string;
-    file_path: string;
+    document_type: string;
+    file_url: string;
     created_at: string;
 }
 
@@ -22,7 +22,9 @@ export default function EmployeeDocumentsDialog({
     useEffect(() => {
         async function fetchDocs() {
             try {
-                const docs = await getEmployeeDocuments(employeeId);
+                const res = await fetch(`/api/employees/${employeeId}/documents`);
+                if (!res.ok) throw new Error('Failed to fetch documents');
+                const docs = await res.json();
                 setDocuments(docs);
             } catch (error) {
                 alert('Failed to load documents');
@@ -48,7 +50,10 @@ export default function EmployeeDocumentsDialog({
                         <ul>
                             {documents.map(doc => (
                                 <li key={doc.id}>
-                                    <strong>{doc.type}</strong> - <a href={`/storage/${doc.file_path}`} target="_blank" rel="noopener noreferrer">Lihat File</a>
+                                    <strong>{doc.document_type}</strong> -{' '}
+                                    <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
+                                        Lihat File
+                                    </a>
                                 </li>
                             ))}
                         </ul>
