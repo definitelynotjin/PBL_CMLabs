@@ -79,7 +79,7 @@ export function SignInForm({
         <Button type="submit" className="w-full p-6 bg-gray-500 hover:bg-gray-600 text-white uppercase">
           Sign In
         </Button>
-        <GoogleSignIn />
+        < SignIn />
         <Button type="button" variant="outline" className="w-full p-6 uppercase"
           onClick={() => { router.push("/employee-signin"); }}
         >
