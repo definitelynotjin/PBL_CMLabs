@@ -32,13 +32,20 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employees, loading, onRow
                         </tr>
                     ) : (
                         employees.map((emp, index) => (
-                            <tr key={emp.id} className="border-t cursor-pointer hover:bg-gray-50" onClick={() => onRowClick(emp)}>
+                            <tr key={emp.id} className="border-t hover:bg-gray-50">
                                 <td className="p-2">{index + 1}</td>
                                 <td className="p-2">{emp.user?.employee_id || '-'}</td>
                                 <td className="p-2">
                                     <div className="w-8 h-8 bg-gray-300 rounded-full" />
                                 </td>
-                                <td className="p-2">{emp.first_name} {emp.last_name}</td>
+                                <td className="p-2">
+                                    <button
+                                        onClick={() => onRowClick(emp)}
+                                        className="text-blue-600 underline cursor-pointer bg-transparent border-none p-0"
+                                    >
+                                        {emp.first_name} {emp.last_name}
+                                    </button>
+                                </td>
                                 <td className="p-2">
                                     <span className="bg-muted px-2 py-1 rounded text-xs font-medium">{emp.gender}</span>
                                 </td>

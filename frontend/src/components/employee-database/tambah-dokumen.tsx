@@ -4,10 +4,13 @@ import { Employee } from './types';
 interface TambahDokumenProps {
   employee: Employee;
   onClose: () => void;
+  onUpload: (file: File, documentType: string, employeeId: string) => Promise<void>;
 }
 
-const TambahDokumen: React.FC<TambahDokumenProps> = ({ employee, onClose }) => {
+const TambahDokumen: React.FC<TambahDokumenProps> = ({ employee, onClose, onUpload }) => {
   const [file, setFile] = useState<File | null>(null);
+  const [documentType, setDocumentType] = useState<string>('');
+  const [loading, setLoading] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -15,18 +18,27 @@ const TambahDokumen: React.FC<TambahDokumenProps> = ({ employee, onClose }) => {
     }
   };
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     if (!file) return alert('Please select a file first');
+    if (!documentType) return alert('Please select a document type');
 
-    // TODO: Implement actual upload logic here, e.g. API call
-
-    alert(`Uploading ${file.name} for ${employee.first_name} ${employee.last_name}`);
-    setFile(null); // Clear selected file
-    onClose();
+    try {
+      setLoading(true);
+      await onUpload(file, documentType, employee.id);
+      alert('Upload successful!');
+      setFile(null);
+      setDocumentType('');
+      onClose();
+    } catch (error) {
+      alert('Upload failed, please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCancel = () => {
     setFile(null);
+    setDocumentType('');
     onClose();
   };
 
@@ -37,12 +49,29 @@ const TambahDokumen: React.FC<TambahDokumenProps> = ({ employee, onClose }) => {
           Tambah Dokumen untuk {employee.first_name} {employee.last_name}
         </h2>
 
+        <label htmlFor="doc-type" className="block mb-1 font-medium">Tipe Dokumen</label>
+        <select
+          id="doc-type"
+          value={documentType}
+          onChange={(e) => setDocumentType(e.target.value)}
+          className="mb-4 w-full border rounded p-2"
+          disabled={loading}
+        >
+          <option value="" disabled>
+            Pilih tipe dokumen
+          </option>
+          <option value="Surat Peringatan">Surat Peringatan</option>
+          <option value="Kontrak">Kontrak</option>
+          <option value="Lainnya">Lainnya</option>
+        </select>
+
         <input
           id="file-upload"
           type="file"
           onChange={handleFileChange}
           aria-label="Pilih file dokumen"
           className="mb-2"
+          disabled={loading}
         />
 
         {file && (
@@ -55,17 +84,17 @@ const TambahDokumen: React.FC<TambahDokumenProps> = ({ employee, onClose }) => {
           <button
             onClick={handleCancel}
             className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+            disabled={loading}
           >
             Cancel
           </button>
           <button
             onClick={handleUpload}
-            disabled={!file}
-            className={`px-4 py-2 rounded text-white ${
-              file ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-300 cursor-not-allowed'
-            }`}
+            disabled={!file || !documentType || loading}
+            className={`px-4 py-2 rounded text-white ${file && documentType && !loading ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-300 cursor-not-allowed'
+              }`}
           >
-            Upload
+            {loading ? 'Uploading...' : 'Upload'}
           </button>
         </div>
       </div>

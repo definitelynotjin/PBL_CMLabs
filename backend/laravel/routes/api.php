@@ -11,6 +11,7 @@ use App\Http\Controllers\CheckClockSettingController;
 use App\Http\Controllers\CheckClockSettingTimeController;
 
 
+
 Route::post('/auth/google/callback', [GoogleAuthController::class, 'callback']);
 
 
@@ -28,6 +29,13 @@ Route::post('/employees', [EmployeeController::class, 'store']);
 Route::get('/employees/{employee}', [EmployeeController::class, 'show']);
 Route::put('/employees/{employee}', [EmployeeController::class, 'update']);
 Route::delete('/employees/{employee}', [EmployeeController::class, 'destroy']);
+
+// Documents
+Route::prefix('employees/{id}/documents')->group(function () {
+    Route::get('/', [DocumentController::class, 'index']);
+});
+
+Route::post('/documents', [DocumentController::class, 'store']);
 
 // Protected Routes
 Route::middleware('auth:sanctum')->group(function () {
