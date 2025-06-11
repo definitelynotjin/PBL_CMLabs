@@ -7,11 +7,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Facebook, Instagram, Linkedin } from "lucide-react"; // Only use what's necessary
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"; // Import Avatar components
+import { Facebook, Instagram, Linkedin } from "lucide-react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 interface TeamProps {
-  // imageUrl: string; // Removed as requested, using AvatarFallback instead
   name: string;
   studentId: string;
   socialNetworks: SociaNetworkslProps[];
@@ -27,21 +26,21 @@ const teamList: TeamProps[] = [
     name: "Gastiadirijal N.K.",
     studentId: "2241720001",
     socialNetworks: [
-      { name: "Linkedin", url: "https://www.linkedin.com/in/gastiadirijal-n-k/" }, // Placeholder URL
+      { name: "Linkedin", url: "https://www.linkedin.com/in/gastiadirijal-n-k/" },
     ],
   },
   {
     name: "Lenka Melinda Florienka",
     studentId: "2241720074",
     socialNetworks: [
-      { name: "Linkedin", url: "https://www.linkedin.com/in/lenka-melinda/" }, // Placeholder URL
+      { name: "Linkedin", url: "https://www.linkedin.com/in/lenka-melinda/" },
     ],
   },
   {
     name: "Malik Abdul Azis",
-    studentId: "2241720024", // Corrected student ID based on input
+    studentId: "2241720024",
     socialNetworks: [
-      { name: "Linkedin", url: "https://www.linkedin.com/in/malik-abdul-azis/" }, // Placeholder URL
+      { name: "Linkedin", url: "https://www.linkedin.com/in/malik-abdul-azis/" },
     ],
   },
 ];
@@ -73,42 +72,49 @@ export const Team = () => {
         Meet the talented individuals behind the development of our Human Resource Information System for the Project Based Learning (PBL) Agenda.
       </p>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
         {teamList.map(({ name, studentId, socialNetworks }: TeamProps) => (
           <Card
-            key={studentId} // Using studentId as key for uniqueness
-            className="bg-muted/50 relative pt-16 flex flex-col items-center text-center w-full max-w-xs" // pt-16 creates space for avatar
+            key={studentId}
+            className="bg-muted/50 relative pt-20 pb-6 px-6 flex flex-col items-center text-center w-full max-w-xs"
           >
             {/* Anonymous Avatar */}
-            <div className="absolute -top-12 rounded-full w-24 h-24 flex items-center justify-center bg-gray-200 border-4 border-white shadow-md overflow-hidden">
-                <Avatar className="w-24 h-24"> {/* Avatar component wrapper */}
-                  {/* Using AvatarFallback to display initials for anonymity */}
-                  <AvatarFallback className="text-4xl font-bold text-gray-600 bg-gray-300">
-                    {name.split(' ').map(n => n[0]).join('')}
-                  </AvatarFallback>
-                </Avatar>
+            <div className="absolute -top-12">
+              <Avatar className="w-24 h-24 bg-gray-300 border-4 border-white shadow-md">
+                <AvatarFallback className="text-3xl font-bold text-gray-600">
+                  {name
+                    .split(" ")
+                    .map((word) => word[0])
+                    .join("")
+                    .toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
             </div>
-            {/* Name and Student ID under avatar */}
-            <CardHeader className="pb-2 pt-8 text-center"> {/* Added pt-8 to push content down, text-center for explicit centering */}
+
+            {/* Nama dan NIM */}
+            <CardHeader className="pt-4 text-center">
               <CardTitle className="text-lg font-semibold">{name}</CardTitle>
-              <CardDescription className="text-primary text-sm">{studentId}</CardDescription> {/* Reduced font size for student ID */}
+              <CardDescription className="text-primary text-sm">
+                {studentId}
+              </CardDescription>
             </CardHeader>
 
-            <CardContent className="pb-2">
-              <p className="text-sm">Politeknik Negeri Malang</p>
+            {/* Institusi */}
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Politeknik Negeri Malang
+              </p>
             </CardContent>
 
-            <CardFooter className="gap-2 pt-0"> {/* Adjusted padding */}
-              {socialNetworks.map(({ name: socialName, url }: SociaNetworkslProps) => (
+            {/* Social Media */}
+            <CardFooter className="gap-2">
+              {socialNetworks.map(({ name: socialName, url }) => (
                 <a
                   key={socialName}
                   rel="noreferrer noopener"
                   href={url}
                   target="_blank"
-                  className={buttonVariants({
-                    variant: "ghost",
-                    size: "sm",
-                  })}
+                  className={buttonVariants({ variant: "ghost", size: "sm" })}
                 >
                   <span className="sr-only">{socialName} icon</span>
                   {socialIcon(socialName)}
