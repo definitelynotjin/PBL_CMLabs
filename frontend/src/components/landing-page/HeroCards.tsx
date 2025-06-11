@@ -9,56 +9,57 @@ import {
   CardTitle,
   CardFooter,
 } from "@/components/ui/card";
-import { Check, Linkedin } from "lucide-react";
-import { LightBulbIcon } from "./Icons";
-import { GitHubLogoIcon } from "@radix-ui/react-icons";
+import { Check, Linkedin } from "lucide-react"; // Linkedin icon is used for mentor card
+import { LightBulbIcon } from "./Icons"; // Used for 'Growth Environment' card
+import { GitHubLogoIcon } from "@radix-ui/react-icons"; // Used for mentor card
 
 export const HeroCards = () => {
   return (
-    <div className="hidden lg:flex w-full h-[680px] justify-center items-center relative"> {/* Increased overall height for more breathing room */}
-      {/* Adjusted inner container size for a more clustered, synchronized look */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[550px]">
-
-        {/* Testimonial Card - Top-left, slightly offset, base layer */}
-        <Card className="absolute w-[340px] top-[10%] left-[5%] drop-shadow-xl shadow-black/10 dark:shadow-white/10 z-10">
+    <div className="hidden lg:flex w-full h-[500px] justify-center items-center relative">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px]">
+        {/* Testimonial Card */}
+        <Card className="absolute w-[340px] -top-[15px] drop-shadow-xl shadow-black/10 dark:shadow-white/10">
           <CardHeader className="flex flex-row items-center gap-4 pb-2">
             <Avatar>
-              <AvatarImage alt="User Avatar" src="https://i.pravatar.cc/150?img=20" />
-              <AvatarFallback>AS</AvatarFallback>
+              {/* Replace with an image of a past intern or generic professional */}
+              <AvatarImage alt="Intern Avatar" src="https://i.pravatar.cc/150?img=20" />
+              <AvatarFallback>JP</AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
-              <CardTitle className="text-lg">Anya Sharma</CardTitle>
-              <CardDescription>HR Administrator</CardDescription>
+              <CardTitle className="text-lg">Jessica Putri</CardTitle>
+              <CardDescription>Intern Alumni 24</CardDescription>
             </div>
           </CardHeader>
           <CardContent>
-            This HRIS system has transformed our workflow efficiency!
+            I gained practical skills and amazing mentorship. Highly recommend!
           </CardContent>
         </Card>
 
-        {/* HR Manager Card - Top-right, overlaps slightly with Testimonial, higher z-index */}
-        <Card className="absolute right-[5%] top-[5%] w-80 flex flex-col justify-center items-center drop-shadow-xl shadow-black/10 dark:shadow-white/10 z-20">
+        {/* Mentor/Team Card */}
+        <Card className="absolute right-[20px] top-4 w-80 flex flex-col justify-center items-center drop-shadow-xl shadow-black/10 dark:shadow-white/10">
           <CardHeader className="mt-8 flex justify-center items-center pb-2">
+            {/* Replace with an image of a Sarastya mentor or team member */}
             <img
               src="https://i.pravatar.cc/150?img=68"
-              alt="Manager Avatar"
+              alt="Mentor Avatar"
               className="absolute grayscale-[0%] -top-12 rounded-full w-24 h-24 aspect-square object-cover"
             />
-            <CardTitle className="text-center">David Lee</CardTitle>
+            <CardTitle className="text-center">M. Hartigan</CardTitle>
             <CardDescription className="font-normal text-primary">
-              HR Manager
+              Software Engineer, Sarastya Agility
             </CardDescription>
           </CardHeader>
           <CardContent className="text-center pb-2">
             <p>
-              Manages employee data & attendance with ease, saving countless HR hours weekly!
+              We are passionate about nurturing future talent and transform academic knowledge into real-world impact.
             </p>
           </CardContent>
           <CardFooter>
+            {/* Consider updating these links to Sarastya's official profiles or relevant professional profiles */}
             <div>
               <a
                 rel="noreferrer noopener"
-                href="#"
+                href="#" // Link to Sarastya's GitHub or a mentor's relevant profile
                 target="_blank"
                 className={buttonVariants({
                   variant: "ghost",
@@ -70,7 +71,7 @@ export const HeroCards = () => {
               </a>
               <a
                 rel="noreferrer noopener"
-                href="#"
+                href="#" // Link to Sarastya's Twitter/X or a mentor's relevant profile
                 target="_blank"
                 className={buttonVariants({
                   variant: "ghost",
@@ -90,7 +91,7 @@ export const HeroCards = () => {
               </a>
               <a
                 rel="noreferrer noopener"
-                href="#"
+                href="#" // Link to Sarastya's LinkedIn or a mentor's relevant profile
                 target="_blank"
                 className={buttonVariants({
                   variant: "ghost",
@@ -104,34 +105,31 @@ export const HeroCards = () => {
           </CardFooter>
         </Card>
 
-        {/* Basic Plan Card - Bottom-left, overlaps slightly, lower z-index */}
-        <Card className="absolute bottom-[5%] left-[0%] w-72 drop-shadow-xl shadow-black/10 dark:shadow-white/10 z-0">
+        {/* Internship Program Highlights Card (Re-purposed from Pricing Card) */}
+        <Card className="absolute top-[150px] left-[50px] w-72 drop-shadow-xl shadow-black/10 dark:shadow-white/10">
           <CardHeader>
             <CardTitle className="flex item-center justify-between">
-              Basic Plan
+              Program
               <Badge variant="secondary" className="text-sm text-primary">
-                14-Day Trial
+                Career Growth
               </Badge>
             </CardTitle>
-            <div>
-              <span className="text-3xl font-bold">Pay-as-you-go</span>
-              <span className="text-muted-foreground"> per employee / month</span>
-            </div>
+            {/* Removed pricing section */}
             <CardDescription>
-              Ideal for small teams exploring core HRIS functions.
+              Our PKL and Internship programs are designed for holistic development, offering a truly immersive experience.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button className="w-full">Start Free Trial</Button>
+            <Button className="w-full">Explore Opportunities</Button> {/* Changed button text */}
           </CardContent>
           <hr className="w-4/5 m-auto mb-4" />
           <CardFooter className="flex">
             <div className="space-y-4">
               {[
-                "Employee Data Mgt.",
-                "Attendance Tracking",
-                "Letter Management",
-                "Overtime Tracking",
+                "Dedicated Mentorship",
+                "Real-world Projects",
+                "Networking Opportunities",
+                "Skill Development Workshops",
               ].map((benefit: string) => (
                 <span key={benefit} className="flex">
                   <Check className="text-green-500" />
@@ -142,16 +140,16 @@ export const HeroCards = () => {
           </CardFooter>
         </Card>
 
-        {/* Full-spectrum HR Automation Card - Bottom-right, overlaps most, highest z-index */}
-        <Card className="absolute w-[350px] right-[0%] bottom-[0%] drop-shadow-xl shadow-black/10 dark:shadow-white/10 z-30">
+        {/* Key Feature/Approach Card (Re-purposed from Service Card) */}
+        <Card className="absolute w-[350px] -right-[10px] bottom-[35px] drop-shadow-xl shadow-black/10 dark:shadow-white/10">
           <CardHeader className="space-y-1 flex md:flex-row justify-start items-start gap-4">
             <div className="mt-1 bg-primary/20 p-1 rounded-2xl">
-              <LightBulbIcon />
+              <LightBulbIcon /> {/* Icon remains suitable for 'innovation' or 'ideas' */}
             </div>
             <div>
-              <CardTitle>Full-spectrum HR Automation</CardTitle>
+              <CardTitle>Innovation & Impact</CardTitle>
               <CardDescription className="text-md mt-2">
-                Streamline core tasks like employee data, attendance, and official documents.
+                Join a team that values your ideas. Contribute to innovative solutions and see the direct impact of your work.
               </CardDescription>
             </div>
           </CardHeader>
