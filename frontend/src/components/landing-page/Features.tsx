@@ -21,21 +21,18 @@ interface FeatureProps {
 const features: FeatureProps[] = [
   {
     title: "Secure Authentication",
-    description:
-      "Users can securely access the HRIS application via email and password, Google OAuth, or employee ID. Admin users have dedicated login access, while employees can use their unique employee ID to log in and manage their data.",
-    image: image4, // This image could represent secure access or looking ahead to secure systems
+    description: "Secure logins via email/password, Google OAuth, or employee ID for both admin and staff. ",
+    image: image4,
   },
   {
     title: "Flexible Attendance Settings",
-    description:
-      "Configure check-clock settings including geolocation with a maximum radius for WFO, and options for WFA or Hybrid work types. Define custom work schedules with adjustable clock-in/out times, and break durations.",
-    image: image3, // This image could represent adaptability or user-centric design
+    description: "Customizable attendance with geolocation, WFO/WFA/Hybrid options, and adjustable work schedules. ",
+    image: image3,
   },
   {
     title: "Comprehensive Overtime Management",
-    description:
-      "Manage various overtime types, with configurable rates based on government regulations or custom company policies. Track employee overtime hours and calculate estimated compensation automatically.",
-    image: image, // This image could represent growth in efficiency or financial management
+    description: "Manage overtime types and rates (government/custom). Track hours and auto-calculate compensation. ",
+    image: image,
   },
 ];
 

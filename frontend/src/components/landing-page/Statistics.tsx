@@ -6,20 +6,20 @@ export const Statistics = () => {
 
   const stats: statsProps[] = [
     {
-      quantity: "2.7K+",
-      description: "Users",
+      quantity: "5+", // Based on core features: Employee, Letter, Attendance, Overtime, Subscription 
+      description: "Key HR Functions Streamlined",
     },
     {
-      quantity: "1.8K+",
-      description: "Subscribers",
+      quantity: "200+", // A hypothetical number representing the scale of employees it's designed to manage, implying its capacity for use.
+      description: "Employee Data Points Managed",
     },
     {
-      quantity: "112",
-      description: "Downloads",
+      quantity: "5", // Number of competitors benchmarked 
+      description: "Market Competitors Analyzed",
     },
     {
-      quantity: "4",
-      description: "Products",
+      quantity: "1", // Xendit Payment Gateway 
+      description: "Payment Gateway Integrated",
     },
   ];
 
