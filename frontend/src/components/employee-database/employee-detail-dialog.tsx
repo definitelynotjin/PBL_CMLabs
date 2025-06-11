@@ -45,8 +45,10 @@ export default function EmployeeDetailDialog({
         <div className="flex gap-2 pt-4">
           <Button
             onClick={() => {
-              onClose();        // Close the current dialog
-              onShowUpload();   // Trigger parent to show upload dialog
+              onClose(); // Close the detail dialog first
+              setTimeout(() => {
+                onShowUpload(); // Then open the upload dialog
+              }, 100); // Delay slightly (100ms is usually enough)
             }}
           >
             Tambah Dokumen
