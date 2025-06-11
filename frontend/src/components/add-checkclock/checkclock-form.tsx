@@ -19,10 +19,11 @@ const MapComponent = dynamic(() => import("@/components/mapcomponent"), {
 });
 
 const locations = [
-  { value: "malang", label: "Malang" },
-  { value: "jakarta", label: "Jakarta" },
-  { value: "surabaya", label: "Surabaya" },
+  { id: "58b66a88-1e4f-46c1-8e90-b47194983a9a", value: "malang", label: "Kantor Malang" },
+  { id: "a3f1c0b4-5d7e-4fbb-bfe8-6d6b7a3b9a92", value: "jakarta", label: "Kantor Jakarta" },
+  { id: "c21f07de-8e2f-4d9c-9d7b-f0a0d73637ae", value: "surabaya", label: "Kantor Surabaya" },
 ];
+
 
 const absenceTypes = [
   { value: "clock-in", label: "Clock In" },
@@ -105,7 +106,8 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
       // Get current time in HH:mm:ss format
       const now = new Date();
       const pad = (num: number) => num.toString().padStart(2, "0");
-      const check_clock_time = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+      const check_clock_time = `${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}:${pad(now.getUTCSeconds())}`;
+
 
       formData.append("check_clock_type", check_clock_type);
       formData.append("check_clock_time", check_clock_time);
@@ -114,8 +116,9 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
       formData.append("absence_type", selectedAbsenceType);
     }
 
-    formData.append("location", selectedLocation);
-    formData.append("address", address);
+    const selectedLocationId = locations.find(loc => loc.value === selectedLocation)?.id || "";
+    formData.append("check_clock_setting_id", selectedLocationId);
+
 
     if (userLocation) {
       formData.append("latitude", userLocation[0].toString());
