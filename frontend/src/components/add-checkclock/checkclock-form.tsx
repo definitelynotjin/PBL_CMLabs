@@ -111,9 +111,7 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
         body: formData,
         headers: {
           Accept: "application/json",
-          ...(endpoint.includes("checkclocks") && token
-            ? { Authorization: `Bearer ${token}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 
