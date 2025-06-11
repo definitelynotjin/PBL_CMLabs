@@ -48,7 +48,7 @@ class CheckClockSettingTime extends Model
         });
     }
 
-    public function checkClockSetting()
+    public function setting()
     {
         return $this->belongsTo(CheckClockSetting::class, 'ck_settings_id');
     }

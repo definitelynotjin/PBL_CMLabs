@@ -54,7 +54,7 @@ class CheckClockSetting extends Model
     }
 
     // Relationship: CheckClockSetting has many CheckClockSettingTimes
-    public function settingTimes()
+    public function times()
     {
         return $this->hasMany(CheckClockSettingTime::class, 'ck_settings_id');
     }
