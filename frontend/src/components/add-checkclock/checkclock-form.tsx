@@ -103,18 +103,18 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
       ? "https://pblcmlabs.duckdns.org/api/absence-requests"
       : "https://pblcmlabs.duckdns.org/api/checkclocks";
 
-    try {
-      await fetch("https://pblcmlabs.duckdns.org/sanctum/csrf-cookie", {
-        credentials: "include",
-      });
+    const token = localStorage.getItem("token");
 
+    try {
       const response = await fetch(endpoint, {
         method: "POST",
         body: formData,
-        credentials: "include",
         headers: {
           Accept: "application/json",
-        }
+          ...(endpoint.includes("checkclocks") && token
+            ? { Authorization: `Bearer ${token}` }
+            : {}),
+        },
       });
 
       if (!response.ok) {
@@ -128,6 +128,7 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
       alert("Gagal mengirim: " + err.message);
     }
   };
+
 
   const resetForm = () => {
     setSelectedAbsenceType("");
