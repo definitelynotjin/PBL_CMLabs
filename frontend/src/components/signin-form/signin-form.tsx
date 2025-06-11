@@ -25,12 +25,20 @@ export function SignInForm({
     e.preventDefault();
     setError("");
 
+
+
     try {
+      await fetch('https://pblcmlabs.duckdns.org/sanctum/csrf-cookie', {
+        credentials: 'include',
+      });
+
       const response = await fetch(`https://pblcmlabs.duckdns.org/api/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+
         },
+        credentials: 'include',
         body: JSON.stringify({ login: identifier, password }),
       });
 
@@ -41,7 +49,7 @@ export function SignInForm({
       const data = await response.json();
 
       localStorage.setItem("token", data.token);
-      
+
       if (remember) {
         localStorage.setItem("rememberedIdentifier", identifier);
       }
