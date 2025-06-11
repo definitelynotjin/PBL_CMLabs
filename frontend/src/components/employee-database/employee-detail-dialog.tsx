@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Employee } from './types';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { EmployeeDocuments } from './employeedocuments';
 import TambahDokumen from './tambah-dokumen';
 
