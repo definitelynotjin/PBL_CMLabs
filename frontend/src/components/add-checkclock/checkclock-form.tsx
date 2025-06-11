@@ -14,11 +14,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-interface CheckclockFormProps {
-  isClient: boolean;
-}
-
-const MapComponent = dynamic(() => import("@/components/mapcomponent.tsx"), { ssr: false });
+const MapComponent = dynamic(() => import("@/components/mapcomponent"), {
+  ssr: false,
+});
 
 const locations = [
   { value: "malang", label: "Malang" },
@@ -34,6 +32,10 @@ const absenceTypes = [
   { value: "sick-leave", label: "Sick Leave" },
 ];
 
+interface CheckclockFormProps {
+  isClient: boolean;
+}
+
 const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
   const [selectedAbsenceType, setSelectedAbsenceType] = React.useState("");
   const [selectedLocation, setSelectedLocation] = React.useState("");
@@ -41,79 +43,61 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
   const [startDate, setStartDate] = React.useState("");
   const [endDate, setEndDate] = React.useState("");
   const [userLocation, setUserLocation] = React.useState<LatLngTuple | null>(null);
-  const [address, setAddress] = React.useState("");
+  const [address, setAddress] = React.useState("Mengambil lokasi...");
 
   React.useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
-          setUserLocation([lat, lng]);
+          const { latitude, longitude } = position.coords;
+          setUserLocation([latitude, longitude]);
 
           try {
-            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`);
+            const res = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+            );
             const data = await res.json();
-            setAddress(data.display_name || "");
-          } catch (err) {
-            console.error("Reverse geocoding error:", err);
+            setAddress(data.display_name || "Alamat tidak ditemukan");
+          } catch {
+            setAddress("Gagal mengambil alamat");
           }
         },
-        (err) => {
-          console.error("Geolocation error:", err);
-        }
+        () => setAddress("Gagal mengambil lokasi")
       );
     }
   }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.length) {
-      setFile(e.target.files[0]);
-    }
+    const selected = e.target.files?.[0];
+    if (selected) setFile(selected);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!selectedAbsenceType) {
-      alert("Please select an absence type.");
-      return;
-    }
-
-    if (!selectedLocation) {
-      alert("Please select a location.");
-      return;
+    if (!selectedAbsenceType || !selectedLocation) {
+      return alert("Mohon lengkapi tipe absensi dan lokasi.");
     }
 
     if (["annual-leave", "sick-leave"].includes(selectedAbsenceType)) {
-      if (!startDate || !endDate) {
-        alert("Please fill in both start and end dates.");
-        return;
-      }
-
-      if (!file) {
-        alert("Please upload a supporting document for leave.");
-        return;
+      if (!startDate || !endDate || !file) {
+        return alert("Untuk cuti/sakit, isi tanggal dan lampirkan dokumen.");
       }
     }
 
     const formData = new FormData();
     formData.append("absence_type", selectedAbsenceType);
     formData.append("location", selectedLocation);
+    formData.append("address", address);
+
     if (userLocation) {
       formData.append("latitude", userLocation[0].toString());
       formData.append("longitude", userLocation[1].toString());
     }
-    formData.append("address", address);
 
-    if (file) {
-      formData.append("supporting_document", file);
-    }
-
-    if (["annual-leave", "sick-leave"].includes(selectedAbsenceType)) {
-      formData.append("start_date", startDate);
-      formData.append("end_date", endDate);
-    }
+    if (file) formData.append("supporting_document", file);
+    if (startDate) formData.append("start_date", startDate);
+    if (endDate) formData.append("end_date", endDate);
 
     const endpoint = ["annual-leave", "sick-leave", "absent"].includes(selectedAbsenceType)
       ? "https://pblcmlabs.duckdns.org/api/absence-requests"
@@ -132,14 +116,13 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error("Server Error:", errorText);
-        throw new Error("Submission failed. See console for details.");
+        throw new Error(errorText);
       }
 
-      alert("Submission successful!");
+      alert("Berhasil dikirim!");
       resetForm();
-    } catch (error: any) {
-      alert("Failed to submit: " + error.message);
+    } catch (err: any) {
+      alert("Gagal mengirim: " + err.message);
     }
   };
 
@@ -149,32 +132,29 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
     setFile(null);
     setStartDate("");
     setEndDate("");
+    setAddress("Mengambil lokasi...");
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md">
+    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Left Column */}
         <div className="space-y-6">
           <div>
             <Label htmlFor="absence-type">Tipe Absensi</Label>
-            <Select
-              onValueChange={(value) => {
-                setSelectedAbsenceType(value);
-                if (!["annual-leave", "sick-leave"].includes(value)) {
-                  setStartDate("");
-                  setEndDate("");
-                }
-              }}
-              value={selectedAbsenceType}
-            >
-              <SelectTrigger className="w-full">
+            <Select value={selectedAbsenceType} onValueChange={(val) => {
+              setSelectedAbsenceType(val);
+              if (!["annual-leave", "sick-leave"].includes(val)) {
+                setStartDate("");
+                setEndDate("");
+              }
+            }}>
+              <SelectTrigger>
                 <SelectValue placeholder="Pilih Tipe Absensi" />
               </SelectTrigger>
-              <SelectContent className="z-50">
-                {absenceTypes.map((type) => (
-                  <SelectItem key={type.value} value={type.value}>
-                    {type.label}
-                  </SelectItem>
+              <SelectContent>
+                {absenceTypes.map(({ value, label }) => (
+                  <SelectItem key={value} value={value}>{label}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -205,13 +185,10 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
 
           <div>
             <Label htmlFor="file-upload">Upload Bukti Pendukung</Label>
-            <div className="border-dashed border-2 border-gray-300 p-4 rounded-md text-center">
-              <p>Drag n Drop here</p>
-              <p>Or</p>
+            <div className="border-2 border-dashed p-4 rounded-md text-center">
+              <p>Drag & Drop atau klik Browse</p>
               <Button variant="outline" asChild>
-                <label htmlFor="file-upload" className="cursor-pointer">
-                  Browse
-                </label>
+                <label htmlFor="file-upload" className="cursor-pointer">Browse</label>
               </Button>
               <Input
                 id="file-upload"
@@ -219,32 +196,31 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
                 className="hidden"
                 onChange={handleFileChange}
               />
-              {file && <p className="mt-2">Selected file: {file.name}</p>}
+              {file && <p className="mt-2 text-sm text-gray-600">{file.name}</p>}
             </div>
           </div>
         </div>
 
+        {/* Right Column */}
         <div className="space-y-6">
           <div>
             <Label>Lokasi</Label>
-            <Select onValueChange={setSelectedLocation} value={selectedLocation}>
-              <SelectTrigger className="w-full">
+            <Select value={selectedLocation} onValueChange={setSelectedLocation}>
+              <SelectTrigger>
                 <SelectValue placeholder="Pilih Lokasi" />
               </SelectTrigger>
               <SelectContent>
-                {locations.map((location) => (
-                  <SelectItem key={location.value} value={location.value}>
-                    {location.label}
-                  </SelectItem>
+                {locations.map(({ value, label }) => (
+                  <SelectItem key={value} value={value}>{label}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
 
           <div className="h-64">
-            {isClient && (
+            {isClient && userLocation && (
               <MapComponent
-                center={userLocation ?? [-7.9826, 112.6308]}
+                center={userLocation}
                 markerPopupText="Lokasi Anda"
               />
             )}
@@ -252,37 +228,23 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
 
           <div>
             <Label>Detail Alamat</Label>
-            <Input
-              value={address || "Mengambil lokasi..."}
-              readOnly
-              className="w-full mb-2"
-            />
+            <Input readOnly value={address} className="mb-2" />
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <Label>Lat Lokasi</Label>
-                <Input
-                  value={userLocation?.[0] ?? ""}
-                  readOnly
-                  className="w-full"
-                />
+                <Label>Latitude</Label>
+                <Input readOnly value={userLocation?.[0] ?? ""} />
               </div>
               <div>
-                <Label>Long Lokasi</Label>
-                <Input
-                  value={userLocation?.[1] ?? ""}
-                  readOnly
-                  className="w-full"
-                />
+                <Label>Longitude</Label>
+                <Input readOnly value={userLocation?.[1] ?? ""} />
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="flex justify-end space-x-2 mt-6">
-        <Button variant="outline" type="button" onClick={resetForm}>
-          Cancel
-        </Button>
+      <div className="flex justify-end gap-2 pt-4">
+        <Button variant="outline" type="button" onClick={resetForm}>Cancel</Button>
         <Button type="submit">Save</Button>
       </div>
     </form>
