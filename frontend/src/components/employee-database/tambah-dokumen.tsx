@@ -65,12 +65,14 @@ const TambahDokumen: React.FC<TambahDokumenProps> = ({ employee, onClose, onUplo
           <option value="Lainnya">Lainnya</option>
         </select>
 
+        <label htmlFor="file-upload" className="block mb-2 font-medium">
+          Upload Dokumen
+        </label>
         <input
           id="file-upload"
           type="file"
           onChange={handleFileChange}
-          aria-label="Pilih file dokumen"
-          className="mb-2"
+          className="mb-2 w-full"
           disabled={loading}
         />
 
