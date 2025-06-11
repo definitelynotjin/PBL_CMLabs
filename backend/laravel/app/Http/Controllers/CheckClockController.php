@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Routing\Controller;
 
 
+
 class CheckClockController extends Controller
 {
     public function store(Request $request)
@@ -23,7 +24,12 @@ class CheckClockController extends Controller
             'supporting_document' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048', // validate the file
         ]);
 
+
         $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
 
         // Get today’s setting time based on weekday
         $today = now()->format('l'); // E.g., "Monday"
