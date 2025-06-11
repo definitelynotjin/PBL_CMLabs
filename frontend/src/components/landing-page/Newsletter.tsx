@@ -4,7 +4,9 @@ import { Input } from "@/components/ui/input";
 export const Newsletter = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Subscribed!");
+    console.log("Subscribed to HRIS updates!");
+    // In a real application, you'd send this email to a backend service
+    // for newsletter subscription, perhaps related to HRIS news or feature updates.
   };
 
   return (
@@ -13,14 +15,14 @@ export const Newsletter = () => {
 
       <div className="max-w-4xl mx-auto px-4 py-24 sm:py-32 text-center">
         <h3 className="text-4xl md:text-5xl font-bold">
-          Join Our Daily{" "}
+          Stay Updated on Our{" "}
           <span className="bg-gradient-to-b from-primary/60 to-primary text-transparent bg-clip-text">
-            Newsletter
+            HRIS Project
           </span>
         </h3>
 
         <p className="text-xl text-muted-foreground mt-4 mb-10">
-          Stay updated with the latest news and exclusive offers.
+          Receive news, feature updates, and insights about our Human Resource Information System development.
         </p>
 
         <form
@@ -29,13 +31,13 @@ export const Newsletter = () => {
         >
           <Input
             type="email"
-            placeholder="your@email.com"
+            placeholder="your@business-email.com"
             className="bg-muted/50 dark:bg-muted/80"
-            aria-label="email"
+            aria-label="email for HRIS updates"
             required
           />
           <Button type="submit" className="w-full md:w-auto">
-            Subscribe
+            Subscribe to Updates
           </Button>
         </form>
       </div>

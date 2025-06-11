@@ -29,7 +29,7 @@ export const HeroCards = () => {
               <CardDescription>@mickeeyy</CardDescription>
             </div>
           </CardHeader>
-          <CardContent>This landing page is awesome!</CardContent>
+          <CardContent>This Human Resource Information System (HRIS) is a game-changer!</CardContent>
         </Card>
 
         {/* Team Card */}
@@ -47,7 +47,7 @@ export const HeroCards = () => {
           </CardHeader>
           <CardContent className="text-center pb-2">
             <p>
-              This HRIS makes managing employee data and attendance so 
+              This HRIS makes managing employee data and attendance so
               much easier. It saves us hours of manual work every week!
             </p>
           </CardContent>
@@ -111,20 +111,20 @@ export const HeroCards = () => {
               </Badge>
             </CardTitle>
             <div>
-              <span className="text-3xl font-bold">$0</span>
-              <span className="text-muted-foreground"> /month</span>
+              <span className="text-3xl font-bold">Pay-as-you-go</span>
+              <span className="text-muted-foreground"> per employee / month</span>
             </div>
             <CardDescription>
-              Ideal for small teams looking for essential HR automation.
+              Ideal for small teams looking for essential HR automation with flexible payment.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button className="w-full">Start Free Trial</Button>
+            <Button className="w-full">Start 14-Day Free Trial</Button>
           </CardContent>
           <hr className="w-4/5 m-auto mb-4" />
           <CardFooter className="flex">
             <div className="space-y-4">
-              {["4 Team member", "4 GB Storage", "Upto 6 pages"].map(
+              {["Employee Data Management", "Attendance Tracking", "Letter Management"].map(
                 (benefit: string) => (
                   <span key={benefit} className="flex">
                     <Check className="text-green-500" />
@@ -143,10 +143,9 @@ export const HeroCards = () => {
               <LightBulbIcon />
             </div>
             <div>
-              <CardTitle>Light & dark mode</CardTitle>
+              <CardTitle>Comprehensive HR Features</CardTitle>
               <CardDescription className="text-md mt-2">
-                Lorem ipsum dolor sit amet consect adipisicing elit. Consectetur
-                natusm.
+                Manage employee data, attendance, official letters, and overtime with ease. Our system simplifies HR tasks for both web and mobile users. 
               </CardDescription>
             </div>
           </CardHeader>

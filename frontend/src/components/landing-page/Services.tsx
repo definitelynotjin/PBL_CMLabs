@@ -4,8 +4,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { MagnifierIcon, WalletIcon, ChartIcon } from "./Icons";
-import cubeLeg from "../assets/cube-leg.png";
+// Importing new icons to better represent consultation, support, and technical aspects
+import { Wrench, Handshake, MonitorCheck } from "lucide-react";
+import cubeLeg from "../assets/cube-leg.png"; // Placeholder image - consider replacing with an image related to support or implementation
 import Image from "next/image";
 import { JSX } from "react";
 
@@ -17,22 +18,22 @@ interface ServiceProps {
 
 const serviceList: ServiceProps[] = [
   {
-    title: "Code Collaboration",
+    title: "Technical Consultancies",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi nesciunt est nostrum omnis ab sapiente.",
-    icon: <ChartIcon />,
+      "Leverage our expertise in Next.js, Laravel, and MySQL to ensure your HRIS application is built on a solid and efficient technical foundation, meeting all specified requirements.",
+    icon: <Wrench size={24} />, // Icon for technical support/consultation
   },
   {
-    title: "Project Management",
+    title: "Integration & Implementation Support",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi nesciunt est nostrum omnis ab sapiente.",
-    icon: <WalletIcon />,
+      "We provide seamless integration support, especially for critical components like Xendit Payment Gateway, ensuring smooth deployment and operation of all HRIS features, including paid subscriptions.",
+    icon: <Handshake size={24} />, // Icon for partnership/support
   },
   {
-    title: "Task Automation",
+    title: "Ongoing System Monitoring & Optimization",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi nesciunt est nostrum omnis ab sapiente.",
-    icon: <MagnifierIcon />,
+      "Our team offers continuous monitoring and optimization support for the HRIS, ensuring its performance, scalability, and security to meet your evolving HR needs and employee management tasks.",
+    icon: <MonitorCheck size={24} />, // Icon for monitoring/checking
   },
 ];
 
@@ -45,14 +46,13 @@ export const Services = () => {
           <div className="w-full">
             <h2 className="text-3xl md:text-4xl font-bold text-center lg:text-left">
               <span className="bg-gradient-to-b from-primary/60 to-primary text-transparent bg-clip-text">
-                Client-Centric{" "}
+                Comprehensive{" "}
               </span>
-              Services
+              Support for Your HRIS
             </h2>
 
             <p className="text-muted-foreground text-xl mt-4 mb-8 text-center lg:text-left">
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-              Veritatis dolor.
+              Beyond development, we offer a range of services to ensure your Human Resource Information System operates flawlessly and efficiently.
             </p>
 
             <div className="flex flex-col gap-6">
@@ -77,7 +77,7 @@ export const Services = () => {
           {/* Image */}
           <div className="flex justify-center">
             <Image
-              src={cubeLeg}
+              src={cubeLeg} // Consider replacing this with an image that represents support, technology, or services
               alt="About services"
               className="object-contain max-w-[300px] md:max-w-[450px] lg:max-w-[600px] w-full h-auto"
               width={600}

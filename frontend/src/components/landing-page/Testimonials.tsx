@@ -16,45 +16,45 @@ interface TestimonialProps {
 
 const testimonials: TestimonialProps[] = [
   {
-    image: "https://github.com/shadcn.png",
-    name: "Michael",
-    userName: "@mickeey",
-    comment: "This HRIS system has transformed our HR operations.",
+    image: "https://i.pravatar.cc/150?img=1", // Example avatar
+    name: "Aisha Rahman",
+    userName: "@aisha.hr",
+    comment: "This HRIS system has revolutionized our employee data management. Everything is so organized and accessible now!",
   },
   {
-    image: "https://github.com/shadcn.png",
-    name: "Sarah",
-    userName: "@sarahjohnson",
+    image: "https://i.pravatar.cc/150?img=2", // Example avatar
+    name: "Budi Santoso",
+    userName: "@budi.dev",
     comment:
-      "a game-changer for our employees. They can access their information and check in easily.",
+      "The attendance tracking feature, especially with geolocation, is a game-changer for our remote and hybrid teams. So efficient!",
   },
   {
-    image: "https://github.com/shadcn.png",
-    name: "John Doe React",
-    userName: "@john_Doe2",
+    image: "https://i.pravatar.cc/150?img=3", // Example avatar
+    name: "Citra Dewi",
+    userName: "@citra.adm",
     comment:
-      "Lorem ipsum dolor sit amet,exercitation. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.",
+      "Managing official letters and documents used to be a nightmare. Now, with this HRIS, it's incredibly straightforward and secure. A must-have!",
   },
   {
-    image: "https://github.com/shadcn.png",
-    name: "John Doe React",
-    userName: "@john_Doe3",
+    image: "https://i.pravatar.cc/150?img=4", // Example avatar
+    name: "Darma Putra",
+    userName: "@darma.acc",
     comment:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.",
+      "The overtime management module has simplified calculations and improved transparency. It's accurate and easy to use.",
   },
   {
-    image: "https://github.com/shadcn.png",
-    name: "John Doe React",
-    userName: "@john_Doe4",
+    image: "https://i.pravatar.cc/150?img=5", // Example avatar
+    name: "Eva Lestari",
+    userName: "@eva.pm",
     comment:
-      "Lorem ipsum dolor sit amet, tempor incididunt  aliqua. Ut enim ad minim veniam, quis nostrud.",
+      "The mobile application for employees is fantastic! Checking attendance and accessing personal info is so convenient on the go.",
   },
   {
-    image: "https://github.com/shadcn.png",
-    name: "John Doe React",
-    userName: "@john_Doe5",
+    image: "https://i.pravatar.cc/150?img=6", // Example avatar
+    name: "Faisal Hakim",
+    userName: "@faisal.ceo",
     comment:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "Our HR team's efficiency has significantly improved since implementing this system. The free trial convinced us, and the subscription model is fair.",
   },
 ];
 
@@ -65,17 +65,14 @@ export const Testimonials = () => {
       className="max-w-6xl mx-auto px-4 py-24 sm:py-32"
     >
       <h2 className="text-3xl md:text-4xl font-bold text-center">
-        Discover Why
+        Hear From{" "}
         <span className="bg-gradient-to-b from-primary/60 to-primary text-transparent bg-clip-text">
-          {" "}
-          People Love{" "}
+          Our Valued Users
         </span>
-        This Landing Page
       </h2>
 
       <p className="text-xl text-muted-foreground pt-4 pb-8 text-center max-w-2xl mx-auto">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Non unde error
-        facere hic reiciendis illo
+        Discover how our Human Resource Information System has made a positive impact on businesses and employees.
       </p>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 justify-items-center">
@@ -87,7 +84,7 @@ export const Testimonials = () => {
             <CardHeader className="flex flex-row items-center gap-4 pb-2">
               <Avatar>
                 <AvatarImage alt="" src={image} />
-                <AvatarFallback>OM</AvatarFallback>
+                <AvatarFallback>{name.split(' ').map(n => n[0]).join('')}</AvatarFallback> {/* Dynamic fallback */}
               </Avatar>
               <div className="flex flex-col">
                 <CardTitle className="text-lg">{name}</CardTitle>

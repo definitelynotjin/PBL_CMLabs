@@ -12,7 +12,7 @@ import { Facebook, Instagram, Linkedin } from "lucide-react";
 interface TeamProps {
   imageUrl: string;
   name: string;
-  position: string;
+  studentId: string; // Changed from 'position' to 'studentId'
   socialNetworks: SociaNetworkslProps[];
 }
 
@@ -23,43 +23,33 @@ interface SociaNetworkslProps {
 
 const teamList: TeamProps[] = [
   {
-    imageUrl: "https://i.pravatar.cc/150?img=35",
-    name: "Emma Smith",
-    position: "Product Manager",
+    imageUrl: "https://i.pravatar.cc/150?img=68", // Placeholder image
+    name: "Gastiadirijal N.K.",
+    studentId: "2241720001",
     socialNetworks: [
-      { name: "Linkedin", url: "https://www.linkedin.com/in/leopoldo-miranda/" },
-      { name: "Facebook", url: "https://www.facebook.com/" },
-      { name: "Instagram", url: "https://www.instagram.com/" },
+      { name: "Linkedin", url: "https://www.linkedin.com/in/gastiadirijal-n-k/" }, // Placeholder URL
+      // Add other social networks if available
     ],
   },
   {
-    imageUrl: "https://i.pravatar.cc/150?img=60",
-    name: "John Doe",
-    position: "Tech Lead",
+    imageUrl: "https://i.pravatar.cc/150?img=69", // Placeholder image
+    name: "Lenka Melinda Florienka",
+    studentId: "2241720074",
     socialNetworks: [
-      { name: "Linkedin", url: "https://www.linkedin.com/in/leopoldo-miranda/" },
-      { name: "Facebook", url: "https://www.facebook.com/" },
-      { name: "Instagram", url: "https://www.instagram.com/" },
+      { name: "Linkedin", url: "https://www.linkedin.com/in/lenka-melinda/" }, // Placeholder URL
+      // Add other social networks if available
     ],
   },
   {
-    imageUrl: "https://i.pravatar.cc/150?img=36",
-    name: "Ashley Ross",
-    position: "Frontend Developer",
+    imageUrl: "https://i.pravatar.cc/150?img=70", // Placeholder image
+    name: "Malik Abdul Azis",
+    studentId: "2241720024", // Corrected student ID based on input
     socialNetworks: [
-      { name: "Linkedin", url: "https://www.linkedin.com/in/leopoldo-miranda/" },
-      { name: "Instagram", url: "https://www.instagram.com/" },
+      { name: "Linkedin", url: "https://www.linkedin.com/in/malik-abdul-azis/" }, // Placeholder URL
+      // Add other social networks if available
     ],
   },
-  {
-    imageUrl: "https://i.pravatar.cc/150?img=17",
-    name: "Bruce Rogers",
-    position: "Backend Developer",
-    socialNetworks: [
-      { name: "Linkedin", url: "https://www.linkedin.com/in/leopoldo-miranda/" },
-      { name: "Facebook", url: "https://www.facebook.com/" },
-    ],
-  },
+  // You can add more team members here if needed
 ];
 
 export const Team = () => {
@@ -71,6 +61,8 @@ export const Team = () => {
         return <Facebook size={20} />;
       case "Instagram":
         return <Instagram size={20} />;
+      default:
+        return null; // Return null or a default icon if iconName doesn't match
     }
   };
 
@@ -80,38 +72,37 @@ export const Team = () => {
         <span className="bg-gradient-to-b from-primary/60 to-primary text-transparent bg-clip-text">
           Our Dedicated{" "}
         </span>
-        Crew
+        Team
       </h2>
 
       <p className="mt-4 mb-10 text-xl text-muted-foreground text-center max-w-2xl mx-auto">
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Veritatis
-        dolor pariatur sit!
+        Meet the talented individuals behind the development of our Human Resource Information System for the Project Based Learning (PBL) Agenda.
       </p>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 justify-items-center">
-        {teamList.map(({ imageUrl, name, position, socialNetworks }: TeamProps) => (
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
+        {teamList.map(({ imageUrl, name, studentId, socialNetworks }: TeamProps) => (
           <Card
-            key={name}
+            key={studentId} // Using studentId as key for uniqueness
             className="bg-muted/50 relative pt-16 flex flex-col items-center text-center w-full max-w-xs"
           >
             <img
               src={imageUrl}
-              alt={`${name} ${position}`}
+              alt={`${name}'s profile picture`}
               className="absolute -top-12 rounded-full w-24 h-24 object-cover border-4 border-white shadow-md"
             />
             <CardHeader className="pb-2">
               <CardTitle>{name}</CardTitle>
-              <CardDescription className="text-primary">{position}</CardDescription>
+              <CardDescription className="text-primary">{studentId}</CardDescription> {/* Displaying student ID */}
             </CardHeader>
 
             <CardContent className="pb-2">
-              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+              <p>Politeknik Negeri Malang</p>
             </CardContent>
 
             <CardFooter className="gap-2">
-              {socialNetworks.map(({ name, url }: SociaNetworkslProps) => (
+              {socialNetworks.map(({ name: socialName, url }: SociaNetworkslProps) => ( // Renamed 'name' to 'socialName' to avoid conflict
                 <a
-                  key={name}
+                  key={socialName}
                   rel="noreferrer noopener"
                   href={url}
                   target="_blank"
@@ -120,8 +111,8 @@ export const Team = () => {
                     size: "sm",
                   })}
                 >
-                  <span className="sr-only">{name} icon</span>
-                  {socialIcon(name)}
+                  <span className="sr-only">{socialName} icon</span>
+                  {socialIcon(socialName)}
                 </a>
               ))}
             </CardFooter>

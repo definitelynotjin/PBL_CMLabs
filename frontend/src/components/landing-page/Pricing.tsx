@@ -18,7 +18,7 @@ enum PopularPlanType {
 interface PricingProps {
   title: string;
   popular: PopularPlanType;
-  price: number;
+  priceDetails: string; // Updated to reflect varying price descriptions
   description: string;
   buttonText: string;
   benefitList: string[];
@@ -26,48 +26,49 @@ interface PricingProps {
 
 const pricingList: PricingProps[] = [
   {
-    title: "Free",
-    popular: 0,
-    price: 0,
-    description:
-      "Lorem ipsum dolor sit, amet ipsum consectetur adipisicing elit.",
-    buttonText: "Get Started",
+    title: "Basic",
+    popular: PopularPlanType.NO,
+    priceDetails: "Contact for Pricing", // Placeholder, as no price is given
+    description: "Recommended for small businesses seeking essential HR automation.",
+    buttonText: "Select a Package",
     benefitList: [
-      "1 Team member",
-      "2 GB Storage",
-      "Upto 4 pages",
-      "Community support",
-      "lorem ipsum dolor",
+      "GPS-based attendance validation",
+      "Employee data management",
+      "Leave & time-off requests",
+      "Overtime management (government regulations)",
+      "Fixed work schedule management",
+      "Automatic tax calculation",
     ],
   },
   {
     title: "Premium",
-    popular: 1,
-    price: 5,
-    description:
-      "Lorem ipsum dolor sit, amet ipsum consectetur adipisicing elit.",
-    buttonText: "Start Free Trial",
+    popular: PopularPlanType.YES,
+    priceDetails: "Contact for Pricing", // Placeholder
+    description: "Best for growing businesses needing comprehensive HR solutions.",
+    buttonText: "Select a Package",
     benefitList: [
-      "4 Team member",
-      "4 GB Storage",
-      "Upto 6 pages",
-      "Priority support",
-      "lorem ipsum dolor",
+      "All Basic features",
+      "Clock-in & clock-out attendance settings",
+      "Fingerprint integration",
+      "Employee document management",
+      "Sick leave & time-off settings",
+      "Shift management",
+      "Comprehensive reports",
+      "Overtime management (government & custom regulations)",
     ],
   },
   {
-    title: "Enterprise",
-    popular: 0,
-    price: 40,
-    description:
-      "Lorem ipsum dolor sit, amet ipsum consectetur adipisicing elit.",
-    buttonText: "Contact US",
+    title: "Ultra",
+    popular: PopularPlanType.NO,
+    priceDetails: "Contact for Pricing", // Placeholder
+    description: "Ideal for large enterprises requiring advanced HR functionalities and analytics.",
+    buttonText: "Select a Package",
     benefitList: [
-      "10 Team member",
-      "8 GB Storage",
-      "Upto 10 pages",
-      "Priority support",
-      "lorem ipsum dolor",
+      "All Premium features",
+      "Face recognition",
+      "Automated check-out attendance",
+      "Employee turnover dashboard",
+      "Custom dashboard for statistics & analysis",
     ],
   },
 ];
@@ -80,14 +81,13 @@ export const Pricing = () => {
     >
       <div className="container">
         <h2 className="text-3xl md:text-4xl font-bold text-center">
-          Get
+          HRIS{" "}
           <span className="bg-gradient-to-b from-primary/60 to-primary text-transparent bg-clip-text">
-            {" "}Unlimited{" "}
+            Pricing Plans
           </span>
-          Access
         </h2>
         <h3 className="text-xl text-center text-muted-foreground pt-4 pb-8">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias reiciendis.
+          Choose the plan that best suits your business! This HRIS offers both subscription and pay-as-you-go payment options, available in the following packages:
         </h3>
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
@@ -96,7 +96,7 @@ export const Pricing = () => {
               key={pricing.title}
               className={`mx-auto w-full max-w-md ${
                 pricing.popular === PopularPlanType.YES
-                  ? "drop-shadow-xl shadow-black/10 dark:shadow-white/10"
+                  ? "drop-shadow-xl shadow-black/10 dark:shadow-white/10 border-primary"
                   : ""
               }`}
             >
@@ -110,8 +110,7 @@ export const Pricing = () => {
                   )}
                 </CardTitle>
                 <div className="mt-2">
-                  <span className="text-3xl font-bold">${pricing.price}</span>
-                  <span className="text-muted-foreground"> /month</span>
+                  <span className="text-2xl font-bold">{pricing.priceDetails}</span>
                 </div>
                 <CardDescription className="mt-2">{pricing.description}</CardDescription>
               </CardHeader>
@@ -123,10 +122,10 @@ export const Pricing = () => {
               <hr className="w-4/5 mx-auto my-4 border-muted" />
 
               <CardFooter className="flex justify-center">
-                <div className="space-y-3">
+                <div className="space-y-3 text-left">
                   {pricing.benefitList.map((benefit: string) => (
-                    <div key={benefit} className="flex items-center text-sm">
-                      <Check className="text-green-500 mr-2 w-4 h-4" />
+                    <div key={benefit} className="flex items-start text-sm">
+                      <Check className="text-green-500 mr-2 w-4 h-4 mt-1 flex-shrink-0" />
                       <span>{benefit}</span>
                     </div>
                   ))}

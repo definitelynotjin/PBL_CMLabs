@@ -1,29 +1,35 @@
-import { Statistics } from "./Statistics"
+import { Statistics } from "./Statistics" // Assuming Statistics component shows relevant HRIS stats
 import Image from "next/image"
-import pilot from "../assets/pilot.png"
 
 export const About = () => {
   return (
     <section id="about" className="flex justify-center py-24 sm:py-32">
       <div className="bg-muted/50 border rounded-lg py-12 px-6 w-full max-w-6xl">
         <div className="flex flex-col md:flex-row items-center justify-center gap-12">
-          <Image
-            src={pilot}
-            alt="Pilot image"
-            width={260}
-            height={260}
-            className="object-contain rounded-lg"
-          />
+          {/* Container for the two new images */}
+          <div className="flex flex-col md:flex-row items-center justify-center gap-6"> {/* Changed to flex-col for mobile, flex-row for larger screens */}
+            <Image
+              src="/work.jpeg"
+              alt="Work illustration 1"
+              width={260}
+              height={260}
+              className="object-contain rounded-lg"
+            />
+            <Image
+              src="/work2.jpg"
+              alt="Work illustration 2"
+              width={260}
+              height={260}
+              className="object-contain rounded-lg"
+            />
+          </div>
           <div className="flex flex-col items-center md:items-start text-center md:text-left justify-center max-w-xl">
             <h2 className="text-3xl md:text-4xl font-bold">
-              <span className="text-green-600">About</span> Company
+              <span className="text-green-600">About</span> Our HRIS Solution
             </h2>
             <p className="text-muted-foreground mt-4 text-lg">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit
-              amet, consectetur adipiscing elit.
+              Our Human Resource Information System (HRIS) is designed to streamline and simplify HR activities and tasks for teams. This application, developed for both web and mobile platforms, focuses on core features such as employee data management, official letter management, attendance tracking, and overtime management.
+              We aim to provide a comprehensive solution that includes paid subscription features and integrates with payment gateways like Xendit.
             </p>
             <div className="mt-6 w-full">
               <Statistics />

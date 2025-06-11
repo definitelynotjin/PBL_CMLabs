@@ -1,55 +1,48 @@
-import { Radar } from "lucide-react";
+import { GraduationCap, BriefcaseBusiness } from "lucide-react"; // Importing new icons
 import { JSX } from "react";
 
-interface SponsorProps {
+interface CollaboratorProps {
   icon: JSX.Element;
   name: string;
 }
 
-const sponsors: SponsorProps[] = [
+const collaborators: CollaboratorProps[] = [
   {
-    icon: <Radar size={34} />,
-    name: "Sponsor 1",
+    icon: <BriefcaseBusiness size={34} />, // Icon for a company/industry partner
+    name: "PT CMLABS INDONESIA DIGITAL",
   },
   {
-    icon: <Radar size={34} />,
-    name: "Sponsor 2",
+    icon: <GraduationCap size={34} />, // Icon for an academic institution
+    name: "Jurusan Teknologi Informasi Politeknik Negeri Malang",
   },
-  {
-    icon: <Radar size={34} />,
-    name: "Sponsor 3",
-  },
-  {
-    icon: <Radar size={34} />,
-    name: "Sponsor 4",
-  },
-  {
-    icon: <Radar size={34} />,
-    name: "Sponsor 5",
-  },
-  {
-    icon: <Radar size={34} />,
-    name: "Sponsor 6",
-  },
+  // You can add more if there are other significant partners or divisions involved
+  // {
+  //   icon: <BriefcaseBusiness size={34} />,
+  //   name: "Software Engineering Division", // Specific division from cmlabs
+  // },
+  // {
+  //   icon: <BriefcaseBusiness size={34} />,
+  //   name: "Technical Consultancies and SEO Supports Sector", // Specific sector from cmlabs
+  // },
 ];
 
 export const Sponsors = () => {
   return (
-    <section id="sponsors" className="h-screen flex items-center justify-center">
+    <section id="collaborators" className="h-screen flex items-center justify-center">
       <div className="container">
         <h2 className="text-center text-md lg:text-xl font-bold mb-8 text-primary">
-          Investors and founders
+          Project Collaborators
         </h2>
 
         <div className="flex flex-col items-center">
           <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8">
-            {sponsors.map(({ icon, name }: SponsorProps) => (
+            {collaborators.map(({ icon, name }: CollaboratorProps) => (
               <div
                 key={name}
                 className="flex flex-col items-center text-muted-foreground/60"
               >
                 <span>{icon}</span>
-                <h3 className="text-xl font-bold">{name}</h3>
+                <h3 className="text-xl font-bold text-center">{name}</h3>
               </div>
             ))}
           </div>
