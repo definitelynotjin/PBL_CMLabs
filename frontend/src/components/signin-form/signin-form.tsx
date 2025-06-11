@@ -25,18 +25,15 @@ export function SignInForm({
     e.preventDefault();
     setError("");
 
-
-
     try {
-      await fetch('https://pblcmlabs.duckdns.org/sanctum/csrf-cookie', {
+      await fetch("https://pblcmlabs.duckdns.org/sanctum/csrf-cookie", {
         credentials: 'include',
       });
 
-      const response = await fetch(`https://pblcmlabs.duckdns.org/api/login`, {
+      const response = await fetch("https://pblcmlabs.duckdns.org/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-
         },
         credentials: 'include',
         body: JSON.stringify({ login: identifier, password }),
@@ -47,7 +44,6 @@ export function SignInForm({
       }
 
       const data = await response.json();
-
       localStorage.setItem("token", data.token);
 
       if (remember) {
@@ -67,7 +63,6 @@ export function SignInForm({
     }
   };
 
-
   return (
     <form className={cn("flex flex-col gap-6", className)} onSubmit={handleSubmit} {...props}>
       <SignInHeader />
@@ -79,7 +74,7 @@ export function SignInForm({
         <Button type="submit" className="w-full p-6 bg-gray-500 hover:bg-gray-600 text-white uppercase">
           Sign In
         </Button>
-        < SignIn />
+        <GoogleSignIn />
         <Button type="button" variant="outline" className="w-full p-6 uppercase"
           onClick={() => { router.push("/employee-signin"); }}
         >
@@ -90,3 +85,4 @@ export function SignInForm({
     </form>
   );
 }
+export default SignInForm;
