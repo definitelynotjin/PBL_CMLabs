@@ -70,64 +70,72 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!selectedAbsenceType) {
-      alert("Please select an absence type.");
+  if (!selectedAbsenceType) {
+    alert("Please select an absence type.");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("absence_type", selectedAbsenceType);
+  formData.append("location", selectedLocation);
+  if (userLocation) {
+    formData.append("latitude", userLocation[0].toString());
+    formData.append("longitude", userLocation[1].toString());
+  }
+  formData.append("address", address);
+  if (file) {
+    formData.append("supporting_document", file);
+  }
+
+  if (["annual-leave", "sick-leave"].includes(selectedAbsenceType)) {
+    if (!startDate || !endDate) {
+      alert("Please fill in both start and end dates.");
       return;
     }
+    formData.append("start_date", startDate);
+    formData.append("end_date", endDate);
+  }
 
-    const formData = new FormData();
-    formData.append("absence_type", selectedAbsenceType);
-    formData.append("location", selectedLocation);
-    if (userLocation) {
-      formData.append("latitude", userLocation[0].toString());
-      formData.append("longitude", userLocation[1].toString());
+  let endpoint = "";
+  if (["annual-leave", "sick-leave", "absent"].includes(selectedAbsenceType)) {
+    endpoint = "https://pblcmlabs.duckdns.org/api/absence-requests";
+  } else {
+    endpoint = "https://pblcmlabs.duckdns.org/api/checkclocks";
+  }
+
+  try {
+    // First, fetch the CSRF cookie from Sanctum
+    await fetch("https://pblcmlabs.duckdns.org/sanctum/csrf-cookie", {
+      credentials: "include",
+    });
+
+    // Then, do your POST request
+    const response = await fetch(endpoint, {
+      method: "POST",
+      body: formData,
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Server Error (not JSON)", errorText);
+      throw new Error("Submission failed, check console for details.");
     }
-    formData.append("address", address);
-    if (file) {
-      formData.append("supporting_document", file);
-    }
 
-    let endpoint = "";
-    if (["annual-leave", "sick-leave"].includes(selectedAbsenceType)) {
-      if (!startDate || !endDate) {
-        alert("Please fill in both start and end dates.");
-        return;
-      }
-      formData.append("start_date", startDate);
-      formData.append("end_date", endDate);
-      endpoint = "https://pblcmlabs.duckdns.org/api/absence-requests";
-    } else if (["absent"].includes(selectedAbsenceType)) {
-      endpoint = "https://pblcmlabs.duckdns.org/api/absence-requests";
-    } else {
-      endpoint = "https://pblcmlabs.duckdns.org/api/checkclocks";
-    }
+    alert("Submission successful!");
+    // Reset form
+    setSelectedAbsenceType("");
+    setSelectedLocation("");
+    setFile(null);
+    setStartDate("");
+    setEndDate("");
+  } catch (error: any) {
+    alert("Failed to submit: " + error.message);
+  }
+};
 
-    try {
-      const response = await fetch(endpoint, {
-        method: "POST",
-        body: formData,
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("Server Error (not JSON)", errorText);
-        throw new Error("Submission failed, check console for details.");
-      }
-
-      alert("Submission successful!");
-      // Reset
-      setSelectedAbsenceType("");
-      setSelectedLocation("");
-      setFile(null);
-      setStartDate("");
-      setEndDate("");
-    } catch (error: any) {
-      alert("Failed to submit: " + error.message);
-    }
-  };
 
   return (
     <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md">

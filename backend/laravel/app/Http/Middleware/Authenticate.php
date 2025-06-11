@@ -3,17 +3,17 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class Authenticate extends Middleware
 {
     /**
-     * Override redirectTo so API calls do not redirect but return 401 Unauthorized.
+     * For Sanctum: always return 401 for unauthenticated access.
      */
     protected function redirectTo($request)
     {
-        if (! $request->expectsJson()) {
-
-            return null;
-        }
+        throw new HttpResponseException(
+            response()->json(['message' => 'Unauthenticated.'], 401)
+        );
     }
 }
