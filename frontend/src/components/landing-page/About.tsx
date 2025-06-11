@@ -9,8 +9,8 @@ export const About = () => {
     <section id="about" className="flex justify-center py-24 sm:py-32">
       <div className="bg-muted/50 border rounded-lg py-12 px-6 w-full max-w-6xl">
         <div className="flex flex-col md:flex-row items-center justify-center gap-12">
-          {/* Container for the two new images */}
-          <div className="flex flex-col md:flex-row items-center justify-center gap-6">
+          {/* Container for the two images - Changed to always flex-col */}
+          <div className="flex flex-col items-center justify-center gap-6">
             <Image
               src={work} // Use the imported image variable
               alt="Work illustration 1"
@@ -28,11 +28,10 @@ export const About = () => {
           </div>
           <div className="flex flex-col items-center md:items-start text-center md:text-left justify-center max-w-xl">
             <h2 className="text-3xl md:text-4xl font-bold">
-              <span className="text-[#DD489A]">About</span> Our HRIS Solution
+              <span className="text-[#7CA5BF]">About</span> Our HRIS Solution
             </h2>
             <p className="text-muted-foreground mt-4 text-lg">
-              Our Human Resource Information System (HRIS) is designed to streamline and simplify HR activities and tasks for teams. This application, developed for both web and mobile platforms, focuses on core features such as employee data management, official letter management, attendance tracking, and overtime management.
-              We aim to provide a comprehensive solution that includes paid subscription features and integrates with payment gateways like Xendit.
+              Our Human Resource Information System (HRIS) is designed to streamline and simplify HR activities and tasks for teams. This application, developed in both website and mobile versions, focuses on key features such as employee data management, official correspondence, attendance tracking, and overtime. It also includes a paid subscription feature using the Xendit payment gateway.
             </p>
             <div className="mt-6 w-full">
               <Statistics />

@@ -9,53 +9,53 @@ import {
   CardTitle,
   CardFooter,
 } from "@/components/ui/card";
-import { Check, Linkedin } from "lucide-react"; // Linkedin icon is used for mentor card
-import { LightBulbIcon } from "./Icons"; // Used for 'Growth Environment' card
-import { GitHubLogoIcon } from "@radix-ui/react-icons"; // Used for mentor card
+import { Check, Linkedin } from "lucide-react";
+import { LightBulbIcon } from "./Icons";
+import { GitHubLogoIcon } from "@radix-ui/react-icons";
 
 export const HeroCards = () => {
   return (
-    <div className="hidden lg:flex w-full h-[500px] justify-center items-center relative">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px]">
-        {/* Testimonial Card */}
-        <Card className="absolute w-[340px] -top-[15px] drop-shadow-xl shadow-black/10 dark:shadow-white/10">
+    <div className="hidden lg:flex w-full h-[650px] justify-center items-center relative"> {/* Increased overall height */}
+      {/* Enlarged inner container for better card distribution */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[580px]">
+
+        {/* Testimonial Card - Positioned top-left, content adjusted */}
+        <Card className="absolute w-[340px] top-0 left-0 drop-shadow-xl shadow-black/10 dark:shadow-white/10">
           <CardHeader className="flex flex-row items-center gap-4 pb-2">
             <Avatar>
-              {/* Replace with an image of a past intern or generic professional */}
-              <AvatarImage alt="Intern Avatar" src="https://i.pravatar.cc/150?img=20" />
-              <AvatarFallback>NK</AvatarFallback>
+              <AvatarImage alt="User Avatar" src="https://i.pravatar.cc/150?img=20" />
+              <AvatarFallback>AS</AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
-              <CardTitle className="text-lg">Michael Nathanael</CardTitle>
-              <CardDescription>@mickeyyy</CardDescription>
+              <CardTitle className="text-lg">Anya Sharma</CardTitle>
+              <CardDescription>HR Administrator</CardDescription>
             </div>
           </CardHeader>
           <CardContent>
-            This Human Resource Information System (HRIS) is a game-changer!
+            This HRIS system has transformed our workflow efficiency!
           </CardContent>
         </Card>
 
-        {/* Mentor/Team Card */}
-        <Card className="absolute right-[20px] top-4 w-80 flex flex-col justify-center items-center drop-shadow-xl shadow-black/10 dark:shadow-white/10">
+        {/* HR Manager Card - Positioned top-right, content adjusted */}
+        <Card className="absolute right-0 top-0 w-80 flex flex-col justify-center items-center drop-shadow-xl shadow-black/10 dark:shadow-white/10">
           <CardHeader className="mt-8 flex justify-center items-center pb-2">
-            {/* Replace with an image of a Sarastya mentor or team member */}
             <img
               src="https://i.pravatar.cc/150?img=68"
-              alt="Mentor Avatar"
+              alt="Manager Avatar"
               className="absolute grayscale-[0%] -top-12 rounded-full w-24 h-24 aspect-square object-cover"
             />
-            <CardTitle className="text-center">M. Hartigan</CardTitle>
+            <CardTitle className="text-center">David Lee</CardTitle>
             <CardDescription className="font-normal text-primary">
               HR Manager
             </CardDescription>
           </CardHeader>
           <CardContent className="text-center pb-2">
             <p>
-              This HRIS makes managing employee data and attendance so much easier. It saves us hours of manual work every week!
+              Manages employee data & attendance with ease, saving countless HR hours weekly!
             </p>
           </CardContent>
           <CardFooter>
-            {/* Consider updating these links to Sarastya's official profiles or relevant professional profiles */}
+            {/* These links remain placeholders */}
             <div>
               <a
                 rel="noreferrer noopener"
@@ -71,7 +71,7 @@ export const HeroCards = () => {
               </a>
               <a
                 rel="noreferrer noopener"
-                href="#" // Link to Sarastya's Twitter/X or a mentor's relevant profile
+                href="#"
                 target="_blank"
                 className={buttonVariants({
                   variant: "ghost",
@@ -91,7 +91,7 @@ export const HeroCards = () => {
               </a>
               <a
                 rel="noreferrer noopener"
-                href="#" // Link to Sarastya's LinkedIn or a mentor's relevant profile
+                href="#"
                 target="_blank"
                 className={buttonVariants({
                   variant: "ghost",
@@ -105,31 +105,34 @@ export const HeroCards = () => {
           </CardFooter>
         </Card>
 
-        {/* Internship Program Highlights Card (Re-purposed from Pricing Card) */}
-        <Card className="absolute top-[150px] left-[50px] w-72 drop-shadow-xl shadow-black/10 dark:shadow-white/10">
+        {/* Basic Plan Card - Positioned bottom-left, content adjusted */}
+        <Card className="absolute bottom-0 left-0 w-72 drop-shadow-xl shadow-black/10 dark:shadow-white/10">
           <CardHeader>
             <CardTitle className="flex item-center justify-between">
-              Basic
+              Basic Plan
               <Badge variant="secondary" className="text-sm text-primary">
-                Pay-As-You-Go
+                14-Day Trial
               </Badge>
             </CardTitle>
-            {/* Removed pricing section */}
+            <div>
+              <span className="text-3xl font-bold">Pay-as-you-go</span>
+              <span className="text-muted-foreground"> per employee / month</span>
+            </div>
             <CardDescription>
-              Our PKL and Internship programs are designed for holistic development, offering a truly immersive experience.
+              Ideal for small teams exploring core HRIS functions.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button className="w-full">Explore Opportunities</Button> {/* Changed button text */}
+            <Button className="w-full">Start Free Trial</Button>
           </CardContent>
           <hr className="w-4/5 m-auto mb-4" />
           <CardFooter className="flex">
             <div className="space-y-4">
               {[
-                "Dedicated Mentorship",
-                "Real-world Projects",
-                "Networking Opportunities",
-                "Skill Development Workshops",
+                "Employee Data Mgt.", // 
+                "Attendance Tracking", // 
+                "Letter Management", // 
+                "Overtime Tracking", // 
               ].map((benefit: string) => (
                 <span key={benefit} className="flex">
                   <Check className="text-green-500" />
@@ -140,16 +143,16 @@ export const HeroCards = () => {
           </CardFooter>
         </Card>
 
-        {/* Key Feature/Approach Card (Re-purposed from Service Card) */}
-        <Card className="absolute w-[350px] -right-[10px] bottom-[35px] drop-shadow-xl shadow-black/10 dark:shadow-white/10">
+        {/* Full-spectrum HR Automation Card - Positioned bottom-right, content adjusted */}
+        <Card className="absolute w-[350px] right-0 bottom-0 drop-shadow-xl shadow-black/10 dark:shadow-white/10">
           <CardHeader className="space-y-1 flex md:flex-row justify-start items-start gap-4">
             <div className="mt-1 bg-primary/20 p-1 rounded-2xl">
-              <LightBulbIcon /> {/* Icon remains suitable for 'innovation' or 'ideas' */}
+              <LightBulbIcon />
             </div>
             <div>
-              <CardTitle>Comprehensive HR Features</CardTitle>
+              <CardTitle>Full-spectrum HR Automation</CardTitle>
               <CardDescription className="text-md mt-2">
-                Manage employee data, attendance, official letters, and overtime with ease.
+                Streamline core tasks like employee data, attendance, and official documents.
               </CardDescription>
             </div>
           </CardHeader>
