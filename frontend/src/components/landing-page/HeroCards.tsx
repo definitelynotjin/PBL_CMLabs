@@ -15,12 +15,12 @@ import { GitHubLogoIcon } from "@radix-ui/react-icons";
 
 export const HeroCards = () => {
   return (
-    <div className="hidden lg:flex w-full h-[650px] justify-center items-center relative"> {/* Increased overall height */}
-      {/* Enlarged inner container for better card distribution */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[580px]">
+    <div className="hidden lg:flex w-full h-[680px] justify-center items-center relative"> {/* Increased overall height for more breathing room */}
+      {/* Adjusted inner container size for a more clustered, synchronized look */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[550px]">
 
-        {/* Testimonial Card - Positioned top-left, content adjusted */}
-        <Card className="absolute w-[340px] top-0 left-0 drop-shadow-xl shadow-black/10 dark:shadow-white/10">
+        {/* Testimonial Card - Top-left, slightly offset, base layer */}
+        <Card className="absolute w-[340px] top-[10%] left-[5%] drop-shadow-xl shadow-black/10 dark:shadow-white/10 z-10">
           <CardHeader className="flex flex-row items-center gap-4 pb-2">
             <Avatar>
               <AvatarImage alt="User Avatar" src="https://i.pravatar.cc/150?img=20" />
@@ -36,8 +36,8 @@ export const HeroCards = () => {
           </CardContent>
         </Card>
 
-        {/* HR Manager Card - Positioned top-right, content adjusted */}
-        <Card className="absolute right-0 top-0 w-80 flex flex-col justify-center items-center drop-shadow-xl shadow-black/10 dark:shadow-white/10">
+        {/* HR Manager Card - Top-right, overlaps slightly with Testimonial, higher z-index */}
+        <Card className="absolute right-[5%] top-[5%] w-80 flex flex-col justify-center items-center drop-shadow-xl shadow-black/10 dark:shadow-white/10 z-20">
           <CardHeader className="mt-8 flex justify-center items-center pb-2">
             <img
               src="https://i.pravatar.cc/150?img=68"
@@ -55,7 +55,6 @@ export const HeroCards = () => {
             </p>
           </CardContent>
           <CardFooter>
-            {/* These links remain placeholders */}
             <div>
               <a
                 rel="noreferrer noopener"
@@ -105,8 +104,8 @@ export const HeroCards = () => {
           </CardFooter>
         </Card>
 
-        {/* Basic Plan Card - Positioned bottom-left, content adjusted */}
-        <Card className="absolute bottom-0 left-0 w-72 drop-shadow-xl shadow-black/10 dark:shadow-white/10">
+        {/* Basic Plan Card - Bottom-left, overlaps slightly, lower z-index */}
+        <Card className="absolute bottom-[5%] left-[0%] w-72 drop-shadow-xl shadow-black/10 dark:shadow-white/10 z-0">
           <CardHeader>
             <CardTitle className="flex item-center justify-between">
               Basic Plan
@@ -129,10 +128,10 @@ export const HeroCards = () => {
           <CardFooter className="flex">
             <div className="space-y-4">
               {[
-                "Employee Data Mgt.", // 
-                "Attendance Tracking", // 
-                "Letter Management", // 
-                "Overtime Tracking", // 
+                "Employee Data Mgt.",
+                "Attendance Tracking",
+                "Letter Management",
+                "Overtime Tracking",
               ].map((benefit: string) => (
                 <span key={benefit} className="flex">
                   <Check className="text-green-500" />
@@ -143,8 +142,8 @@ export const HeroCards = () => {
           </CardFooter>
         </Card>
 
-        {/* Full-spectrum HR Automation Card - Positioned bottom-right, content adjusted */}
-        <Card className="absolute w-[350px] right-0 bottom-0 drop-shadow-xl shadow-black/10 dark:shadow-white/10">
+        {/* Full-spectrum HR Automation Card - Bottom-right, overlaps most, highest z-index */}
+        <Card className="absolute w-[350px] right-[0%] bottom-[0%] drop-shadow-xl shadow-black/10 dark:shadow-white/10 z-30">
           <CardHeader className="space-y-1 flex md:flex-row justify-start items-start gap-4">
             <div className="mt-1 bg-primary/20 p-1 rounded-2xl">
               <LightBulbIcon />

@@ -6,7 +6,8 @@ import {
 } from "@/components/ui/card";
 // Importing new icons to better represent consultation, support, and technical aspects
 import { Wrench, Handshake, MonitorCheck } from "lucide-react";
-import cubeLeg from "../assets/cube-leg.png"; // Placeholder image - consider replacing with an image related to support or implementation
+// Import the new image
+import work3 from "../assets/work3.jpg"; 
 import Image from "next/image";
 import { JSX } from "react";
 
@@ -74,11 +75,11 @@ export const Services = () => {
             </div>
           </div>
 
-          {/* Image */}
+          {/* Image - Now using work3.jpg */}
           <div className="flex justify-center">
             <Image
-              src={cubeLeg} // Consider replacing this with an image that represents support, technology, or services
-              alt="About services"
+              src={work3} // Changed image source to work3
+              alt="HRIS Support and Services" // Updated alt text for relevance
               className="object-contain max-w-[300px] md:max-w-[450px] lg:max-w-[600px] w-full h-auto"
               width={600}
               height={400}

@@ -7,12 +7,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Facebook, Instagram, Linkedin } from "lucide-react";
+import { Facebook, Instagram, Linkedin } from "lucide-react"; // Only use what's necessary
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"; // Import Avatar components
 
 interface TeamProps {
-  imageUrl: string;
+  // imageUrl: string; // Removed as requested, using AvatarFallback instead
   name: string;
-  studentId: string; // Changed from 'position' to 'studentId'
+  studentId: string;
   socialNetworks: SociaNetworkslProps[];
 }
 
@@ -23,33 +24,26 @@ interface SociaNetworkslProps {
 
 const teamList: TeamProps[] = [
   {
-    imageUrl: "https://i.pravatar.cc/150?img=68", // Placeholder image
     name: "Gastiadirijal N.K.",
     studentId: "2241720001",
     socialNetworks: [
       { name: "Linkedin", url: "https://www.linkedin.com/in/gastiadirijal-n-k/" }, // Placeholder URL
-      // Add other social networks if available
     ],
   },
   {
-    imageUrl: "https://i.pravatar.cc/150?img=69", // Placeholder image
     name: "Lenka Melinda Florienka",
     studentId: "2241720074",
     socialNetworks: [
       { name: "Linkedin", url: "https://www.linkedin.com/in/lenka-melinda/" }, // Placeholder URL
-      // Add other social networks if available
     ],
   },
   {
-    imageUrl: "https://i.pravatar.cc/150?img=70", // Placeholder image
     name: "Malik Abdul Azis",
     studentId: "2241720024", // Corrected student ID based on input
     socialNetworks: [
       { name: "Linkedin", url: "https://www.linkedin.com/in/malik-abdul-azis/" }, // Placeholder URL
-      // Add other social networks if available
     ],
   },
-  // You can add more team members here if needed
 ];
 
 export const Team = () => {
@@ -62,7 +56,7 @@ export const Team = () => {
       case "Instagram":
         return <Instagram size={20} />;
       default:
-        return null; // Return null or a default icon if iconName doesn't match
+        return null;
     }
   };
 
@@ -80,27 +74,32 @@ export const Team = () => {
       </p>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
-        {teamList.map(({ imageUrl, name, studentId, socialNetworks }: TeamProps) => (
+        {teamList.map(({ name, studentId, socialNetworks }: TeamProps) => (
           <Card
             key={studentId} // Using studentId as key for uniqueness
-            className="bg-muted/50 relative pt-16 flex flex-col items-center text-center w-full max-w-xs"
+            className="bg-muted/50 relative pt-16 flex flex-col items-center text-center w-full max-w-xs" // pt-16 creates space for avatar
           >
-            <img
-              src={imageUrl}
-              alt={`${name}'s profile picture`}
-              className="absolute -top-12 rounded-full w-24 h-24 object-cover border-4 border-white shadow-md"
-            />
-            <CardHeader className="pb-2">
-              <CardTitle>{name}</CardTitle>
-              <CardDescription className="text-primary">{studentId}</CardDescription> {/* Displaying student ID */}
+            {/* Anonymous Avatar */}
+            <div className="absolute -top-12 rounded-full w-24 h-24 flex items-center justify-center bg-gray-200 border-4 border-white shadow-md overflow-hidden">
+                <Avatar className="w-24 h-24"> {/* Avatar component wrapper */}
+                  {/* Using AvatarFallback to display initials for anonymity */}
+                  <AvatarFallback className="text-4xl font-bold text-gray-600 bg-gray-300">
+                    {name.split(' ').map(n => n[0]).join('')}
+                  </AvatarFallback>
+                </Avatar>
+            </div>
+            {/* Name and Student ID under avatar */}
+            <CardHeader className="pb-2 pt-8 text-center"> {/* Added pt-8 to push content down, text-center for explicit centering */}
+              <CardTitle className="text-lg font-semibold">{name}</CardTitle>
+              <CardDescription className="text-primary text-sm">{studentId}</CardDescription> {/* Reduced font size for student ID */}
             </CardHeader>
 
             <CardContent className="pb-2">
-              <p>Politeknik Negeri Malang</p>
+              <p className="text-sm">Politeknik Negeri Malang</p>
             </CardContent>
 
-            <CardFooter className="gap-2">
-              {socialNetworks.map(({ name: socialName, url }: SociaNetworkslProps) => ( // Renamed 'name' to 'socialName' to avoid conflict
+            <CardFooter className="gap-2 pt-0"> {/* Adjusted padding */}
+              {socialNetworks.map(({ name: socialName, url }: SociaNetworkslProps) => (
                 <a
                   key={socialName}
                   rel="noreferrer noopener"
