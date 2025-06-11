@@ -18,10 +18,20 @@ const Header: React.FC<HeaderProps> = ({ search, setSearch }) => {
     const fetchUser = async () => {
       try {
         const token = localStorage.getItem("token");
+        console.log("Token:", token);
+        if (!token) {
+          console.warn("No token found");
+          return;
+        }
         const response = await fetch("https://pblcmlabs.duckdns.org/api/me", {
           headers: { Authorization: `Bearer ${token}` },
         });
+        if (!response.ok) {
+          console.error("Fetch user failed:", response.status, response.statusText);
+          return;
+        }
         const data = await response.json();
+        console.log("Fetched user data:", data);
         setUser(data);
       } catch (error) {
         console.error("Failed to fetch user:", error);
@@ -54,7 +64,7 @@ const Header: React.FC<HeaderProps> = ({ search, setSearch }) => {
   };
 
   return (
-    <div className="flex justify-between items-center border-b pb-4 relative z-40" ref={dropdownRef}>
+    <div className="flex justify-between items-center border-b pb-4 relative z-40">
       {/* Title & Search */}
       <div className="flex items-center gap-4">
         <h1 className="text-2xl font-bold">Employee Database</h1>
@@ -67,7 +77,7 @@ const Header: React.FC<HeaderProps> = ({ search, setSearch }) => {
       </div>
 
       {/* Bell & Profile Dropdown */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 relative">
         <button className="p-2 rounded-xl bg-gray-200">
           <Bell className="w-5 h-5 text-gray-700" />
         </button>
@@ -75,6 +85,9 @@ const Header: React.FC<HeaderProps> = ({ search, setSearch }) => {
         <button
           className="flex items-center gap-2"
           onClick={() => setDropdownOpen(!isDropdownOpen)}
+          aria-haspopup="true"
+          aria-expanded={isDropdownOpen}
+          type="button"
         >
           <div className="w-8 h-8 bg-gray-400 rounded-full" />
           <div className="text-sm text-right leading-tight">
@@ -86,8 +99,12 @@ const Header: React.FC<HeaderProps> = ({ search, setSearch }) => {
           <ChevronDown className="w-4 h-4 text-gray-500" />
         </button>
 
+        {/* Dropdown menu container with ref */}
         {isDropdownOpen && (
-          <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-md shadow-lg border border-gray-200 z-50 p-4">
+          <div
+            ref={dropdownRef}
+            className="absolute right-0 top-full mt-2 w-52 bg-white rounded-md shadow-lg border border-gray-200 z-50 p-4"
+          >
             <div className="flex flex-col items-center space-y-2 mb-4">
               <div className="w-20 h-20 rounded-full bg-gray-400" />
               <div className="text-lg font-semibold">{user?.name}</div>
