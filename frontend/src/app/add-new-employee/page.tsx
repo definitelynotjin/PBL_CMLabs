@@ -1,14 +1,12 @@
 'use client';
 
-import Image from 'next/image';
-import { useState } from 'react';
-import Link from 'next/link';
-import Sidebar from '@/components/sidebar'; // Use the existing Sidebar
+import React, { useState } from 'react';
+import Sidebar from '@/components/sidebar';
 import Header from '@/components/add-new-employee/header';
-import EmployeeForm from '@/components/add-new-employee/employee-form';
+import EmployeeForm from '@/components/add-new-employee/employee-form.tsx';
 
 export default function AddNewEmployeePage() {
-  const [date, setDate] = useState<Date | undefined>();
+  const [date, setDate] = useState<Date | undefined>(undefined);
 
   return (
     <div className="flex min-h-screen bg-white">
