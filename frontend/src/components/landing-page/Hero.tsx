@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { buttonVariants } from "@/components/ui/button";
 import { HeroCards } from "./HeroCards";
@@ -28,12 +29,16 @@ export const Hero = () => {
           </p>
 
           <div className="flex flex-col md:flex-row gap-4 items-center md:items-start justify-center lg:justify-start">
-            <Button className="w-full md:w-auto">Sign In</Button> {/* Changed to "Apply Now" */}
+            <Link href="/signin" passHref>
+              <Button as="a" className="w-full md:w-auto">
+                Sign In
+              </Button>
+            </Link>
 
             {/* Consider changing or removing this button if a GitHub repo isn't relevant for students */}
             <a
               rel="noreferrer noopener"
-              href="/about-sarastya" // Example: link to an 'About Us' or 'Program Details' page
+              href="/signup" // Example: link to an 'About Us' or 'Program Details' page
               target="_blank"
               className={`${buttonVariants({ variant: "outline" })} w-full md:w-auto flex items-center justify-center`}
             >
