@@ -1,66 +1,35 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from '@/components/sidebar';
-import Header from '@/components/employee-database/header';
+import { Header } from '@/components/employee-database/header';
 import Stats from '@/components/employee-database/stats';
 import Actions from '@/components/employee-database/actions';
 import EmployeeTable from '@/components/employee-database/employee-table';
-import EmployeeDetailDialog from '@/components/employee-database/employee-detail-dialog.tsx';
-import EmployeeDocumentsDialog from '@/components/employee-database/employee-documents-dialog';
-import TambahDokumen from '@/components/employee-database/tambah-dokumen';
+import EmployeeDetailDialog from '@/components/employee-database/employee-detail-dialog';
+import UploadDocumentDialog from '@/components/employee-database/employee-documents-dialog';
+import { Employee } from '@/components/employee-database/types';
 
-type User = {
-  id: string;
-  employee_id: string;
-};
-
-type Employee = {
-  id: number;
-  user_id: string;
-  first_name: string;
-  last_name: string;
-  gender: string;
-  phone: string;
-  branch?: string;
-  position: string;
-  grade?: string;
-  status: boolean;
-  employment_status?: string;
-  type?: string;
-  user?: User;
-};
-
-export default function EmployeeDatabasePage() {
+export default function LetterManagementPage() {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [periode, setPeriode] = useState('');
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
-
-  // New state for dialogs
-  const [showDocuments, setShowDocuments] = useState(false);
   const [showUpload, setShowUpload] = useState(false);
+  const [documentFile, setDocumentFile] = useState<File | null>(null);
+  const [documentType, setDocumentType] = useState('');
+  const [showDocuments, setShowDocuments] = useState(false);
+
 
   useEffect(() => {
     setLoading(true);
-
-    const employeesUrl = `https://pblcmlabs.duckdns.org/api/employees?search=${encodeURIComponent(
-      search
-    )}&include_all=true`;
-    const candidatesUrl = `https://pblcmlabs.duckdns.org/api/employees/candidates?search=${encodeURIComponent(
-      search
-    )}`;
+    const employeesUrl = `https://pblcmlabs.duckdns.org/api/employees?search=${encodeURIComponent(search)}&include_all=true`;
+    const candidatesUrl = `https://pblcmlabs.duckdns.org/api/employees/candidates?search=${encodeURIComponent(search)}`;
 
     Promise.all([
-      fetch(employeesUrl).then((res) => {
-        if (!res.ok) throw new Error('Failed to fetch employees');
-        return res.json();
-      }),
-      fetch(candidatesUrl).then((res) => {
-        if (!res.ok) throw new Error('Failed to fetch candidates');
-        return res.json();
-      }),
+      fetch(employeesUrl).then(res => res.json()),
+      fetch(candidatesUrl).then(res => res.json()),
     ])
       .then(([employeesData, candidatesData]) => {
         const mappedEmployees = employeesData.data.data.map((emp: Employee) => ({
@@ -80,7 +49,7 @@ export default function EmployeeDatabasePage() {
           position: '-',
           grade: '-',
           status: false,
-          employment_status: '-',
+          employment_status: 'Candidate',
           type: 'Candidate',
           user: {
             id: candidate.id || candidate.user_id,
@@ -90,7 +59,6 @@ export default function EmployeeDatabasePage() {
 
         setEmployees([...mappedEmployees, ...mappedCandidates]);
       })
-      .catch((err) => console.error('Fetch error:', err))
       .finally(() => setLoading(false));
   }, [search]);
 
@@ -100,27 +68,27 @@ export default function EmployeeDatabasePage() {
     setPeriode(formatted);
   }, []);
 
-  const handleRowClick = (employee: Employee) => {
-    setSelectedEmployee(employee);
-  };
+  const handleUpload = async () => {
+    if (!selectedEmployee || !documentFile || !documentType) return;
 
-  // These handlers open the dialogs
-  const handleShowDocuments = () => {
-    setShowDocuments(true);
-  };
+    const formData = new FormData();
+    formData.append('employee_id', selectedEmployee.user_id);
+    formData.append('document_type', documentType);
+    formData.append('file', documentFile);
 
-  const handleShowUpload = () => {
-    setShowUpload(true);
-  };
+    const res = await fetch('https://your-api-endpoint/upload-document', {
+      method: 'POST',
+      body: formData,
+    });
 
-  // This handles the upload completion (adjust as needed)
-  const handleUpload = async (file: File, docType: string, employeeId: string) => {
-    // TODO: your upload API call here
-    alert(`Uploading ${docType} for employee ${employeeId}`);
-
-    // Close upload dialog, open documents dialog to refresh
-    setShowUpload(false);
-    setShowDocuments(true);
+    if (res.ok) {
+      alert('Document uploaded successfully');
+      setShowUpload(false);
+      setDocumentFile(null);
+      setDocumentType('');
+    } else {
+      alert('Upload failed');
+    }
   };
 
   return (
@@ -130,38 +98,31 @@ export default function EmployeeDatabasePage() {
         <Header search={search} setSearch={setSearch} />
         <Stats employees={employees} periode={periode} />
         <Actions />
-        <EmployeeTable employees={employees} loading={loading} onRowClick={handleRowClick} />
+        <EmployeeTable
+          employees={employees}
+          loading={loading}
+          onRowClick={(emp: Employee) => setSelectedEmployee(emp)}
+        />
+
+        {selectedEmployee && (
+          <EmployeeDetailDialog
+            employee={selectedEmployee}
+            onClose={() => setSelectedEmployee(null)}
+            onShowUpload={() => setShowUpload(true)}
+            onShowDocuments={() => setShowDocuments(true)}
+          />
+        )}
+
+
+        {showUpload && (
+          <UploadDocumentDialog
+            onClose={() => setShowUpload(false)}
+            onSubmit={handleUpload}
+            setDocumentType={setDocumentType}
+            setDocumentFile={setDocumentFile}
+          />
+        )}
       </div>
-
-      {selectedEmployee && (
-        <EmployeeDetailDialog
-          employee={selectedEmployee}
-          onClose={() => setSelectedEmployee(null)}
-          onShowDocuments={handleShowDocuments}
-          onShowUpload={handleShowUpload}
-        />
-      )}
-
-      {showDocuments && selectedEmployee && (
-        <EmployeeDocumentsDialog
-          employeeId={selectedEmployee.id.toString()}
-          onClose={() => {
-            setShowDocuments(false);
-            setSelectedEmployee(null);
-          }}
-        />
-      )}
-
-      {showUpload && selectedEmployee && (
-        <TambahDokumen
-          employee={selectedEmployee}
-          onClose={() => {
-            setShowUpload(false);
-            setSelectedEmployee(null); // <-- This prevents modal reopening
-          }}
-          onUpload={handleUpload}
-        />
-      )}
     </div>
   );
 }

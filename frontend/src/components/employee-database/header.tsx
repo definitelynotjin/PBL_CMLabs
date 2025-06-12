@@ -1,15 +1,16 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { Input } from '@/components/ui/input';
-import { Bell, ChevronDown } from 'lucide-react';
+import React from 'react';
+import { useEffect, useState, useRef } from "react";
+import { Input } from "@/components/ui/input";
+import { Bell, ChevronDown, Search } from "lucide-react";
 
-interface HeaderProps {
+type HeaderProps = {
   search: string;
-  setSearch: (value: string) => void;
-}
+  setSearch: React.Dispatch<React.SetStateAction<string>>;
+};
 
-const Header: React.FC<HeaderProps> = ({ search, setSearch }) => {
+export function Header({ search, setSearch }: HeaderProps) {
   const [user, setUser] = useState<any>(null);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -18,23 +19,13 @@ const Header: React.FC<HeaderProps> = ({ search, setSearch }) => {
     const fetchUser = async () => {
       try {
         const token = localStorage.getItem("token");
-        console.log("Token:", token);
-        if (!token) {
-          console.warn("No token found");
-          return;
-        }
         const response = await fetch("https://pblcmlabs.duckdns.org/api/me", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        if (!response.ok) {
-          console.error("Fetch user failed:", response.status, response.statusText);
-          return;
-        }
         const data = await response.json();
-        console.log("Fetched user data:", data);
         setUser(data);
       } catch (error) {
-        console.error("Failed to fetch user:", error);
+        console.error("Failed to fetch user data:", error);
       }
     };
     fetchUser();
@@ -42,17 +33,18 @@ const Header: React.FC<HeaderProps> = ({ search, setSearch }) => {
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setDropdownOpen(false);
       }
     }
-
     if (isDropdownOpen) {
       document.addEventListener("mousedown", handleClickOutside);
     } else {
       document.removeEventListener("mousedown", handleClickOutside);
     }
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -64,51 +56,56 @@ const Header: React.FC<HeaderProps> = ({ search, setSearch }) => {
   };
 
   return (
-    <div className="flex justify-between items-center border-b pb-4 relative z-40">
-      {/* Title & Search */}
-      <div className="flex items-center gap-4">
-        <h1 className="text-2xl font-bold">Employee Database</h1>
-        <Input
-          placeholder="Search"
-          className="w-72"
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-        />
+    <header className="flex items-center justify-between px-6 py-4 border-b bg-white relative">
+      {/* Left - Title */}
+      <h1 className="text-xl font-bold">Employee Database</h1>
+
+      {/* Middle - Search */}
+      <div className="flex-1 mx-6 max-w-xl">
+        <div className="relative">
+          <Search
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            size={18}
+          />
+          <Input
+            placeholder="Search"
+            className="pl-10 rounded-md border-gray-300"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
       </div>
 
-      {/* Bell & Profile Dropdown */}
-      <div className="flex items-center gap-4 relative">
+      {/* Right - Actions */}
+      <div className="flex items-center space-x-4 relative" ref={dropdownRef}>
+        {/* Bell Icon */}
         <button className="p-2 rounded-xl bg-gray-200">
-          <Bell className="w-5 h-5 text-gray-700" />
+          <Bell className="h-5 w-5 text-gray-700" />
         </button>
 
+        {/* Avatar + Username + Dropdown */}
         <button
-          className="flex items-center gap-2"
+          className="flex items-center space-x-2 focus:outline-none"
           onClick={() => setDropdownOpen(!isDropdownOpen)}
-          aria-haspopup="true"
           aria-expanded={isDropdownOpen}
+          aria-haspopup="true"
           type="button"
         >
-          <div className="w-8 h-8 bg-gray-400 rounded-full" />
-          <div className="text-sm text-right leading-tight">
-            <p className="font-medium">{user?.name || 'Loading...'}</p>
-            <p className="text-gray-500 text-xs">
-              {user?.role === 'admin' ? 'ADM' : user?.employee_id || ''}
-            </p>
+          <div className="w-8 h-8 rounded-full bg-gray-400" />
+          <div className="text-sm text-right">
+            <div className="font-medium">{user?.name || "Loading..."}</div>
+            <div className="text-xs text-gray-500">{user?.role === "admin" ? "ADM" : user?.employee_id || ""}</div>
           </div>
           <ChevronDown className="w-4 h-4 text-gray-500" />
         </button>
 
-        {/* Dropdown menu container with ref */}
+        {/* Dropdown Menu */}
         {isDropdownOpen && (
-          <div
-            ref={dropdownRef}
-            className="absolute right-0 top-full mt-2 w-52 bg-white rounded-md shadow-lg border border-gray-200 z-50 p-4"
-          >
+          <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-md shadow-lg border border-gray-200 z-50 p-4">
             <div className="flex flex-col items-center space-y-2 mb-4">
               <div className="w-20 h-20 rounded-full bg-gray-400" />
               <div className="text-lg font-semibold">{user?.name}</div>
-              <div className="text-sm text-gray-600">{user?.role === 'admin' ? 'ADM' : user?.employee_id}</div>
+              <div className="text-sm text-gray-600">{user?.role === "admin" ? "ADM" : user?.employee_id}</div>
             </div>
             <button
               onClick={handleLogout}
@@ -120,8 +117,6 @@ const Header: React.FC<HeaderProps> = ({ search, setSearch }) => {
           </div>
         )}
       </div>
-    </div>
+    </header>
   );
-};
-
-export default Header;
+}
