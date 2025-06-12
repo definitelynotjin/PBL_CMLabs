@@ -2,6 +2,8 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ChevronsUpDown, Edit2, Trash2, Copy } from 'lucide-react';
 import { Employee } from './types';
+import Link from 'next/link';
+
 
 interface EmployeeTableProps {
     employees: Employee[];
@@ -58,9 +60,12 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employees, loading, onRow
                                 </td>
                                 <td className="p-2">{emp.type}</td>
                                 <td className="p-2 flex gap-2">
-                                    <Button variant="ghost" size="sm" title="Edit"><Edit2 /></Button>
-                                    <Button variant="ghost" size="sm" title="Delete"><Trash2 /></Button>
-                                    <Button variant="ghost" size="sm" title="Copy"><Copy /></Button>
+                                    <Link href={`/employees/${emp.id}/edit`}>
+                                        <Button variant="ghost" size="sm" title="Edit"><Edit2 /></Button>
+                                    </Link>
+                                    <Link href={`/employees/${emp.id}/delete`}>
+                                        <Button variant="ghost" size="sm" title="Delete"><Trash2 /></Button>
+                                    </Link>
                                 </td>
                             </tr>
                         ))
