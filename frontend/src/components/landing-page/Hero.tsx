@@ -30,21 +30,18 @@ export const Hero = () => {
 
           <div className="flex flex-col md:flex-row gap-4 items-center md:items-start justify-center lg:justify-start">
             <Link href="/signin" passHref>
-              <Button as="a" className="w-full md:w-auto">
-                Sign In
-              </Button>
+              <div>
+                <Button className="w-full md:w-auto">Sign In</Button>
+              </div>
             </Link>
 
-            {/* Consider changing or removing this button if a GitHub repo isn't relevant for students */}
             <a
               rel="noreferrer noopener"
-              href="/signup" // Example: link to an 'About Us' or 'Program Details' page
+              href="/signup"
               target="_blank"
               className={`${buttonVariants({ variant: "outline" })} w-full md:w-auto flex items-center justify-center`}
             >
               Sign Up
-              {/* Replace GitHubLogoIcon if not relevant. Maybe an arrow icon? */}
-              {/* <GitHubLogoIcon className="ml-2 w-5 h-5" /> */}
             </a>
           </div>
         </div>
@@ -54,7 +51,6 @@ export const Hero = () => {
         </div>
       </div>
 
-      {/* Shadow effect */}
       <div className="shadow" />
     </section>
   );
