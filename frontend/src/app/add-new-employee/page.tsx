@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Sidebar from '@/components/sidebar';
 import Header from '@/components/add-new-employee/header';
-import EmployeeForm from '@/components/add-new-employee/employee-form.tsx';
+import EmployeeForm from '@/components/add-new-employee/employee-form';
 
 export default function AddNewEmployeePage() {
   const [date, setDate] = useState<Date | undefined>(undefined);
