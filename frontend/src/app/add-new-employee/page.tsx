@@ -12,7 +12,7 @@ export default function AddNewEmployeePage() {
     <div className="flex min-h-screen bg-white">
       <Sidebar />
       <div className="flex-1 p-6 space-y-6">
-        <Header />
+        <Header date={date} setDate={setDate} />
         <EmployeeForm date={date} setDate={setDate} />
       </div>
     </div>
