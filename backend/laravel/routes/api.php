@@ -30,6 +30,8 @@ Route::post('/employees', [EmployeeController::class, 'store']);
 Route::get('/employees/{employee}', [EmployeeController::class, 'show']);
 Route::put('/employees/{employee}', [EmployeeController::class, 'update']);
 Route::delete('/employees/{employee}', [EmployeeController::class, 'destroy']);
+Route::post('/employees/upsert/{id}', [EmployeeController::class, 'upsert']);
+
 
 // Documents
 Route::get('/employees/{userId}/documents', [DocumentController::class, 'index']);

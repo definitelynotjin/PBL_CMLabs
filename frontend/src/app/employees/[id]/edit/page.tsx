@@ -12,6 +12,7 @@ const EmployeeEditPage = () => {
     const [employeeData, setEmployeeData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [date, setDate] = useState<Date | undefined>(undefined);
+    const [candidateData, setCandidateData] = useState(null);
 
     useEffect(() => {
         if (!id) return;
@@ -22,8 +23,16 @@ const EmployeeEditPage = () => {
                 if (!res.ok) throw new Error('Failed to fetch employee data');
                 const data = await res.json();
 
-                setEmployeeData(data);
-                if (data.tanggalLahir) setDate(new Date(data.tanggalLahir));
+                if (data.candidate) {
+                    // Candidate found, no employee record yet
+                    setEmployeeData(null); // no employee data
+                    setCandidateData(data.candidate);
+                    setDate(undefined);
+                } else if (data.data) {
+                    setEmployeeData(data.data);
+                    if (data.data.birth_date) setDate(new Date(data.data.birth_date));
+                    setCandidateData(null);
+                }
                 setLoading(false);
             } catch (error) {
                 console.error(error);
@@ -33,6 +42,7 @@ const EmployeeEditPage = () => {
 
         fetchEmployee();
     }, [id]);
+
 
     if (loading) return <p>Loading employee data...</p>;
     if (!employeeData) return <p>Employee not found.</p>;

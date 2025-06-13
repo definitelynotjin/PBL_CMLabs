@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation'; // Next.js 13+ app router
 import { Button } from '@/components/ui/button';
 import Field from './field';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
@@ -36,6 +37,8 @@ interface EmployeeFormProps {
 }
 
 const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSuccess }) => {
+  const router = useRouter();
+
   // Local state for form inputs (initialize from data or empty)
   const [form, setForm] = useState({
     firstName: data?.firstName || '',
@@ -79,30 +82,38 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
   // Submit handler
   const handleSubmit = async () => {
     try {
-      if (!data?.id) {
-        alert('No employee ID for update.');
-        return;
-      }
+      const isUpdate = !!data?.id;
+      const url = isUpdate ? `/api/employees/${data.id}` : `/api/employees`;
+      const method = isUpdate ? 'PUT' : 'POST';
 
-      // Example API URL (adjust as needed)
-      const res = await fetch(`/api/employees/${data.id}`, {
-        method: 'PUT',
+      const res = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       });
 
       if (!res.ok) {
         const errorData = await res.json();
-        alert('Update failed: ' + (errorData.message || res.statusText));
+        alert('Failed: ' + (errorData.message || res.statusText));
         return;
       }
 
-      alert('Employee updated successfully!');
-      if (onSuccess) onSuccess();
+      if (!isUpdate) {
+        const createdEmployee = await res.json();
+        alert('Employee created successfully!');
+
+        if (onSuccess) {
+          onSuccess(createdEmployee.id);
+        }
+      } else {
+        alert('Employee updated successfully!');
+        if (onSuccess) onSuccess(data.id);
+      }
     } catch (error) {
       alert('Error: ' + error);
     }
   };
+
 
   return (
     <div className="border rounded-lg p-6">
@@ -276,7 +287,15 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
           </div>
         </div>
 
-        <div className="mt-6 flex justify-end">
+        <div className="mt-6 flex justify-end gap-4">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => router.push('/employee-database')}
+          >
+            Cancel
+          </Button>
+
           <Button type="button" onClick={handleSubmit}>
             Save
           </Button>

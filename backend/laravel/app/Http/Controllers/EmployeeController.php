@@ -75,13 +75,36 @@ class EmployeeController extends Controller
         ], 201);
     }
 
-    public function show(Employee $employee)
+    public function show($id)
     {
+        // Try find Employee by primary key (id)
+        $employee = Employee::with(['user', 'checkClockSetting'])->find($id);
+
+        if (!$employee) {
+            // If not found, maybe $id is a user ID, try find Employee by user_id
+            $employee = Employee::with(['user', 'checkClockSetting'])->where('user_id', $id)->first();
+        }
+
+        if (!$employee) {
+            // Employee doesn't exist, so return something indicating creation mode
+            // Also, you might want to fetch user info to prefill creation form
+            $user = User::find($id);
+            if (!$user) {
+                return response()->json(['success' => false, 'message' => 'User or Employee not found'], 404);
+            }
+            return response()->json([
+                'success' => true,
+                'data' => null,
+                'candidate' => $user
+            ]);
+        }
+
         return response()->json([
             'success' => true,
-            'data' => $employee->load(['user', 'checkClockSetting'])
+            'data' => $employee
         ]);
     }
+
 
     public function update(Request $request, Employee $employee)
     {
@@ -146,5 +169,54 @@ class EmployeeController extends Controller
     public function checkClocks()
     {
         return $this->hasMany(CheckClock::class, 'user_id', 'user_id');
+    }
+
+    public function upsert(Request $request, $id)
+    {
+        // Check if employee exists by id or user_id
+        $employee = Employee::where('id', $id)->orWhere('user_id', $id)->first();
+
+        $rules = [
+            'first_name' => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
+            'gender' => 'required|in:M,F',
+            'address' => 'required|string',
+            'ck_settings_id' => 'required|exists:check_clock_settings,id',
+            'email' => 'required|email|unique:employees,email,' . ($employee?->id ?? 'NULL'),
+            'phone' => 'required|string|unique:employees,phone,' . ($employee?->id ?? 'NULL'),
+            'position' => 'nullable|string|max:100',
+            'department' => 'nullable|string|max:100',
+            'birth_date' => 'nullable|date',
+            'join_date' => 'nullable|date',
+            'employment_status' => 'nullable|string|max:50',
+            'nik' => 'required|string|unique:employees,nik,' . ($employee?->id ?? 'NULL'),
+            'pendidikan_terakhir' => 'nullable|string|max:50',
+            'tempat_lahir' => 'nullable|string|max:100',
+            'contract_type' => 'nullable|in:Tetap,Kontrak,Lepas',
+            'grade' => 'nullable|string|max:50',
+            'bank' => 'nullable|string|max:50',
+            'nomor_rekening' => 'nullable|string|max:30',
+            'atas_nama_rekening' => 'nullable|string|max:100',
+            'tipe_sp' => 'nullable|in:SP 1,SP 2,SP 3',
+        ];
+
+        $data = $request->validate($rules);
+
+        if ($employee) {
+            // Update existing employee
+            $employee->update($data);
+            $message = 'Employee updated successfully';
+        } else {
+            // Create new employee linked to user_id = $id (candidate)
+            $data['user_id'] = $id;
+            $employee = Employee::create(array_merge($data, ['id' => Uuid::uuid4()->toString()]));
+            $message = 'Employee created successfully';
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => $message,
+            'data' => $employee,
+        ]);
     }
 }
