@@ -8,8 +8,6 @@ import {
   Clock,
   Calendar,
   MessageCircle,
-  Headphones,
-  Settings,
 } from "lucide-react";
 
 const Sidebar: React.FC = () => (
@@ -30,14 +28,6 @@ const Sidebar: React.FC = () => (
       </Link>
       <Link href="/order-summary">
         <MessageCircle className="w-5 h-5 text-gray-600 cursor-pointer" />
-      </Link>
-    </div>
-    <div className="flex flex-col items-center gap-4 mb-4">
-      <Link href="/headphones">
-        <Headphones className="w-5 h-5 text-gray-600 cursor-pointer" />
-      </Link>
-      <Link href="/settings">
-        <Settings className="w-5 h-5 text-gray-600 cursor-pointer" />
       </Link>
     </div>
   </aside>

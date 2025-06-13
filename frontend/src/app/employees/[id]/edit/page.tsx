@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import EmployeeForm from '@/components/edit-employee/edit-form'; // Adjust this import if needed

@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   mysql:
     image: mysql:8.0
@@ -9,7 +11,7 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     ports:
-      - "127.0.0.1:3306:3306"   # Bind MySQL only to localhost on the VM
+      - "127.0.0.1:3306:3306"
     networks:
       - hris_network
 
@@ -50,22 +52,21 @@ services:
     networks:
       - hris_network
 
-#  phpmyadmin:
-#    image: phpmyadmin/phpmyadmin
-#    container_name: hris_phpmyadmin
-#    ports:
-#      - "8080:80"
-#    environment:
-#      PMA_HOST: mysql
-#      PMA_PORT: 3306
-#      MYSQL_ROOT_PASSWORD: rootpassword
-#    depends_on:
-#      - mysql
-#    networks:
-#      - hris_network
+  portainer:
+    image: portainer/portainer-ce
+    container_name: hris_portainer
+    ports:
+      - "9000:9000"
+    volumes:
+      - portainer_data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+    networks:
+      - hris_network
 
 volumes:
   mysql_data:
+  portainer_data:
 
 networks:
   hris_network:
