@@ -1,15 +1,17 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import EmployeeForm from '@/components/edit-employee/edit-form';
 
 const EmployeeEditPage = () => {
     const router = useRouter();
+    const params = useParams();
+    const id = params?.id;
+
     const [employeeData, setEmployeeData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [date, setDate] = useState<Date | undefined>(undefined);
-    const id = typeof window !== 'undefined' ? window.location.pathname.split('/').pop() : null;
 
     useEffect(() => {
         if (!id) return;
@@ -41,7 +43,7 @@ const EmployeeEditPage = () => {
                 data={employeeData}
                 date={date}
                 setDate={setDate}
-                onSuccess={() => router.push('/employee-database')}
+                onSuccess={() => router.push('/employees')} // verify your list route
             />
         </div>
     );
