@@ -34,7 +34,7 @@ export default function EditEmployeePage() {
         });
 
         if (!res.ok) {
-          throw new Error(`Failed to fetch employee data (status: ${res.status})`);
+          throw new Error(`Failed to  employee data (status: ${res.status})`);
         }
 
         const data = await res.json();

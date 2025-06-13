@@ -1,16 +1,14 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation'; // ✅ App Router compatible
-import EmployeeForm from '@/components/edit-employee/edit-form'; // Adjust if needed
+import { useRouter } from 'next/navigation';
+import EmployeeForm from '@/components/edit-employee/edit-form';
 
 const EmployeeEditPage = () => {
     const router = useRouter();
     const [employeeData, setEmployeeData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [date, setDate] = useState<Date | undefined>(undefined);
-
-    // ✅ Use URLSearchParams if you're using dynamic segments
     const id = typeof window !== 'undefined' ? window.location.pathname.split('/').pop() : null;
 
     useEffect(() => {
@@ -43,7 +41,7 @@ const EmployeeEditPage = () => {
                 data={employeeData}
                 date={date}
                 setDate={setDate}
-                onSuccess={() => router.push('/employees')} // Redirect after success
+                onSuccess={() => router.push('/employee-database')}
             />
         </div>
     );
