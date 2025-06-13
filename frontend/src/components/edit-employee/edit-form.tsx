@@ -10,7 +10,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 interface Employee {
-  id: string; // assuming you have id for update endpoint
+  id: string;
   firstName: string;
   lastName: string;
   mobileNumber: string;
@@ -33,13 +33,13 @@ interface EmployeeFormProps {
   date: Date | undefined;
   setDate: (date: Date | undefined) => void;
   data?: Employee;
-  onSuccess?: () => void; // callback after successful update
+  onSuccess: (newEmployeeId: string) => void;
 }
 
 const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSuccess }) => {
   const router = useRouter();
 
-  // Local state for form inputs (initialize from data or empty)
+
   const [form, setForm] = useState({
     firstName: data?.firstName || '',
     lastName: data?.lastName || '',
@@ -59,7 +59,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
     tipeSp: data?.tipeSp || '',
   });
 
-  // Sync date picker date with form.tanggalLahir if date changes externally
+
   useEffect(() => {
     if (date) {
       setForm(f => ({ ...f, tanggalLahir: format(date, 'yyyy-MM-dd') }));
