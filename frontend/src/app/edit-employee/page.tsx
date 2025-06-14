@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Sidebar from '@/components/sidebar';
 import Header from '@/components/edit-employee/header';
 import EmployeeForm from '@/components/edit-employee/edit-form';
@@ -11,7 +11,7 @@ export default function EditEmployeePage() {
   const [employeeData, setEmployeeData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const params = useParams(); // Get [id] from URL
+  const params = useParams();
   const router = useRouter();
 
   useEffect(() => {
