@@ -12,6 +12,7 @@ export default function EditEmployeePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const params = useParams(); // Get [id] from URL
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -76,7 +77,12 @@ export default function EditEmployeePage() {
       <Sidebar />
       <div className="flex-1 p-6 space-y-6">
         <Header />
-        <EmployeeForm date={date} setDate={setDate} data={employeeData} />
+        <EmployeeForm date={date}
+          setDate={setDate}
+          data={employeeData}
+          onSuccess={() => {
+            router.push(`/employee-database`);// Handle success (e.g., show a success message or redirect)
+          }} />
       </div>
     </div>
   );
