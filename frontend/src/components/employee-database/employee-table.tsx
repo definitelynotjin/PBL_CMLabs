@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { ChevronsUpDown, Edit2, Trash2, Copy } from 'lucide-react';
 import { Employee } from './types';
 import Link from 'next/link';
+import { Switch } from '@/components/ui/switch';
 
 
 interface EmployeeTableProps {
@@ -11,7 +12,46 @@ interface EmployeeTableProps {
     onRowClick: (employee: Employee) => void;
 }
 
+
+
 const EmployeeTable: React.FC<EmployeeTableProps> = ({ employees, loading, onRowClick }) => {
+
+    const handleStatusToggle = async (emp: Employee) => {
+        let newStatus = emp.status;
+        let newType = emp.type;
+
+        if (emp.type === 'candidate') {
+            // Promote candidate to active employee
+            newType = 'employee';
+            newStatus = true;
+        } else {
+            // Toggle active/inactive
+            newStatus = !emp.status;
+        }
+
+        try {
+            const res = await fetch(`/api/employees/${emp.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    status: newStatus,
+                    type: newType,
+                }),
+            });
+
+            if (!res.ok) throw new Error('Failed to update status');
+
+            // Optionally: refresh or re-fetch employees
+            // or mutate state manually if you want instant UI update
+        } catch (err) {
+            console.error(err);
+            alert('Failed to update employee status');
+        }
+    };
+
     return (
         <div className="overflow-x-auto">
             <table className="w-full text-sm border rounded-md">
@@ -56,7 +96,15 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employees, loading, onRow
                                 <td className="p-2">{emp.position}</td>
                                 <td className="p-2">{emp.grade || '-'}</td>
                                 <td className="p-2">
-                                    <span className="text-xs text-muted-foreground">{emp.status ? 'Active' : 'Inactive'}</span>
+                                    <div className="flex items-center gap-2">
+                                        <Switch
+                                            checked={emp.status || emp.type === 'candidate'}
+                                            onCheckedChange={() => handleStatusToggle(emp)}
+                                        />
+                                        <span className="text-xs text-muted-foreground">
+                                            {emp.type === 'candidate' ? 'Candidate' : emp.status ? 'Active' : 'Inactive'}
+                                        </span>
+                                    </div>
                                 </td>
                                 <td className="p-2">{emp.type}</td>
                                 <td className="p-2 flex gap-2">

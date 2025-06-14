@@ -23,13 +23,17 @@ class Employee extends Model
         'last_name',
         'gender',
         'address',
+        'nik',
         'email',
         'phone',
         'position',
         'department',
         'birth_date',
         'join_date',
+        'pendidikan_terakhir',
+        'tempat_lahir',
         'employment_status',
+        'type',
         // add more as needed
     ];
 

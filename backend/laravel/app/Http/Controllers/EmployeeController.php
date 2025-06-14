@@ -130,6 +130,8 @@ class EmployeeController extends Controller
             'nomor_rekening' => 'nullable|string|max:30',
             'atas_nama_rekening' => 'nullable|string|max:100',
             'tipe_sp' => 'nullable|in:SP 1,SP 2,SP 3',
+            'status' => 'sometimes|boolean',
+            'employment_status' => 'sometimes|in:candidate,employee ',
         ]);
 
         $employee->update($data);
