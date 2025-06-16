@@ -25,7 +25,7 @@ const Stats: React.FC<StatsProps> = ({ employees, periode }) => {
       <div className="border rounded-lg p-3">
         <div>
           <p className="text-sm text-muted-foreground">Full Time Employee</p>
-          <p className="text-lg font-semibold">20</p>
+          <p className="text-lg font-semibold">{employees.filter(emp => emp.status === 'full-time').length}</p>
         </div>
       </div>
     </div>
