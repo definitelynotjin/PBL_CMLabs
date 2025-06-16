@@ -34,6 +34,8 @@ class Employee extends Model
         'tempat_lahir',
         'employment_status',
         'type',
+        'grade',
+        'status',
         // add more as needed
     ];
 

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Routing\Controller;
 use App\Models\User;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 
 
@@ -120,7 +121,8 @@ class EmployeeController extends Controller
             'department' => 'nullable|string|max:100',
             'birth_date' => 'nullable|date',
             'join_date' => 'nullable|date',
-            'employment_status' => 'nullable|string|max:50',
+            'employment_status' => 'sometimes|nullable|string|max:50',
+            'status' => 'sometimes|boolean',
             'nik' => 'sometimes|required|string|unique:employees,nik,' . $employee->id,
             'pendidikan_terakhir' => 'nullable|string|max:50',
             'tempat_lahir' => 'nullable|string|max:100',
@@ -130,8 +132,6 @@ class EmployeeController extends Controller
             'nomor_rekening' => 'nullable|string|max:30',
             'atas_nama_rekening' => 'nullable|string|max:100',
             'tipe_sp' => 'nullable|in:SP 1,SP 2,SP 3',
-            'status' => 'sometimes|boolean',
-            'employment_status' => 'sometimes|in:candidate,employee ',
         ]);
 
         $employee->update($data);
@@ -175,7 +175,6 @@ class EmployeeController extends Controller
 
     public function upsert(Request $request, $id)
     {
-        // Check if employee exists by id or user_id
         $employee = Employee::where('id', $id)->orWhere('user_id', $id)->first();
 
         $rules = [
@@ -184,14 +183,26 @@ class EmployeeController extends Controller
             'gender' => 'required|in:M,F',
             'address' => 'required|string',
             'ck_settings_id' => 'required|exists:check_clock_settings,id',
-            'email' => 'required|email|unique:employees,email,' . ($employee?->id ?? 'NULL'),
-            'phone' => 'required|string|unique:employees,phone,' . ($employee?->id ?? 'NULL'),
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('employees', 'email')->ignore($employee?->id)
+            ],
+            'phone' => [
+                'required',
+                'string',
+                Rule::unique('employees', 'phone')->ignore($employee?->id)
+            ],
+            'nik' => [
+                'required',
+                'string',
+                Rule::unique('employees', 'nik')->ignore($employee?->id)
+            ],
             'position' => 'nullable|string|max:100',
             'department' => 'nullable|string|max:100',
             'birth_date' => 'nullable|date',
             'join_date' => 'nullable|date',
-            'employment_status' => 'nullable|string|max:50',
-            'nik' => 'required|string|unique:employees,nik,' . ($employee?->id ?? 'NULL'),
+            'employment_status' => 'sometimes|nullable|string|max:50',
             'pendidikan_terakhir' => 'nullable|string|max:50',
             'tempat_lahir' => 'nullable|string|max:100',
             'contract_type' => 'nullable|in:Tetap,Kontrak,Lepas',
@@ -205,11 +216,9 @@ class EmployeeController extends Controller
         $data = $request->validate($rules);
 
         if ($employee) {
-            // Update existing employee
             $employee->update($data);
             $message = 'Employee updated successfully';
         } else {
-            // Create new employee linked to user_id = $id (candidate)
             $data['user_id'] = $id;
             $employee = Employee::create(array_merge($data, ['id' => Uuid::uuid4()->toString()]));
             $message = 'Employee created successfully';
