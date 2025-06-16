@@ -21,8 +21,8 @@ export default function LetterManagementPage() {
   const [documentType, setDocumentType] = useState('');
   const [showDocuments, setShowDocuments] = useState(false);
 
-
-  useEffect(() => {
+  // ✅ 1. Extract fetch logic
+  const fetchEmployees = () => {
     setLoading(true);
     const employeesUrl = `https://pblcmlabs.duckdns.org/api/employees?search=${encodeURIComponent(search)}&include_all=true`;
     const candidatesUrl = `https://pblcmlabs.duckdns.org/api/employees/candidates?search=${encodeURIComponent(search)}`;
@@ -35,7 +35,7 @@ export default function LetterManagementPage() {
         const mappedEmployees = employeesData.data.data.map((emp: Employee) => ({
           ...emp,
           status: emp.employment_status === 'Active',
-          type: 'Employee',
+          type: 'employee',
         }));
 
         const mappedCandidates = candidatesData.data.map((candidate: any) => ({
@@ -50,7 +50,7 @@ export default function LetterManagementPage() {
           grade: '-',
           status: false,
           employment_status: 'Candidate',
-          type: 'Candidate',
+          type: 'candidate',
           user: {
             id: candidate.id || candidate.user_id,
             employee_id: candidate.employee_id || '-',
@@ -60,6 +60,11 @@ export default function LetterManagementPage() {
         setEmployees([...mappedEmployees, ...mappedCandidates]);
       })
       .finally(() => setLoading(false));
+  };
+
+  // ✅ 2. Call it initially and on search change
+  useEffect(() => {
+    fetchEmployees();
   }, [search]);
 
   useEffect(() => {
@@ -102,6 +107,7 @@ export default function LetterManagementPage() {
           employees={employees}
           loading={loading}
           onRowClick={(emp: Employee) => setSelectedEmployee(emp)}
+          refreshData={fetchEmployees} // ✅ used in toggle switch
         />
 
         {selectedEmployee && (
@@ -112,7 +118,6 @@ export default function LetterManagementPage() {
             onShowDocuments={() => setShowDocuments(true)}
           />
         )}
-
 
         {showUpload && (
           <UploadDocumentDialog
