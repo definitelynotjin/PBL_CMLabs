@@ -30,7 +30,7 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
     }
 
     try {
-      const res = await fetch(`https://pblcmlabs.duckdns.org/api/employees/${emp.id}`, {
+      const res = await fetch(`https://pblcmlabs.duckdns.org/api/employees/${emp.id}/upsert`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
