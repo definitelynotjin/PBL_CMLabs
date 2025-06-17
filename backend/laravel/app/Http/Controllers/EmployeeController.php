@@ -221,6 +221,13 @@ class EmployeeController extends Controller
             $message = 'Employee created successfully';
         }
 
+        // 🔥 Promote the user (candidate → employee)
+        $user = User::find($id);
+        if ($user) {
+            $user->status = 'active'; // or $user->role = 'employee';
+            $user->save();
+        }
+
         return response()->json([
             'success' => true,
             'message' => $message,
