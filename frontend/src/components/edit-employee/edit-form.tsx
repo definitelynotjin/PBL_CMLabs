@@ -40,19 +40,27 @@ interface Employee {
   tipe_sp: 'SP 1' | 'SP 2' | 'SP 3';
 }
 
+interface CandidateUser {
+  id: string;
+  name: string;
+  email: string;
+}
+
 interface EmployeeFormProps {
   date: Date | undefined;
   setDate: (date: Date | undefined) => void;
   data?: Employee;
+  user?: CandidateUser;
+  userId?: string; // Needed when promoting a candidate
   onSuccess: (newEmployeeId: string) => void;
 }
 
-const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSuccess }) => {
+const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, userId, onSuccess }) => {
   const router = useRouter();
 
   const [form, setForm] = useState({
-    first_name: data?.first_name || '',
-    last_name: data?.last_name || '',
+    first_name: data?.first_name || user?.name?.split(' ')[0] || '',
+    last_name: data?.last_name || user?.name?.split(' ').slice(1).join(' ') || '',
     phone: data?.phone || '',
     nik: data?.nik || '',
     gender: data?.gender || '',
@@ -89,12 +97,16 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
 
   const handleSubmit = async () => {
     try {
-      const isUpdate = !!data?.id;
-      const url = isUpdate ? `/api/employees/${data.id}` : `/api/employees`;
-      const method = isUpdate ? 'PUT' : 'POST';
+      const id = data?.id || userId;
+      if (!id) {
+        alert('Missing user or employee ID.');
+        return;
+      }
+
+      const url = `/api/employees/upsert/${id}`;
 
       const res = await fetch(url, {
-        method,
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       });
@@ -106,7 +118,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
       }
 
       const response = await res.json();
-      alert(isUpdate ? 'Employee updated successfully!' : 'Employee created successfully!');
+      alert(data ? 'Employee updated successfully!' : 'Employee created successfully!');
       onSuccess(response.id);
       router.push('/employee-database');
     } catch (error) {
