@@ -105,9 +105,11 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
         if (onSuccess) {
           onSuccess(createdEmployee.id);
         }
+        router.push(`/employee-database`);
       } else {
         alert('Employee updated successfully!');
         if (onSuccess) onSuccess(data.id);
+        router.push(`/employee-database`);
       }
     } catch (error) {
       alert('Error: ' + error);
@@ -296,7 +298,8 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
             Cancel
           </Button>
 
-          <Button type="button" onClick={handleSubmit}>
+          <Button type="button"
+            onClick={handleSubmit}>
             Save
           </Button>
         </div>
