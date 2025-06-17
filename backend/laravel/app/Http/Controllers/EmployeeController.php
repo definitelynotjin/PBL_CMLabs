@@ -168,11 +168,6 @@ class EmployeeController extends Controller
         ]);
     }
 
-    public function checkClocks()
-    {
-        return $this->hasMany(CheckClock::class, 'user_id', 'user_id');
-    }
-
     public function upsert(Request $request, $id)
     {
         $employee = Employee::where('id', $id)->orWhere('user_id', $id)->first();
@@ -203,6 +198,7 @@ class EmployeeController extends Controller
             'birth_date' => 'nullable|date',
             'join_date' => 'nullable|date',
             'employment_status' => 'sometimes|nullable|string|max:50',
+            'status' => 'sometimes|boolean',
             'pendidikan_terakhir' => 'nullable|string|max:50',
             'tempat_lahir' => 'nullable|string|max:100',
             'contract_type' => 'nullable|in:Tetap,Kontrak,Lepas',
