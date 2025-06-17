@@ -1,32 +1,43 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation'; // Next.js 13+ app router
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import Field from './field';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { format } from 'date-fns';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '@/components/ui/select';
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from '@/components/ui/radio-group';
 
 interface Employee {
   id: string;
-  firstName: string;
-  lastName: string;
-  mobileNumber: string;
+  first_name: string;
+  last_name: string;
+  phone: string;
   nik: string;
-  gender: string;
-  education: string;
-  tempatLahir: string;
-  tanggalLahir: string;
-  jabatan: string;
-  cabang: string;
-  tipeKontrak: string;
+  gender: 'M' | 'F';
+  pendidikan_terakhir: string;
+  tempat_lahir: string;
+  birth_date: string;
+  position: string;
+  department: string;
+  contract_type: 'Tetap' | 'Kontrak' | 'Lepas';
   grade: string;
   bank: string;
-  nomorRekening: string;
-  atasNama: string;
-  tipeSp: string;
+  nomor_rekening: string;
+  atas_nama_rekening: string;
+  tipe_sp: 'SP 1' | 'SP 2' | 'SP 3';
 }
 
 interface EmployeeFormProps {
@@ -39,34 +50,31 @@ interface EmployeeFormProps {
 const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSuccess }) => {
   const router = useRouter();
 
-
   const [form, setForm] = useState({
-    firstName: data?.firstName || '',
-    lastName: data?.lastName || '',
-    mobileNumber: data?.mobileNumber || '',
+    first_name: data?.first_name || '',
+    last_name: data?.last_name || '',
+    phone: data?.phone || '',
     nik: data?.nik || '',
     gender: data?.gender || '',
-    education: data?.education || '',
-    tempatLahir: data?.tempatLahir || '',
-    tanggalLahir: data?.tanggalLahir || '',
-    jabatan: data?.jabatan || '',
-    cabang: data?.cabang || '',
-    tipeKontrak: data?.tipeKontrak || '',
+    pendidikan_terakhir: data?.pendidikan_terakhir || '',
+    tempat_lahir: data?.tempat_lahir || '',
+    birth_date: data?.birth_date || '',
+    position: data?.position || '',
+    department: data?.department || '',
+    contract_type: data?.contract_type || '',
     grade: data?.grade || '',
     bank: data?.bank || '',
-    nomorRekening: data?.nomorRekening || '',
-    atasNama: data?.atasNama || '',
-    tipeSp: data?.tipeSp || '',
+    nomor_rekening: data?.nomor_rekening || '',
+    atas_nama_rekening: data?.atas_nama_rekening || '',
+    tipe_sp: data?.tipe_sp || '',
   });
-
 
   useEffect(() => {
     if (date) {
-      setForm(f => ({ ...f, tanggalLahir: format(date, 'yyyy-MM-dd') }));
+      setForm(f => ({ ...f, birth_date: format(date, 'yyyy-MM-dd') }));
     }
   }, [date]);
 
-  // Handlers for controlled inputs
   const handleChange = (field: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [field]: e.target.value });
   };
@@ -79,7 +87,6 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
     setForm({ ...form, [field]: value });
   };
 
-  // Submit handler
   const handleSubmit = async () => {
     try {
       const isUpdate = !!data?.id;
@@ -98,30 +105,19 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
         return;
       }
 
-      if (!isUpdate) {
-        const createdEmployee = await res.json();
-        alert('Employee created successfully!');
-
-        if (onSuccess) {
-          onSuccess(createdEmployee.id);
-        }
-        router.push(`/employee-database`);
-      } else {
-        alert('Employee updated successfully!');
-        if (onSuccess) onSuccess(data.id);
-        router.push(`/employee-database`);
-      }
+      const response = await res.json();
+      alert(isUpdate ? 'Employee updated successfully!' : 'Employee created successfully!');
+      onSuccess(response.id);
+      router.push('/employee-database');
     } catch (error) {
       alert('Error: ' + error);
     }
   };
 
-
   return (
     <div className="border rounded-lg p-6">
-      <h2 className="text-lg font-semibold mb-6">Edit Employee</h2>
+      <h2 className="text-lg font-semibold mb-6">{data ? 'Edit Employee' : 'Add Employee'}</h2>
 
-      {/* Avatar */}
       <div className="flex items-center gap-4 mb-6">
         <div className="w-24 h-24 bg-gray-200 rounded">
           <Image
@@ -136,77 +132,57 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
       </div>
 
       <div className="space-y-4">
-        {/* Nama */}
+        {/* Name */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field
-            label="First Name"
-            placeholder="Enter the first name"
-            value={form.firstName}
-            onChange={handleChange('firstName')}
-          />
-          <Field
-            label="Last Name"
-            placeholder="Enter the last name"
-            value={form.lastName}
-            onChange={handleChange('lastName')}
-          />
+          <Field label="First Name" placeholder="Enter first name" value={form.first_name} onChange={handleChange('first_name')} />
+          <Field label="Last Name" placeholder="Enter last name" value={form.last_name} onChange={handleChange('last_name')} />
         </div>
 
-        {/* Kontak */}
+        {/* Contact */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field
-            label="Mobile Number"
-            placeholder="Enter the Mobile Number"
-            value={form.mobileNumber}
-            onChange={handleChange('mobileNumber')}
-          />
-          <Field label="NIK" placeholder="Enter the NIK" value={form.nik} onChange={handleChange('nik')} />
+          <Field label="Phone" placeholder="Enter phone number" value={form.phone} onChange={handleChange('phone')} />
+          <Field label="NIK" placeholder="Enter NIK" value={form.nik} onChange={handleChange('nik')} />
         </div>
 
-        {/* Gender dan Pendidikan */}
+        {/* Gender and Education */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium">Gender</label>
             <Select value={form.gender} onValueChange={handleSelectChange('gender')}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="-Choose Gender-" />
+                <SelectValue placeholder="-Pilih Gender-" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="male">Laki-Laki</SelectItem>
-                <SelectItem value="female">Perempuan</SelectItem>
+                <SelectItem value="M">Laki-Laki</SelectItem>
+                <SelectItem value="F">Perempuan</SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium">Pendidikan Terakhir</label>
-            <Select value={form.education} onValueChange={handleSelectChange('education')}>
+            <Select value={form.pendidikan_terakhir} onValueChange={handleSelectChange('pendidikan_terakhir')}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="-Pilih Pendidikan Terakhir-" />
+                <SelectValue placeholder="-Pilih Pendidikan-" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="sma">SMA/SMK</SelectItem>
-                <SelectItem value="d3">D3</SelectItem>
-                <SelectItem value="s1">S1</SelectItem>
-                <SelectItem value="s2">S2</SelectItem>
+                <SelectItem value="SMA">SMA/SMK</SelectItem>
+                <SelectItem value="D3">D3</SelectItem>
+                <SelectItem value="S1">S1</SelectItem>
+                <SelectItem value="S2">S2</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </div>
 
-        {/* Tempat & Tanggal Lahir */}
+        {/* Birth Details */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field
-            label="Tempat Lahir"
-            placeholder="Masukan Tempat Lahir"
-            value={form.tempatLahir}
-            onChange={handleChange('tempatLahir')}
-          />
+          <Field label="Tempat Lahir" placeholder="Enter birthplace" value={form.tempat_lahir} onChange={handleChange('tempat_lahir')} />
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium">Tanggal Lahir</label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant="outline" className="w-full justify-start text-left font-normal">
-                  {date ? format(date, 'dd/MM/yyyy') : 'dd/mm/yyyy'}
+                  {date ? format(date, 'dd/MM/yyyy') : 'Pilih tanggal'}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0">
@@ -216,7 +192,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
                   onSelect={(selectedDate) => {
                     setDate(selectedDate);
                     if (selectedDate) {
-                      setForm((f) => ({ ...f, tanggalLahir: format(selectedDate, 'yyyy-MM-dd') }));
+                      setForm((f) => ({ ...f, birth_date: format(selectedDate, 'yyyy-MM-dd') }));
                     }
                   }}
                   initialFocus
@@ -226,26 +202,26 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
           </div>
         </div>
 
-        {/* Jabatan & Cabang */}
+        {/* Job Info */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field label="Jabatan" placeholder="Enter your jabatan" value={form.jabatan} onChange={handleChange('jabatan')} />
-          <Field label="Cabang" placeholder="Enter the cabang" value={form.cabang} onChange={handleChange('cabang')} />
+          <Field label="Jabatan" placeholder="Enter jabatan" value={form.position} onChange={handleChange('position')} />
+          <Field label="Cabang" placeholder="Enter department" value={form.department} onChange={handleChange('department')} />
         </div>
 
-        {/* Kontrak & Grade */}
+        {/* Contract & Grade */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium">Tipe Kontrak</label>
-            <RadioGroup value={form.tipeKontrak} onValueChange={handleRadioChange('tipeKontrak')} className="flex gap-4">
+            <RadioGroup value={form.contract_type} onValueChange={handleRadioChange('contract_type')} className="flex gap-4">
               {['Tetap', 'Kontrak', 'Lepas'].map((type) => (
                 <div className="flex items-center space-x-2" key={type}>
-                  <RadioGroupItem value={type} id={type.toLowerCase()} />
-                  <label htmlFor={type.toLowerCase()}>{type}</label>
+                  <RadioGroupItem value={type} id={type} />
+                  <label htmlFor={type}>{type}</label>
                 </div>
               ))}
             </RadioGroup>
           </div>
-          <Field label="Grade" placeholder="Masukan Grade Anda" value={form.grade} onChange={handleChange('grade')} />
+          <Field label="Grade" placeholder="Enter grade" value={form.grade} onChange={handleChange('grade')} />
         </div>
 
         {/* Bank & Rekening */}
@@ -257,49 +233,39 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
                 <SelectValue placeholder="-Pilih Bank-" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="bca">BCA</SelectItem>
-                <SelectItem value="bri">BRI</SelectItem>
-                <SelectItem value="bni">BNI</SelectItem>
+                <SelectItem value="BCA">BCA</SelectItem>
+                <SelectItem value="BRI">BRI</SelectItem>
+                <SelectItem value="BNI">BNI</SelectItem>
               </SelectContent>
             </Select>
           </div>
-          <Field
-            label="Nomor Rekening"
-            placeholder="Masukan Nomor Rekening"
-            value={form.nomorRekening}
-            onChange={handleChange('nomorRekening')}
-          />
+          <Field label="Nomor Rekening" placeholder="Enter rekening" value={form.nomor_rekening} onChange={handleChange('nomor_rekening')} />
         </div>
 
-        {/* A/N Rekening & Tipe SP */}
+        {/* Rekening Name & SP */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field label="Atas Nama Rekening" placeholder="Masukan A/N Rekening" value={form.atasNama} onChange={handleChange('atasNama')} />
+          <Field label="Atas Nama Rekening" placeholder="Enter A/N" value={form.atas_nama_rekening} onChange={handleChange('atas_nama_rekening')} />
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium">Tipe SP</label>
-            <Select value={form.tipeSp} onValueChange={handleSelectChange('tipeSp')}>
+            <Select value={form.tipe_sp} onValueChange={handleSelectChange('tipe_sp')}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="-Pilih SP-" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="1">SP-1</SelectItem>
-                <SelectItem value="2">SP-2</SelectItem>
-                <SelectItem value="3">SP-3</SelectItem>
+                <SelectItem value="SP 1">SP-1</SelectItem>
+                <SelectItem value="SP 2">SP-2</SelectItem>
+                <SelectItem value="SP 3">SP-3</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </div>
 
+        {/* Action Buttons */}
         <div className="mt-6 flex justify-end gap-4">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => router.push('/employee-database')}
-          >
+          <Button variant="outline" type="button" onClick={() => router.push('/employee-database')}>
             Cancel
           </Button>
-
-          <Button type="button"
-            onClick={handleSubmit}>
+          <Button type="button" onClick={handleSubmit}>
             Save
           </Button>
         </div>
