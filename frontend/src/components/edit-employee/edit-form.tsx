@@ -70,12 +70,12 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
     birth_date: data?.birth_date || '',
     position: data?.position || '',
     department: data?.department || '',
-    contract_type: data?.contract_type || '',
+    contract_type: data?.contract_type || 'none',
     grade: data?.grade || '',
     bank: data?.bank || '',
     nomor_rekening: data?.nomor_rekening || '',
     atas_nama_rekening: data?.atas_nama_rekening || '',
-    tipe_sp: data?.tipe_sp || '',
+    tipe_sp: data?.tipe_sp || 'none',
   });
 
   // State to hold client-side formatted date string to avoid hydration issues
@@ -234,7 +234,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
             <label className="text-sm font-medium">Tipe Kontrak</label>
             <RadioGroup value={form.contract_type} onValueChange={handleRadioChange('contract_type')} className="flex gap-4">
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="" id="contract-none" />
+                <RadioGroupItem value="none" id="contract-none" />
                 <label htmlFor="contract-none">None</label>
               </div>
               {['Tetap', 'Kontrak', 'Lepas'].map((type) => (
@@ -276,7 +276,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
                 <SelectValue placeholder="-Pilih SP-" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">None</SelectItem> {/* Empty value means no selection */}
+                <SelectItem value="none">None</SelectItem> {/* Empty value means no selection */}
                 <SelectItem value="SP 1">SP-1</SelectItem>
                 <SelectItem value="SP 2">SP-2</SelectItem>
                 <SelectItem value="SP 3">SP-3</SelectItem>
