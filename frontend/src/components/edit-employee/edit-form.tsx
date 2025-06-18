@@ -26,13 +26,13 @@ interface Employee {
   last_name: string;
   phone: string;
   nik: string;
-  gender: 'M' | 'F' | '';
+  gender: 'M' | 'F';
   pendidikan_terakhir: string;
   tempat_lahir: string;
   birth_date: string;
   position: string;
   department: string;
-  contract_type: 'Tetap' | 'Kontrak' | 'Lepas' | '';
+  contract_type: 'Tetap' | 'Kontrak' | 'Lepas';
   grade: string;
   bank: string;
   nomor_rekening: string;
@@ -172,7 +172,6 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
                 <SelectValue placeholder="-Pilih Gender-" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">None</SelectItem>
                 <SelectItem value="M">Laki-Laki</SelectItem>
                 <SelectItem value="F">Perempuan</SelectItem>
               </SelectContent>
@@ -185,7 +184,6 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
                 <SelectValue placeholder="-Pilih Pendidikan-" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">None</SelectItem>
                 <SelectItem value="SMA">SMA/SMK</SelectItem>
                 <SelectItem value="D3">D3</SelectItem>
                 <SelectItem value="S1">S1</SelectItem>
@@ -259,7 +257,6 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
                 <SelectValue placeholder="-Pilih Bank-" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">None</SelectItem>
                 <SelectItem value="BCA">BCA</SelectItem>
                 <SelectItem value="BRI">BRI</SelectItem>
                 <SelectItem value="BNI">BNI</SelectItem>
