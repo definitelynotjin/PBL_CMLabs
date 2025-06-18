@@ -123,6 +123,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
           'X-XSRF-TOKEN': getCookie('XSRF-TOKEN') || '', // ← this is key
         },
         credentials: 'include', // ← this ensures cookies are sent
