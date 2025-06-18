@@ -177,7 +177,7 @@ class EmployeeController extends Controller
             'last_name' => 'required|string|max:100',
             'gender' => 'required|in:M,F',
             'address' => 'required|string',
-            'ck_settings_id' => 'required|exists:check_clock_settings,id',
+            'ck_settings_id' => 'nullable|exists:check_clock_settings,id',
             'email' => [
                 'required',
                 'email',

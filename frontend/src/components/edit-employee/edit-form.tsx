@@ -105,6 +105,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
 
       const url = `/api/employees/upsert/${id}`;
 
+
       const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
