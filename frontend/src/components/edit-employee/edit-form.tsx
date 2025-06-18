@@ -26,13 +26,13 @@ interface Employee {
   last_name: string;
   phone: string;
   nik: string;
-  gender: 'M' | 'F';
+  gender: 'M' | 'F' | '';
   pendidikan_terakhir: string;
   tempat_lahir: string;
   birth_date: string;
   position: string;
   department: string;
-  contract_type: 'Tetap' | 'Kontrak' | 'Lepas';
+  contract_type: 'Tetap' | 'Kontrak' | 'Lepas' | '';
   grade: string;
   bank: string;
   nomor_rekening: string;
@@ -58,9 +58,10 @@ interface EmployeeFormProps {
 const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, userId, onSuccess }) => {
   const router = useRouter();
 
+  // Initialize form with safe defaults, including empty string for union types
   const [form, setForm] = useState({
     first_name: data?.first_name || user?.name?.split(' ')[0] || '',
-    last_name: data?.last_name || user?.name?.split(' ').slice(1).join(' ') || '',
+    last_name: data?.last_name || (user?.name ? user.name.split(' ').slice(1).join(' ') : '') || '',
     phone: data?.phone || '',
     nik: data?.nik || '',
     gender: data?.gender || '',
@@ -77,9 +78,15 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
     tipe_sp: data?.tipe_sp || '',
   });
 
+  // State to hold client-side formatted date string to avoid hydration issues
+  const [clientDate, setClientDate] = useState('');
+
   useEffect(() => {
     if (date) {
+      setClientDate(format(date, 'dd/MM/yyyy'));
       setForm(f => ({ ...f, birth_date: format(date, 'yyyy-MM-dd') }));
+    } else {
+      setClientDate('');
     }
   }, [date]);
 
@@ -104,7 +111,6 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
       }
 
       const url = `/api/employees/upsert/${id}`;
-
 
       const res = await fetch(url, {
         method: 'POST',
@@ -166,6 +172,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
                 <SelectValue placeholder="-Pilih Gender-" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="">None</SelectItem>
                 <SelectItem value="M">Laki-Laki</SelectItem>
                 <SelectItem value="F">Perempuan</SelectItem>
               </SelectContent>
@@ -178,6 +185,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
                 <SelectValue placeholder="-Pilih Pendidikan-" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="">None</SelectItem>
                 <SelectItem value="SMA">SMA/SMK</SelectItem>
                 <SelectItem value="D3">D3</SelectItem>
                 <SelectItem value="S1">S1</SelectItem>
@@ -195,7 +203,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant="outline" className="w-full justify-start text-left font-normal">
-                  {date ? format(date, 'dd/MM/yyyy') : 'Pilih tanggal'}
+                  {clientDate || 'Pilih tanggal'}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0">
@@ -206,6 +214,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
                     setDate(selectedDate);
                     if (selectedDate) {
                       setForm((f) => ({ ...f, birth_date: format(selectedDate, 'yyyy-MM-dd') }));
+                      setClientDate(format(selectedDate, 'dd/MM/yyyy'));
                     }
                   }}
                   initialFocus
@@ -226,6 +235,10 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium">Tipe Kontrak</label>
             <RadioGroup value={form.contract_type} onValueChange={handleRadioChange('contract_type')} className="flex gap-4">
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="" id="contract-none" />
+                <label htmlFor="contract-none">None</label>
+              </div>
               {['Tetap', 'Kontrak', 'Lepas'].map((type) => (
                 <div className="flex items-center space-x-2" key={type}>
                   <RadioGroupItem value={type} id={type} />
@@ -246,6 +259,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
                 <SelectValue placeholder="-Pilih Bank-" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="">None</SelectItem>
                 <SelectItem value="BCA">BCA</SelectItem>
                 <SelectItem value="BRI">BRI</SelectItem>
                 <SelectItem value="BNI">BNI</SelectItem>
@@ -260,7 +274,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
           <Field label="Atas Nama Rekening" placeholder="Enter A/N" value={form.atas_nama_rekening} onChange={handleChange('atas_nama_rekening')} />
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium">Tipe SP</label>
-            <Select value={form.tipe_sp || ''} onValueChange={handleSelectChange('tipe_sp')}>
+            <Select value={form.tipe_sp} onValueChange={handleSelectChange('tipe_sp')}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="-Pilih SP-" />
               </SelectTrigger>
