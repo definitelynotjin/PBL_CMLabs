@@ -112,9 +112,20 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
 
       const url = `/api/employees/upsert/${id}`;
 
+      const getCookie = (name: string): string | null => {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return decodeURIComponent(parts.pop()!.split(';').shift()!);
+        return null;
+      };
+
       const res = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'X-XSRF-TOKEN': getCookie('XSRF-TOKEN') || '', // ← this is key
+        },
+        credentials: 'include', // ← this ensures cookies are sent
         body: JSON.stringify(form),
       });
 
