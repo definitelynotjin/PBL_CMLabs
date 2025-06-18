@@ -37,7 +37,7 @@ interface Employee {
   bank: string;
   nomor_rekening: string;
   atas_nama_rekening: string;
-  tipe_sp: 'SP 1' | 'SP 2' | 'SP 3';
+  tipe_sp: 'SP 1' | 'SP 2' | 'SP 3' | '';
 }
 
 interface CandidateUser {
@@ -260,12 +260,12 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
           <Field label="Atas Nama Rekening" placeholder="Enter A/N" value={form.atas_nama_rekening} onChange={handleChange('atas_nama_rekening')} />
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium">Tipe SP</label>
-            <Select value={form.tipe_sp} onValueChange={handleSelectChange('tipe_sp')}>
+            <Select value={form.tipe_sp || ''} onValueChange={handleSelectChange('tipe_sp')}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="-Pilih SP-" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">None</SelectItem>
+                <SelectItem value="">None</SelectItem> {/* Empty value means no selection */}
                 <SelectItem value="SP 1">SP-1</SelectItem>
                 <SelectItem value="SP 2">SP-2</SelectItem>
                 <SelectItem value="SP 3">SP-3</SelectItem>
