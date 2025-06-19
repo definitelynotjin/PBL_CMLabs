@@ -52,9 +52,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/employees/candidates', [EmployeeController::class, 'candidates']);
     Route::get('/employees', [EmployeeController::class, 'index']);
     Route::post('/employees', [EmployeeController::class, 'store']);
-    Route::get('/employees/{employee}', [EmployeeController::class, 'show']);
-    Route::put('/employees/{employee}', [EmployeeController::class, 'update']);
-    Route::delete('/employees/{employee}', [EmployeeController::class, 'destroy']);
+    Route::get('/employees/{id}', [EmployeeController::class, 'show']);
+    Route::put('/employees/{id}', [EmployeeController::class, 'update']);
+    Route::delete('/employees/{id}', [EmployeeController::class, 'destroy']);
 
     // Upsert Employee (POST for create, PUT for update)
     Route::match(['POST', 'PUT'], '/employees/upsert/{id}', [EmployeeController::class, 'upsert']);

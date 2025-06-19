@@ -11,12 +11,8 @@ use App\Models\User;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 
-
-
-
 class EmployeeController extends Controller
 {
-
     public function index(Request $request)
     {
         $search = $request->search;
@@ -78,17 +74,12 @@ class EmployeeController extends Controller
 
     public function show($id)
     {
-        // Try find Employee by primary key (id)
-        $employee = Employee::with(['user', 'checkClockSetting'])->find($id);
+        $employee = Employee::with(['user', 'checkClockSetting'])
+            ->where('id', $id)
+            ->orWhere('user_id', $id)
+            ->first();
 
         if (!$employee) {
-            // If not found, maybe $id is a user ID, try find Employee by user_id
-            $employee = Employee::with(['user', 'checkClockSetting'])->where('user_id', $id)->first();
-        }
-
-        if (!$employee) {
-            // Employee doesn't exist, so return something indicating creation mode
-            // Also, you might want to fetch user info to prefill creation form
             $user = User::find($id);
             if (!$user) {
                 return response()->json(['success' => false, 'message' => 'User or Employee not found'], 404);
@@ -106,24 +97,25 @@ class EmployeeController extends Controller
         ]);
     }
 
-
-    public function update(Request $request, Employee $employee)
+    public function update(Request $request, $id)
     {
+        $employee = Employee::where('id', $id)->orWhere('user_id', $id)->firstOrFail();
+
         $data = $request->validate([
             'first_name' => 'sometimes|required|string|max:100',
             'last_name' => 'sometimes|required|string|max:100',
             'gender' => 'sometimes|required|in:M,F',
             'address' => 'sometimes|required|string',
             'ck_settings_id' => 'sometimes|required|exists:check_clock_settings,id',
-            'email' => 'sometimes|required|email|unique:employees,email,' . $employee->id,
-            'phone' => 'sometimes|required|string|unique:employees,phone,' . $employee->id,
+            'email' => ['sometimes', 'required', 'email', Rule::unique('employees', 'email')->ignore($employee->id)],
+            'phone' => ['sometimes', 'required', 'string', Rule::unique('employees', 'phone')->ignore($employee->id)],
             'position' => 'nullable|string|max:100',
             'department' => 'nullable|string|max:100',
             'birth_date' => 'nullable|date',
             'join_date' => 'nullable|date',
             'employment_status' => 'sometimes|nullable|string|max:50',
             'status' => 'sometimes|boolean',
-            'nik' => 'sometimes|required|string|unique:employees,nik,' . $employee->id,
+            'nik' => ['sometimes', 'required', 'string', Rule::unique('employees', 'nik')->ignore($employee->id)],
             'pendidikan_terakhir' => 'nullable|string|max:50',
             'tempat_lahir' => 'nullable|string|max:100',
             'contract_type' => 'nullable|in:Tetap,Kontrak,Lepas',
@@ -143,9 +135,12 @@ class EmployeeController extends Controller
         ]);
     }
 
-    public function destroy(Employee $employee)
+    public function destroy($id)
     {
+        $employee = Employee::where('id', $id)->orWhere('user_id', $id)->firstOrFail();
+
         $employee->delete();
+
         return response()->json([
             'success' => true,
             'message' => 'Employee deleted successfully'
@@ -154,10 +149,8 @@ class EmployeeController extends Controller
 
     public function candidates()
     {
-        // Get all user-linked employee_ids from the employees table
         $existingEmployeeIds = Employee::pluck('user_id')->toArray();
 
-        // Get users with role 'employee' who do NOT yet exist in the employees table
         $candidates = User::whereNotIn('id', $existingEmployeeIds)
             ->select('id', 'name', 'email', 'employee_id')
             ->get();
@@ -221,10 +214,9 @@ class EmployeeController extends Controller
             $message = 'Employee created successfully';
         }
 
-        // 🔥 Promote the user (candidate → employee)
         $user = User::find($id);
         if ($user) {
-            $user->status = 'active'; // or $user->role = 'employee';
+            $user->status = 'active';
             $user->save();
         }
 
