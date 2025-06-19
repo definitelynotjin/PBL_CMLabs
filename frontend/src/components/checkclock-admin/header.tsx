@@ -9,7 +9,6 @@ const CheckclockHeader = () => {
       <h1 className="text-2xl font-bold">Checkclock Overview</h1>
       <div className="flex items-center space-x-2">
         <Input placeholder="Search Employee" className="w-64" />
-        <Input placeholder="Search Employee" className="w-64" />
         <Button variant="outline"><Filter className="w-4 h-4 mr-2" />Filter</Button>
         <Button variant="outline">Export</Button>
         <Button variant="outline">Import</Button>

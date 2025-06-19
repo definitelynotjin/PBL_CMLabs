@@ -56,7 +56,7 @@ export function Header({ search, setSearch }: HeaderProps) {
   };
 
   return (
-    <header className="flex items-center justify-between px-6 py-4 border-b bg-white relative">
+    <header className="flex items-center justify-between px-6 py-4 bg-white border border-gray-200 rounded-md shadow-sm">
       {/* Left - Title */}
       <h1 className="text-xl font-bold">Employee Database</h1>
 

@@ -86,7 +86,7 @@ export function DashboardHeader() {
   };
 
   return (
-    <header className="flex items-center justify-between px-6 py-4 border-b bg-white relative">
+    <header className="flex items-center justify-between px-6 py-4 bg-white border border-gray-200 rounded-md shadow-sm">
       <h1 className="text-xl font-bold">Dashboard</h1>
 
       <div className="flex-1 mx-6 max-w-xl">
