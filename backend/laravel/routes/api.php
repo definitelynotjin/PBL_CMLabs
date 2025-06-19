@@ -23,16 +23,6 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/auth/login-employee', [AuthController::class, 'loginEmployee']);
 
-// Employees - (Optional: secure if needed)
-Route::get('/employees/candidates', [EmployeeController::class, 'candidates']);
-Route::get('/employees', [EmployeeController::class, 'index']);
-Route::post('/employees', [EmployeeController::class, 'store']);
-Route::get('/employees/{employee}', [EmployeeController::class, 'show']);
-Route::put('/employees/{employee}', [EmployeeController::class, 'update']);
-Route::delete('/employees/{employee}', [EmployeeController::class, 'destroy']);
-Route::match(['POST', 'PUT'], '/employees/upsert/{id}', [EmployeeController::class, 'upsert']);
-
-
 // Documents
 Route::get('/employees/{userId}/documents', [DocumentController::class, 'index']);
 Route::post('/documents', [DocumentController::class, 'store']);
@@ -57,4 +47,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('checkclocks', CheckClockController::class);
     Route::apiResource('checkclocksettings', CheckClockSettingController::class);
     Route::apiResource('checkclocksettingtimes', CheckClockSettingTimeController::class);
+
+    //Employees
+    Route::get('/employees/candidates', [EmployeeController::class, 'candidates']);
+    Route::get('/employees', [EmployeeController::class, 'index']);
+    Route::post('/employees', [EmployeeController::class, 'store']);
+    Route::get('/employees/{employee}', [EmployeeController::class, 'show']);
+    Route::put('/employees/{employee}', [EmployeeController::class, 'update']);
+    Route::delete('/employees/{employee}', [EmployeeController::class, 'destroy']);
+
+    // Upsert Employee (POST for create, PUT for update)
+    Route::match(['POST', 'PUT'], '/employees/upsert/{id}', [EmployeeController::class, 'upsert']);
 });
