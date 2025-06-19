@@ -10,6 +10,8 @@ import EmployeeDetailDialog from '@/components/employee-database/employee-detail
 import UploadDocumentDialog from '@/components/employee-database/employee-documents-dialog';
 import { Employee } from '@/components/employee-database/types';
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
+
 export default function LetterManagementPage() {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState(true);
@@ -21,18 +23,17 @@ export default function LetterManagementPage() {
   const [documentType, setDocumentType] = useState('');
   const [showDocuments, setShowDocuments] = useState(false);
 
-  // Fetch employees with CSRF cookie and credentials
   const fetchEmployees = async () => {
     setLoading(true);
 
     try {
       // Get CSRF cookie for Sanctum
-      await fetch('https://pblcmlabs.duckdns.org/sanctum/csrf-cookie', {
+      await fetch(`${API_BASE_URL.replace(/\/$/, '')}/sanctum/csrf-cookie`, {
         credentials: 'include',
       });
 
-      const employeesUrl = `https://pblcmlabs.duckdns.org/api/employees?search=${encodeURIComponent(search)}&include_all=true`;
-      const candidatesUrl = `https://pblcmlabs.duckdns.org/api/employees/candidates?search=${encodeURIComponent(search)}`;
+      const employeesUrl = `${API_BASE_URL.replace(/\/$/, '')}/employees?search=${encodeURIComponent(search)}&include_all=true`;
+      const candidatesUrl = `${API_BASE_URL.replace(/\/$/, '')}/employees/candidates?search=${encodeURIComponent(search)}`;
 
       const [employeesRes, candidatesRes] = await Promise.all([
         fetch(employeesUrl, { credentials: 'include' }),
@@ -98,7 +99,7 @@ export default function LetterManagementPage() {
     formData.append('document_type', documentType);
     formData.append('file', documentFile);
 
-    const res = await fetch('https://your-api-endpoint/upload-document', {
+    const res = await fetch(`${API_BASE_URL.replace(/\/$/, '')}/upload-document`, {
       method: 'POST',
       body: formData,
     });
@@ -124,7 +125,7 @@ export default function LetterManagementPage() {
           employees={employees}
           loading={loading}
           onRowClick={(emp: Employee) => setSelectedEmployee(emp)}
-          refreshData={fetchEmployees} // passed down for toggle switch
+          refreshData={fetchEmployees}
         />
 
         {selectedEmployee && (
