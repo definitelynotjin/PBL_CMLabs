@@ -21,48 +21,65 @@ export default function LetterManagementPage() {
   const [documentType, setDocumentType] = useState('');
   const [showDocuments, setShowDocuments] = useState(false);
 
-  // ✅ 1. Extract fetch logic
-  const fetchEmployees = () => {
+  // Fetch employees with CSRF cookie and credentials
+  const fetchEmployees = async () => {
     setLoading(true);
-    const employeesUrl = `https://pblcmlabs.duckdns.org/api/employees?search=${encodeURIComponent(search)}&include_all=true`;
-    const candidatesUrl = `https://pblcmlabs.duckdns.org/api/employees/candidates?search=${encodeURIComponent(search)}`;
 
-    Promise.all([
-      fetch(employeesUrl).then(res => res.json()),
-      fetch(candidatesUrl).then(res => res.json()),
-    ])
-      .then(([employeesData, candidatesData]) => {
-        const mappedEmployees = employeesData.data.data.map((emp: Employee) => ({
-          ...emp,
-          status: emp.employment_status === 'Active',
-          type: 'employee',
-        }));
+    try {
+      // Get CSRF cookie for Sanctum
+      await fetch('https://pblcmlabs.duckdns.org/sanctum/csrf-cookie', {
+        credentials: 'include',
+      });
 
-        const mappedCandidates = candidatesData.data.map((candidate: any) => ({
+      const employeesUrl = `https://pblcmlabs.duckdns.org/api/employees?search=${encodeURIComponent(search)}&include_all=true`;
+      const candidatesUrl = `https://pblcmlabs.duckdns.org/api/employees/candidates?search=${encodeURIComponent(search)}`;
+
+      const [employeesRes, candidatesRes] = await Promise.all([
+        fetch(employeesUrl, { credentials: 'include' }),
+        fetch(candidatesUrl, { credentials: 'include' }),
+      ]);
+
+      if (!employeesRes.ok || !candidatesRes.ok) {
+        throw new Error('Failed to fetch employee data');
+      }
+
+      const employeesData = await employeesRes.json();
+      const candidatesData = await candidatesRes.json();
+
+      const mappedEmployees = employeesData.data.data.map((emp: Employee) => ({
+        ...emp,
+        status: emp.employment_status === 'Active',
+        type: 'employee',
+      }));
+
+      const mappedCandidates = candidatesData.data.map((candidate: any) => ({
+        id: candidate.id || candidate.user_id,
+        user_id: candidate.id || candidate.user_id,
+        first_name: candidate.name?.split(' ')[0] || candidate.name || '-',
+        last_name: candidate.name?.split(' ').slice(1).join(' ') || '',
+        gender: '-',
+        phone: candidate.phone || '-',
+        branch: '-',
+        position: '-',
+        grade: '-',
+        status: false,
+        employment_status: 'Candidate',
+        type: 'candidate',
+        user: {
           id: candidate.id || candidate.user_id,
-          user_id: candidate.id || candidate.user_id,
-          first_name: candidate.name?.split(' ')[0] || candidate.name || '-',
-          last_name: candidate.name?.split(' ').slice(1).join(' ') || '',
-          gender: '-',
-          phone: candidate.phone || '-',
-          branch: '-',
-          position: '-',
-          grade: '-',
-          status: false,
-          employment_status: 'Candidate',
-          type: 'candidate',
-          user: {
-            id: candidate.id || candidate.user_id,
-            employee_id: candidate.employee_id || '-',
-          },
-        }));
+          employee_id: candidate.employee_id || '-',
+        },
+      }));
 
-        setEmployees([...mappedEmployees, ...mappedCandidates]);
-      })
-      .finally(() => setLoading(false));
+      setEmployees([...mappedEmployees, ...mappedCandidates]);
+    } catch (error) {
+      console.error(error);
+      alert('Failed to load employees');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // ✅ 2. Call it initially and on search change
   useEffect(() => {
     fetchEmployees();
   }, [search]);
@@ -107,7 +124,7 @@ export default function LetterManagementPage() {
           employees={employees}
           loading={loading}
           onRowClick={(emp: Employee) => setSelectedEmployee(emp)}
-          refreshData={fetchEmployees} // ✅ used in toggle switch
+          refreshData={fetchEmployees} // passed down for toggle switch
         />
 
         {selectedEmployee && (
