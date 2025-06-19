@@ -18,6 +18,14 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
   onRowClick,
   refreshData,
 }) => {
+
+  const getCsrfToken = () => {
+    const match = document.cookie
+      .split('; ')
+      .find((row) => row.startsWith('XSRF-TOKEN='));
+    return match ? decodeURIComponent(match.split('=')[1]) : '';
+  };
+
   const handleStatusToggle = async (emp: Employee) => {
     let newStatus = emp.status;
     let newType = emp.type;
@@ -30,17 +38,25 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
     }
 
     try {
-      const res = await fetch(`https://pblcmlabs.duckdns.org/api/employees/upsert/${emp.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      await fetch('https://pblcmlabs.duckdns.org/sanctum/csrf-cookie', {
         credentials: 'include',
-        body: JSON.stringify({
-          status: newStatus,
-          type: newType,
-        }),
       });
+      const csrfToken = getCsrfToken();
+      const res = await fetch(
+        `https://pblcmlabs.duckdns.org/api/employees/upsert/${emp.id}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-XSRF-TOKEN': csrfToken,
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            status: newStatus,
+            type: newType,
+          }),
+        }
+      );
 
       if (!res.ok) throw new Error('Failed to update status');
 
