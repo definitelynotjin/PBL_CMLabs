@@ -11,6 +11,7 @@ import UploadDocumentDialog from '@/components/employee-database/employee-docume
 import { Employee } from '@/components/employee-database/types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
+const SANCTUM_BASE_URL = process.env.NEXT_PUBLIC_SANCTUM_BASE_URL || '';
 
 export default function LetterManagementPage() {
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -27,13 +28,14 @@ export default function LetterManagementPage() {
     setLoading(true);
 
     try {
-      // Get CSRF cookie for Sanctum
-      await fetch(`${API_BASE_URL.replace(/\/$/, '')}/sanctum/csrf-cookie`, {
+      // Fetch CSRF cookie for Sanctum (no /api here)
+      await fetch(`${SANCTUM_BASE_URL}/sanctum/csrf-cookie`, {
         credentials: 'include',
       });
 
-      const employeesUrl = `${API_BASE_URL.replace(/\/$/, '')}/employees?search=${encodeURIComponent(search)}&include_all=true`;
-      const candidatesUrl = `${API_BASE_URL.replace(/\/$/, '')}/employees/candidates?search=${encodeURIComponent(search)}`;
+      // Fetch employees and candidates from API
+      const employeesUrl = `${API_BASE_URL}/employees?search=${encodeURIComponent(search)}&include_all=true`;
+      const candidatesUrl = `${API_BASE_URL}/employees/candidates?search=${encodeURIComponent(search)}`;
 
       const [employeesRes, candidatesRes] = await Promise.all([
         fetch(employeesUrl, { credentials: 'include' }),
@@ -99,7 +101,7 @@ export default function LetterManagementPage() {
     formData.append('document_type', documentType);
     formData.append('file', documentFile);
 
-    const res = await fetch(`${API_BASE_URL.replace(/\/$/, '')}/upload-document`, {
+    const res = await fetch(`${API_BASE_URL}/upload-document`, {
       method: 'POST',
       body: formData,
     });
