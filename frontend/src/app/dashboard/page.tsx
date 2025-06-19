@@ -35,10 +35,32 @@ export default function DashboardUserPage() {
   ];
 
   const attendanceData = [
-    { id: 1, name: "Johan", status: "On time", checkIn: "08.00" },
-    { id: 2, name: "Timothy Moore", status: "Izin", checkIn: "09.00" },
-    { id: 3, name: "Bob Doe", status: "Late", checkIn: "08.15" },
-  ];
+  {
+    id: 1,
+    name: "Johan",
+    status: "On time",
+    clockIn: "08:00",
+    clockOut: "17:00",
+    workHour: "9h 0m"
+  },
+  {
+    id: 2,
+    name: "Timothy Moore",
+    status: "Izin",
+    clockIn: "-",
+    clockOut: "-",
+    workHour: "-"
+  },
+  {
+    id: 3,
+    name: "Bob Doe",
+    status: "Late",
+    clockIn: "08:15",
+    clockOut: "16:45",
+    workHour: "8h 30m"
+  },
+];
+
 
   const attendancePieChartData: AttendanceStatus[] = attendanceData.reduce((acc: AttendanceStatus[], curr) => {
     const statusName = curr.status;
@@ -73,20 +95,11 @@ export default function DashboardUserPage() {
           ))}
         </div>
 
-        {/* Employee Statistics Section */}
+        {/* Attendance Statistics Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="bg-white rounded-lg shadow-lg p-4">
-            <h2 className="font-semibold text-xl">Employee Statistics</h2>
-            <h3 className="text-lg font-bold mb-2">Current Number of Employees</h3>
-            <Select>
-              <SelectTrigger className="w-36">
-                <SelectValue placeholder="Select Month" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="march">March</SelectItem>
-              </SelectContent>
-            </Select>
-            <EmployeeBarChart data={barChartData} />
+            <h2 className="font-semibold text-xl">Attendance Statistics</h2>
+            <AttendanceDonutChart />
           </div>
 
           <div className="bg-white rounded-lg shadow-lg p-4">
@@ -102,19 +115,11 @@ export default function DashboardUserPage() {
             <EmployeeStatusChart data={statusData} />
           </div>
         </div>
-
-        {/* Attendance Statistics Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-white rounded-lg shadow-lg p-4">
-            <h2 className="font-semibold text-xl">Attendance Statistics</h2>
-            <AttendanceDonutChart />
-          </div>
           <div className="bg-white rounded-lg shadow-lg p-4">
             <h3 className="font-semibold text-xl">Attendance</h3>
             <AttendanceTable data={attendanceData} />
           </div>
         </div>
       </div>
-    </div>
   );
 }

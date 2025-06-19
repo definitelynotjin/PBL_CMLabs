@@ -11,7 +11,9 @@ interface EmployeeAttendanceItem {
   id: number;
   name: string;
   status: string;
-  checkIn: string;
+  clockIn?: string;
+  clockOut?: string;
+  workHour?: string;
 }
 
 interface AttendanceTableProps {
@@ -21,7 +23,7 @@ interface AttendanceTableProps {
 export const AttendanceTable: React.FC<AttendanceTableProps> = ({ data }) => (
   <div className="h-full flex flex-col">
     <div className="flex justify-between items-center mb-4">
-      <h3 className="text-xl font-bold">Attendance</h3>
+      <h3 className="text-xl font-bold">Attendance List</h3>
       <div className="flex items-center">
         <Select>
           <SelectTrigger className="w-36 mr-2">
@@ -60,7 +62,9 @@ export const AttendanceTable: React.FC<AttendanceTableProps> = ({ data }) => (
           <TableHead className="py-3">No</TableHead>
           <TableHead className="py-3">Nama</TableHead>
           <TableHead className="py-3">Status Kehadiran</TableHead>
-          <TableHead className="py-3">Check In</TableHead>
+          <TableHead className="py-3">Clock In</TableHead>
+          <TableHead className="py-3">Clock Out</TableHead>
+          <TableHead className="py-3">Work Hour</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -71,7 +75,9 @@ export const AttendanceTable: React.FC<AttendanceTableProps> = ({ data }) => (
             <TableCell className="py-3">
               <AttendanceStatusBadge status={item.status} />
             </TableCell>
-            <TableCell className="py-3">{item.checkIn}</TableCell>
+            <TableCell className="py-3">{item.clockIn || "-"}</TableCell>
+            <TableCell className="py-3">{item.clockOut || "-"}</TableCell>
+            <TableCell className="py-3">{item.workHour || "-"}</TableCell>
           </TableRow>
         ))}
       </TableBody>
