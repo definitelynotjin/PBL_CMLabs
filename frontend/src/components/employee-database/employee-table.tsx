@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { ChevronsUpDown, Edit2, Trash2, FileText, FilePlus } from 'lucide-react';
+import { ChevronsUpDown, Edit2, Trash2, FileText } from 'lucide-react';
 import { Employee } from './types';
 import Link from 'next/link';
 import { Switch } from '@/components/ui/switch';
@@ -27,17 +27,7 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
   refreshData,
 }) => {
   const handleStatusToggle = async (emp: Employee) => {
-    let newStatus = emp.status;
-    let newType = emp.type;
-
-    const typeNormalized = emp.type?.trim().toLowerCase();
-
-    if (typeNormalized === 'candidate') {
-      newType = 'Employee';
-      newStatus = true;
-    } else {
-      newStatus = !emp.status;
-    }
+    const newStatus = !emp.status;
 
     try {
       const token = localStorage.getItem('token');
@@ -51,7 +41,6 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
         },
         body: JSON.stringify({
           status: newStatus,
-          type: newType,
         }),
       });
 
@@ -81,7 +70,6 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
                 'Jabatan',
                 'Grade',
                 'Status',
-                'Type',
                 'Action',
               ].map((col) => (
                 <th key={col} className="p-2">
@@ -96,128 +84,102 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={12} className="text-center p-4">
+                <td colSpan={11} className="text-center p-4">
                   Loading...
                 </td>
               </tr>
             ) : employees.length === 0 ? (
               <tr>
-                <td colSpan={12} className="text-center p-4">
+                <td colSpan={11} className="text-center p-4">
                   No employees found.
                 </td>
               </tr>
             ) : (
-              employees.map((emp, index) => {
-                const typeNormalized = emp.type?.trim().toLowerCase();
-                const isCandidate = typeNormalized === 'candidate';
-                const isEmployee = typeNormalized === 'employee';
-
-                return (
-                  <tr key={emp.id} className="border-t hover:bg-gray-50">
-                    <td className="p-2">{index + 1}</td>
-                    <td className="p-2">{emp.user?.employee_id || '-'}</td>
-                    <td className="p-2">
-                      <div className="w-8 h-8 bg-gray-300 rounded-full" />
-                    </td>
-                    <td className="p-2">
-                      <span className="text-gray-900">
-                        {emp.first_name} {emp.last_name}
+              employees.map((emp, index) => (
+                <tr key={emp.id} className="border-t hover:bg-gray-50">
+                  <td className="p-2">{index + 1}</td>
+                  <td className="p-2">{emp.user?.employee_id || '-'}</td>
+                  <td className="p-2">
+                    <div className="w-8 h-8 bg-gray-300 rounded-full" />
+                  </td>
+                  <td className="p-2">
+                    <span className="text-gray-900">
+                      {emp.first_name} {emp.last_name}
+                    </span>
+                  </td>
+                  <td className="p-2">
+                    <span className="bg-muted px-2 py-1 rounded text-xs font-medium">
+                      {emp.gender}
+                    </span>
+                  </td>
+                  <td className="p-2">{emp.phone}</td>
+                  <td className="p-2">{emp.branch || '-'}</td>
+                  <td className="p-2">{emp.position}</td>
+                  <td className="p-2">{emp.grade || '-'}</td>
+                  <td className="p-2">
+                    <div className="flex items-center gap-2">
+                      <Switch
+                        checked={emp.status}
+                        onCheckedChange={() => handleStatusToggle(emp)}
+                      />
+                      <span className="text-xs text-muted-foreground">
+                        {emp.status ? 'Active' : 'Inactive'}
                       </span>
-                    </td>
-                    <td className="p-2">
-                      <span className="bg-muted px-2 py-1 rounded text-xs font-medium">
-                        {emp.gender}
-                      </span>
-                    </td>
-                    <td className="p-2">{emp.phone}</td>
-                    <td className="p-2">{emp.branch || '-'}</td>
-                    <td className="p-2">{emp.position}</td>
-                    <td className="p-2">{emp.grade || '-'}</td>
-                    <td className="p-2">
-                      <div className="flex items-center gap-2">
-                        <Switch
-                          checked={emp.status || isCandidate}
-                          onCheckedChange={() => handleStatusToggle(emp)}
-                        />
-                        <span className="text-xs text-muted-foreground">
-                          {/* Always show Active / Inactive */}
-                          {emp.status ? 'Active' : 'Inactive'}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="p-2">{emp.type}</td>
-                    <td className="p-2 flex gap-2">
-                      {/* Edit */}
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Link href={`/employees/${emp.id}/edit`}>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              title="Edit"
-                              className="hover:bg-[#FFAB00] hover:text-white"
-                            >
-                              <Edit2 className="w-4 h-4" />
-                            </Button>
-                          </Link>
-                        </TooltipTrigger>
-                        <TooltipContent side="top">Edit</TooltipContent>
-                      </Tooltip>
+                    </div>
+                  </td>
+                  <td className="p-2 flex gap-2">
+                    {/* Edit */}
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Link href={`/employees/${emp.id}/edit`}>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            title="Edit"
+                            className="hover:bg-[#FFAB00] hover:text-white"
+                          >
+                            <Edit2 className="w-4 h-4" />
+                          </Button>
+                        </Link>
+                      </TooltipTrigger>
+                      <TooltipContent side="top">Edit</TooltipContent>
+                    </Tooltip>
 
-                      {/* Delete */}
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Link href={`/employees/${emp.id}/delete`}>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              title="Delete"
-                              className="hover:bg-[#C11106] hover:text-white"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </Link>
-                        </TooltipTrigger>
-                        <TooltipContent side="top">Delete</TooltipContent>
-                      </Tooltip>
+                    {/* Delete */}
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Link href={`/employees/${emp.id}/delete`}>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            title="Delete"
+                            className="hover:bg-[#C11106] hover:text-white"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </Link>
+                      </TooltipTrigger>
+                      <TooltipContent side="top">Delete</TooltipContent>
+                    </Tooltip>
 
-                      {/* Manage Letters or Promote */}
-                      {isEmployee ? (
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              title="Manage Letters"
-                              onClick={() => onRowClick(emp)}
-                              className="hover:bg-[#2D8EFF] hover:text-white"
-                            >
-                              <FileText className="w-4 h-4" />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent side="top">Manage Letters</TooltipContent>
-                        </Tooltip>
-                      ) : (
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Link href={`/employees/${emp.id}/promote`}>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                title="Promote to Employee"
-                                className="hover:bg-[#257047] hover:text-white"
-                              >
-                                <FilePlus className="w-4 h-4" />
-                              </Button>
-                            </Link>
-                          </TooltipTrigger>
-                          <TooltipContent side="top">Promote to Employee</TooltipContent>
-                        </Tooltip>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })
+                    {/* Always show Manage Letters */}
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          title="Manage Letters"
+                          onClick={() => onRowClick(emp)}
+                          className="hover:bg-[#2D8EFF] hover:text-white"
+                        >
+                          <FileText className="w-4 h-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent side="top">Manage Letters</TooltipContent>
+                    </Tooltip>
+                  </td>
+                </tr>
+              ))
             )}
           </tbody>
         </table>

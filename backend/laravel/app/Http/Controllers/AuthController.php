@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Hash;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Facades\Password;
 
-
 class AuthController extends Controller
 {
     public function register(Request $request)
@@ -37,7 +36,6 @@ class AuthController extends Controller
             'role' => $request->role ?? 'employee',
         ]);
 
-        // Only assign employee_id if role is employee
         if ($user->role === 'employee') {
             $user->employee_id = $this->generateUniqueEmployeeId();
             $user->save();
@@ -61,7 +59,6 @@ class AuthController extends Controller
 
     private function generateUniqueEmployeeId()
     {
-        // Example: Find last employee_id and increment
         $lastUser = User::whereNotNull('employee_id')
             ->orderBy('employee_id', 'desc')
             ->first();
@@ -70,28 +67,27 @@ class AuthController extends Controller
             return 'EMP001';
         }
 
-        // Extract number from employee_id string like EMP001
         $lastNumber = (int) filter_var($lastUser->employee_id, FILTER_SANITIZE_NUMBER_INT);
         $nextNumber = $lastNumber + 1;
 
         return 'EMP' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
     }
+
     public function login(Request $request)
     {
         $request->validate([
-            'login' => 'required', // can be email or phone
+            'login' => 'required', // email or phone
             'password' => 'required',
         ]);
 
         $login = $request->input('login');
         $password = $request->input('password');
 
-        // Find user by email or phone
-        $user = \App\Models\User::where('email', $login)
+        $user = User::where('email', $login)
             ->orWhere('phone', $login)
             ->first();
 
-        if (!$user || !\Hash::check($password, $user->password)) {
+        if (!$user || !Hash::check($password, $user->password)) {
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
 
@@ -103,7 +99,6 @@ class AuthController extends Controller
         ]);
     }
 
-    // Employee login with Employee ID or email
     public function loginEmployee(Request $request)
     {
         $request->validate([
@@ -114,7 +109,7 @@ class AuthController extends Controller
         $login = $request->input('login');
         $password = $request->input('password');
 
-        $user = User::with('employee') // eager load the related employee data
+        $user = User::with('employee')
             ->where('role', 'employee')
             ->where(function ($query) use ($login) {
                 $query->where('email', $login)
@@ -135,17 +130,13 @@ class AuthController extends Controller
         ]);
     }
 
-
-
     public function logout(Request $request)
     {
-        // Revoke all tokens for the authenticated user
         $request->user()->tokens()->delete();
 
         return response()->json(['message' => 'Logged out successfully']);
     }
 
-    // Get current authenticated user
     public function me(Request $request)
     {
         $user = $request->user();
@@ -167,16 +158,13 @@ class AuthController extends Controller
     {
         $request->validate(['email' => 'required|email']);
 
-        // Send the password reset link to the user
-        $status = Password::sendResetLink(
-            $request->only('email')
-        );
+        $status = Password::sendResetLink($request->only('email'));
 
         if ($status == Password::RESET_LINK_SENT) {
             return response()->json(['message' => __($status)], 200);
-        } else {
-            return response()->json(['message' => __($status)], 400);
         }
+
+        return response()->json(['message' => __($status)], 400);
     }
 
     public function resetPassword(Request $request)
@@ -190,11 +178,7 @@ class AuthController extends Controller
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {
-                $user->forceFill([
-                    'password' => Hash::make($password),
-                ])->save();
-
-                // Optionally revoke all tokens after password reset
+                $user->forceFill(['password' => Hash::make($password)])->save();
                 $user->tokens()->delete();
             }
         );
@@ -212,10 +196,8 @@ class AuthController extends Controller
 
         $user = $request->user();
 
-        // Store avatar in 'avatars' folder with unique filename
         $path = $request->file('avatar')->store('avatars', 'public');
 
-        // Save avatar path to user model
         $user->avatar = $path;
         $user->save();
 

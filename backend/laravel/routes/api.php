@@ -12,12 +12,9 @@ use App\Http\Controllers\CheckClockSettingTimeController;
 use App\Http\Controllers\Api\DocumentController;
 use App\Http\Controllers\UserController;
 
-
-
 Route::post('/auth/google/callback', [GoogleAuthController::class, 'callback']);
 
-
-// Auth - Public
+// Auth - Public routes
 Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/auth/reset-password', [AuthController::class, 'resetPassword']);
 Route::post('/register', [AuthController::class, 'register']);
@@ -28,11 +25,10 @@ Route::post('/auth/login-employee', [AuthController::class, 'loginEmployee']);
 Route::get('/employees/{userId}/documents', [DocumentController::class, 'index']);
 Route::post('/documents', [DocumentController::class, 'store']);
 
-//Users
+// User info
 Route::get('users/{id}', [UserController::class, 'show'])->middleware('auth:sanctum');
 
-
-// Protected Routes
+// Protected routes
 Route::middleware('auth:sanctum')->group(function () {
 
     // User Info & Avatar
@@ -47,19 +43,18 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/absence-requests/{id}', [AbsenceRequestController::class, 'update']);
     Route::delete('/absence-requests/{id}', [AbsenceRequestController::class, 'destroy']);
 
-    // Check Clock
+    // Check Clock resources
     Route::apiResource('checkclocks', CheckClockController::class);
     Route::apiResource('checkclocksettings', CheckClockSettingController::class);
     Route::apiResource('checkclocksettingtimes', CheckClockSettingTimeController::class);
 
-    //Employees
-    Route::get('/employees/candidates', [EmployeeController::class, 'candidates']);
+    // Employees CRUD
     Route::get('/employees', [EmployeeController::class, 'index']);
     Route::post('/employees', [EmployeeController::class, 'store']);
     Route::get('/employees/{id}', [EmployeeController::class, 'show']);
     Route::put('/employees/{id}', [EmployeeController::class, 'update']);
     Route::delete('/employees/{id}', [EmployeeController::class, 'destroy']);
 
-    // Upsert Employee (POST for create, PUT for update)
+    // Upsert employee (create or update)
     Route::match(['POST', 'PUT'], '/employees/upsert/{id}', [EmployeeController::class, 'upsert']);
 });

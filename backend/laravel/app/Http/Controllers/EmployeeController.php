@@ -2,20 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CheckClock;
 use App\Models\Employee;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
-use Illuminate\Routing\Controller;
-use App\Models\User;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Hash;
 
 class EmployeeController extends Controller
 {
     public function index(Request $request)
     {
         $search = $request->search;
+
         $employees = Employee::with(['user', 'checkClockSetting'])
             ->when($search, function ($query, $search) {
                 $query->where('first_name', 'like', "%{$search}%")
@@ -147,6 +145,7 @@ class EmployeeController extends Controller
         ]);
     }
 
+    // This method is for listing candidates, but if you abandon the candidate flow, you can remove this or adjust accordingly
     public function candidates()
     {
         $existingEmployeeIds = Employee::pluck('user_id')->toArray();
@@ -214,6 +213,7 @@ class EmployeeController extends Controller
             $message = 'Employee created successfully';
         }
 
+        // If user exists, update status to active
         $user = User::find($id);
         if ($user) {
             $user->status = 'active';

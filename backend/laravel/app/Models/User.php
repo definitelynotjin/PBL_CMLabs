@@ -2,17 +2,11 @@
 
 namespace App\Models;
 
-
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Notifications\ResetPasswordNotification;
-use App\Models\Employee;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Hash;
-
-
 
 class User extends Authenticatable
 {
@@ -45,25 +39,21 @@ class User extends Authenticatable
         'is_active' => 'boolean',
     ];
 
-    // Check if user can login with email
     public function hasEmail()
     {
         return !empty($this->email);
     }
 
-    // Check if user can login with phone
     public function hasPhone()
     {
         return !empty($this->phone);
     }
 
-    // Check if user is admin
     public function isAdmin()
     {
         return $this->role === 'admin';
     }
 
-    // Check if user is employee
     public function isEmployee()
     {
         return $this->employee()->exists();
@@ -74,7 +64,6 @@ class User extends Authenticatable
         return $this->hasOne(Employee::class, 'user_id', 'id');
     }
 
-    // Get display identifier (email or phone)
     public function getDisplayIdentifierAttribute()
     {
         return $this->email ?: $this->phone ?: $this->employee_id;
