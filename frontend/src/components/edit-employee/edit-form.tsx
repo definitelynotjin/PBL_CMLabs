@@ -22,6 +22,7 @@ import {
 
 interface Employee {
   id: string;
+  ck_settings_id?: string;
   first_name: string;
   last_name: string;
   phone: string;
@@ -39,7 +40,7 @@ interface Employee {
   atas_nama_rekening: string;
   tipe_sp: 'SP 1' | 'SP 2' | 'SP 3' | 'none' | '';
   address: string;
-  email?: string; // optional because not part of employee table but comes from user
+  email?: string;
 }
 
 interface CandidateUser {
@@ -53,19 +54,24 @@ interface EmployeeFormProps {
   setDate: (date: Date | undefined) => void;
   data?: Employee;
   user?: CandidateUser;
-  userId?: string; // Needed when promoting a candidate
+  userId?: string;
   onSuccess: (newEmployeeId: string) => void;
 }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
 
+const cabangOptions = [
+  { label: 'Kantor Surabaya', value: 'c21f07de-8e2f-4d9c-9d7b-f0a0d73637ae' },
+  { label: 'Kantor Jakarta', value: 'a3f1c0b4-5d7e-4fbb-bfe8-6d6b7a3b9a92' },
+  { label: 'Kantor Malang', value: '58b66a88-1e4f-46c1-8e90-b47194983a9a' },
+];
 const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, userId, onSuccess }) => {
   const router = useRouter();
 
-  // Initialize form with safe defaults, including empty string for union types
   const [form, setForm] = useState({
+    ck_settings_id: data?.ck_settings_id || '',
     first_name: data?.first_name || user?.name?.split(' ')[0] || '',
-    last_name: data?.last_name || (user?.name ? user.name.split(' ').slice(1).join(' ') : '') || '',
+    last_name: data?.last_name || (user?.name ? user.name.split(' ').slice(1).join(' ') : ''),
     phone: data?.phone || '',
     nik: data?.nik || '',
     gender: data?.gender || '',
@@ -83,7 +89,6 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
     address: data?.address || '',
   });
 
-  // State to hold client-side formatted date string to avoid hydration issues
   const [clientDate, setClientDate] = useState('');
 
   useEffect(() => {
@@ -122,10 +127,6 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
       }
 
       const url = `${API_BASE_URL}/employees/upsert/${id}`;
-
-      // email is NOT part of form payload; backend handles it via user relation
-      const payload = { ...form };
-
       const res = await fetch(url, {
         method: 'POST',
         headers: {
@@ -133,7 +134,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
           'Accept': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(form),
       });
 
       if (!res.ok) {
@@ -150,8 +151,6 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
       alert('Error: ' + error);
     }
   };
-
-
   return (
     <div className="border rounded-lg p-6">
       <h2 className="text-lg font-semibold mb-6">{data ? 'Edit Employee' : 'Add Employee'}</h2>
@@ -170,34 +169,21 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
       </div>
 
       <div className="space-y-4">
-        {/* Name */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field label="First Name" placeholder="Enter first name" value={form.first_name} onChange={handleChange('first_name')} />
           <Field label="Last Name" placeholder="Enter last name" value={form.last_name} onChange={handleChange('last_name')} />
         </div>
 
-        {/* Contact */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field label="Phone" placeholder="Enter phone number" value={form.phone} onChange={handleChange('phone')} />
           <Field label="NIK" placeholder="Enter NIK" value={form.nik} onChange={handleChange('nik')} />
         </div>
 
-        {/* Email - read-only */}
-        <div className="space-y-1 w-full">
-          <label className="text-sm font-medium" htmlFor="email">Email</label>
-          <input
-            id="email"
-            type="email"
-            value={user?.email || ''}
-            readOnly
-            className="w-full rounded border border-gray-300 px-3 py-2 bg-gray-100 text-gray-700 cursor-not-allowed"
-          />
-        </div>
+        {/* Email readonly */}
+        <Field label="Email" placeholder="Email" value={user?.email || ''} onChange={() => { }} />
 
-        {/* Address */}
         <Field label="Address" placeholder="Enter address" value={form.address} onChange={handleChange('address')} />
 
-        {/* Gender and Education */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium">Gender</label>
@@ -211,6 +197,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
               </SelectContent>
             </Select>
           </div>
+
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium">Pendidikan Terakhir</label>
             <Select value={form.pendidikan_terakhir} onValueChange={handleSelectChange('pendidikan_terakhir')}>
@@ -227,7 +214,6 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
           </div>
         </div>
 
-        {/* Birth Details */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field label="Tempat Lahir" placeholder="Enter birthplace" value={form.tempat_lahir} onChange={handleChange('tempat_lahir')} />
           <div className="space-y-1 w-full">
@@ -259,7 +245,21 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
         {/* Job Info */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field label="Jabatan" placeholder="Enter jabatan" value={form.position} onChange={handleChange('position')} />
-          <Field label="Cabang" placeholder="Enter department" value={form.department} onChange={handleChange('department')} />
+          <div className="space-y-1 w-full">
+            <label className="text-sm font-medium">Cabang</label>
+            <Select value={form.ck_settings_id} onValueChange={handleSelectChange('ck_settings_id')}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="-Pilih Cabang-" />
+              </SelectTrigger>
+              <SelectContent>
+                {cabangOptions.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         {/* Contract & Grade */}
@@ -319,7 +319,6 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
           </div>
         </div>
 
-        {/* Action Buttons */}
         <div className="mt-6 flex justify-end gap-4">
           <Button variant="outline" type="button" onClick={() => router.push('/employee-database')}>
             Cancel
