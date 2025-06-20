@@ -135,76 +135,50 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
                       </span>
                     </div>
                   </td>
-                  <td className="p-2">{emp.type}</td>
-                  <td className="p-2 flex gap-2">
-                    {/* Edit */}
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Link href={`/employees/${emp.id}/edit`}>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            title="Edit"
-                            className="hover:bg-[#FFAB00] hover:text-white"
-                          >
-                            <Edit2 className="w-4 h-4" />
-                          </Button>
-                        </Link>
-                      </TooltipTrigger>
-                      <TooltipContent side="top">Edit</TooltipContent>
-                    </Tooltip>
-
-                    {/* Delete */}
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Link href={`/employees/${emp.id}/delete`}>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            title="Delete"
-                            className="hover:bg-[#C11106] hover:text-white"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </Link>
-                      </TooltipTrigger>
-                      <TooltipContent side="top">Delete</TooltipContent>
-                    </Tooltip>
-
-                    {/* Conditional Third Button */}
-                    {emp.type === 'Employee' ? (
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            title="Manage Letters"
-                            onClick={() => onRowClick(emp)}
-                            className="hover:bg-[#2D8EFF] hover:text-white"
-                          >
-                            <FileText className="w-4 h-4" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent side="top">Manage Letters</TooltipContent>
-                      </Tooltip>
-                    ) : (
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Link href={`/employees/${emp.id}/promote`}>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              title="Promote to Employee"
-                              className="hover:bg-[#257047] hover:text-white"
-                            >
-                              <FilePlus className="w-4 h-4" />
-                            </Button>
-                          </Link>
-                        </TooltipTrigger>
-                        <TooltipContent side="top">Promote to Employee</TooltipContent>
-                      </Tooltip>
-                    )}
+                  <td className="p-2">
+                    {(() => {
+                      const empType = emp.type ? emp.type.charAt(0).toUpperCase() + emp.type.slice(1).toLowerCase() : '';
+                      if (empType === 'Employee') {
+                        return (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                title="Manage Letters"
+                                onClick={() => onRowClick(emp)}
+                                className="hover:bg-[#2D8EFF] hover:text-white"
+                              >
+                                <FileText className="w-4 h-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent side="top">Manage Letters</TooltipContent>
+                          </Tooltip>
+                        );
+                      }
+                      if (empType === 'Candidate') {
+                        return (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Link href={`/employees/${emp.id}/promote`}>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  title="Promote to Employee"
+                                  className="hover:bg-[#257047] hover:text-white"
+                                >
+                                  <FilePlus className="w-4 h-4" />
+                                </Button>
+                              </Link>
+                            </TooltipTrigger>
+                            <TooltipContent side="top">Promote to Employee</TooltipContent>
+                          </Tooltip>
+                        );
+                      }
+                      return null;
+                    })()}
                   </td>
+
                 </tr>
               ))
             )}
