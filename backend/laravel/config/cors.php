@@ -4,7 +4,8 @@ return [
     'allowed_methods' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     'allowed_origins' => [
         'http://localhost:3000',                // for local dev
-        'https://pblcmlabs.duckdns.org',       // production frontend (https, default port)
+        'https://pblcmlabs.duckdns.org',
+        'https://pblcmlabs.duckdns.org:3000',     // production frontend (https, default port)
     ],
     'allowed_origins_patterns' => [],
     'allowed_headers' => ['Content-Type', 'X-Requested-With', 'Authorization', 'X-XSRF-TOKEN'],
