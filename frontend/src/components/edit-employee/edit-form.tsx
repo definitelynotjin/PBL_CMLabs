@@ -123,15 +123,15 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
 
       const url = `${API_BASE_URL}/employees/upsert/${id}`;
 
-      // Exclude email from payload (backend handles it via user relation)
-      const { email, ...payload } = form;
+      // email is NOT in form, so no need to exclude it
+      const payload = { ...form };
 
       const res = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          Authorization: `Bearer ${token}`, // Bearer token header
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
       });
@@ -150,6 +150,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
       alert('Error: ' + error);
     }
   };
+
 
   return (
     <div className="border rounded-lg p-6">
