@@ -26,18 +26,20 @@ interface Employee {
   last_name: string;
   phone: string;
   nik: string;
-  gender: 'M' | 'F';
+  gender: 'M' | 'F' | '';
   pendidikan_terakhir: string;
   tempat_lahir: string;
   birth_date: string;
   position: string;
   department: string;
-  contract_type: 'Tetap' | 'Kontrak' | 'Lepas';
+  contract_type: 'Tetap' | 'Kontrak' | 'Lepas' | 'none';
   grade: string;
   bank: string;
   nomor_rekening: string;
   atas_nama_rekening: string;
-  tipe_sp: 'SP 1' | 'SP 2' | 'SP 3' | '';
+  tipe_sp: 'SP 1' | 'SP 2' | 'SP 3' | 'none' | '';
+  address: string;
+  email?: string; // optional because not part of employee table but comes from user
 }
 
 interface CandidateUser {
@@ -78,6 +80,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
     nomor_rekening: data?.nomor_rekening || '',
     atas_nama_rekening: data?.atas_nama_rekening || '',
     tipe_sp: data?.tipe_sp || 'none',
+    address: data?.address || '',
   });
 
   // State to hold client-side formatted date string to avoid hydration issues
@@ -120,14 +123,17 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
 
       const url = `${API_BASE_URL}/employees/upsert/${id}`;
 
+      // Exclude email from payload (backend handles it via user relation)
+      const { email, ...payload } = form;
+
       const res = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          Authorization: `Bearer ${token}`, // <-- Bearer token header
+          Authorization: `Bearer ${token}`, // Bearer token header
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       });
 
       if (!res.ok) {
@@ -144,7 +150,6 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
       alert('Error: ' + error);
     }
   };
-
 
   return (
     <div className="border rounded-lg p-6">
@@ -175,6 +180,12 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
           <Field label="Phone" placeholder="Enter phone number" value={form.phone} onChange={handleChange('phone')} />
           <Field label="NIK" placeholder="Enter NIK" value={form.nik} onChange={handleChange('nik')} />
         </div>
+
+        {/* Email - read-only */}
+        <Field label="Email" placeholder="Email" value={user?.email || ''} readOnly />
+
+        {/* Address */}
+        <Field label="Address" placeholder="Enter address" value={form.address} onChange={handleChange('address')} />
 
         {/* Gender and Education */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -289,7 +300,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
                 <SelectValue placeholder="-Pilih SP-" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="none">None</SelectItem> {/* Empty value means no selection */}
+                <SelectItem value="none">None</SelectItem>
                 <SelectItem value="SP 1">SP-1</SelectItem>
                 <SelectItem value="SP 2">SP-2</SelectItem>
                 <SelectItem value="SP 3">SP-3</SelectItem>
