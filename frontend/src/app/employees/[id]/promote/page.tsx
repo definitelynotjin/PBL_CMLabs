@@ -24,15 +24,19 @@ export default function PromoteCandidatePage() {
 
             try {
                 const token = localStorage.getItem('token');
-                if (!token) throw new Error('No auth token found');
+                if (!token) {
+                    router.push('/login'); // redirect to login if unauthenticated
+                    return;
+                }
 
                 const res = await fetch(
-                    `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/${id}`, // assuming you get candidate data via /users/{id}
+                    `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/${id}`, // adjust if your route is different
                     {
                         method: 'GET',
                         headers: {
                             'Authorization': `Bearer ${token}`,
                             'Content-Type': 'application/json',
+                            'Accept': 'application/json',
                         },
                     }
                 );
@@ -41,6 +45,11 @@ export default function PromoteCandidatePage() {
 
                 const data = await res.json();
                 setUserData(data);
+
+                // Optional: parse and set birth date if available
+                if (data.birth_date || data.tanggalLahir) {
+                    setDate(new Date(data.birth_date || data.tanggalLahir));
+                }
             } catch (err: any) {
                 setError(err.message || 'Unexpected error');
             } finally {
@@ -49,11 +58,11 @@ export default function PromoteCandidatePage() {
         };
 
         fetchData();
-    }, [params]);
+    }, [params, router]);
 
     if (loading) return <div className="p-6">Loading candidate data...</div>;
     if (error) return <div className="p-6 text-red-600">Error: {error}</div>;
-    if (!userData) return <div className="p-6">No candidate data found.</div>;
+    if (!userData || !userData.id || !userData.name) return <div className="p-6">Invalid candidate data received.</div>;
 
     return (
         <div className="flex min-h-screen bg-white">

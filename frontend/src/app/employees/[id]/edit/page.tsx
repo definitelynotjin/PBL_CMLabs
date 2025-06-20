@@ -18,11 +18,24 @@ const EmployeeEditPage = () => {
 
         const fetchEmployee = async () => {
             try {
-                const res = await fetch(`/api/employees/${id}`);
-                if (!res.ok) throw new Error('Failed to fetch employee data');
-                const data = await res.json();
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    console.error('No auth token found');
+                    return;
+                }
 
+                const res = await fetch(`/api/employees/${id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json',
+                    },
+                });
+
+                if (!res.ok) throw new Error('Failed to fetch employee data');
+
+                const data = await res.json();
                 const person = data.data || data.candidate;
+
                 if (person?.birth_date || person?.tanggalLahir) {
                     const birth = person.birth_date || person.tanggalLahir;
                     setDate(new Date(birth));
