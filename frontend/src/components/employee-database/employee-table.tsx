@@ -30,8 +30,8 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
     let newStatus = emp.status;
     let newType = emp.type;
 
-    if (emp.type === 'candidate') {
-      newType = 'employee';
+    if (emp.type === 'Candidate') {
+      newType = 'Employee';
       newStatus = true;
     } else {
       newStatus = !emp.status;
@@ -123,11 +123,11 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
                   <td className="p-2">
                     <div className="flex items-center gap-2">
                       <Switch
-                        checked={emp.status || emp.type === 'candidate'}
+                        checked={emp.status || emp.type === 'Candidate'}
                         onCheckedChange={() => handleStatusToggle(emp)}
                       />
                       <span className="text-xs text-muted-foreground">
-                        {emp.type === 'candidate'
+                        {emp.type === 'Candidate'
                           ? 'Candidate'
                           : emp.status
                             ? 'Active'
@@ -172,7 +172,7 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
                     </Tooltip>
 
                     {/* Conditional Third Button */}
-                    {emp.type === 'employee' ? (
+                    {emp.type === 'Employee' ? (
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Button
