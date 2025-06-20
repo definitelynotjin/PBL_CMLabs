@@ -30,7 +30,7 @@ export default function PromoteCandidatePage() {
                 }
 
                 const res = await fetch(
-                    `${process.env.NEXT_PUBLIC_API_BASE_URL}/employees/${id}`, // adjust if your route is different
+                    `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/${id}`, // adjust if your route is different
                     {
                         method: 'GET',
                         headers: {

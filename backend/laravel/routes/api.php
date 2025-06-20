@@ -10,6 +10,7 @@ use App\Http\Controllers\CheckClockController;
 use App\Http\Controllers\CheckClockSettingController;
 use App\Http\Controllers\CheckClockSettingTimeController;
 use App\Http\Controllers\Api\DocumentController;
+use App\Http\Controllers\UserController;
 
 
 
@@ -26,6 +27,9 @@ Route::post('/auth/login-employee', [AuthController::class, 'loginEmployee']);
 // Documents
 Route::get('/employees/{userId}/documents', [DocumentController::class, 'index']);
 Route::post('/documents', [DocumentController::class, 'store']);
+
+//Users
+Route::get('users/{id}', [UserController::class, 'show'])->middleware('auth:sanctum');
 
 
 // Protected Routes
