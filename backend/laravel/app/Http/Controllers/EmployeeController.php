@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Validation\Rule;
+use App\Http\Controllers\Controller;
 
 class EmployeeController extends Controller
 {

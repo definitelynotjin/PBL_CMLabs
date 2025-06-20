@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\Document;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Routing\Controller;
+use App\Http\Controllers\Controller;
 
 
 class DocumentController extends Controller

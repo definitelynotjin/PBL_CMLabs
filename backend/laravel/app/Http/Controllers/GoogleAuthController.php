@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Str;
-use Illuminate\Routing\Controller;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Google_Client;
 
@@ -69,6 +69,4 @@ class GoogleAuthController extends Controller
             'message' => 'Google login successful',
         ]);
     }
-
-
 }

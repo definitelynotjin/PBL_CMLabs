@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Routing\Controller;
+use App\Http\Controllers\Controller;
 
 class CheckClockController extends Controller
 {

@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Hash;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Facades\Password;
+use App\Http\Controllers\Controller;
 
 class AuthController extends Controller
 {
