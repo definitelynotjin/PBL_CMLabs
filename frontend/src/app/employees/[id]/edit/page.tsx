@@ -26,22 +26,23 @@ const EmployeeEditPage = () => {
 
                 const res = await fetch(`/api/employees/${id}`, {
                     headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                        Accept: 'application/json',
                     },
                 });
 
                 if (!res.ok) throw new Error('Failed to fetch employee data');
 
                 const data = await res.json();
-                const person = data.data || data.candidate;
 
-                if (person?.birth_date || person?.tanggalLahir) {
-                    const birth = person.birth_date || person.tanggalLahir;
-                    setDate(new Date(birth));
+                // Now expect only employee under data.data
+                const employee = data.data;
+
+                if (employee?.birth_date) {
+                    setDate(new Date(employee.birth_date));
                 }
 
-                setEmployeeData(person);
+                setEmployeeData(employee);
             } catch (error) {
                 console.error(error);
             } finally {

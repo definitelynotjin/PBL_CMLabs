@@ -30,52 +30,29 @@ export default function LetterManagementPage() {
       const token = localStorage.getItem('token');
       if (!token) throw new Error('No auth token found');
 
-      const employeesUrl = `${API_BASE_URL}/employees?search=${encodeURIComponent(search)}&include_all=true`;
-      const candidatesUrl = `${API_BASE_URL}/employees/candidates?search=${encodeURIComponent(search)}`;
+      const employeesUrl = `${API_BASE_URL}/employees?search=${encodeURIComponent(search)}`;
 
       const headers = {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       };
 
-      const [employeesRes, candidatesRes] = await Promise.all([
-        fetch(employeesUrl, { headers }),
-        fetch(candidatesUrl, { headers }),
-      ]);
+      const res = await fetch(employeesUrl, { headers });
 
-      if (!employeesRes.ok || !candidatesRes.ok) {
+      if (!res.ok) {
         throw new Error('Failed to fetch employee data');
       }
 
-      const employeesData = await employeesRes.json();
-      const candidatesData = await candidatesRes.json();
+      const employeesData = await res.json();
 
+      // Map employees and normalize status if needed
       const mappedEmployees = employeesData.data.data.map((emp: Employee) => ({
         ...emp,
         status: emp.employment_status === 'Active',
-        type: 'employee',
+        // no 'type' field anymore
       }));
 
-      const mappedCandidates = candidatesData.data.map((candidate: any) => ({
-        id: candidate.id || candidate.user_id,
-        user_id: candidate.id || candidate.user_id,
-        first_name: candidate.name?.split(' ')[0] || candidate.name || '-',
-        last_name: candidate.name?.split(' ').slice(1).join(' ') || '',
-        gender: '-',
-        phone: candidate.phone || '-',
-        branch: '-',
-        position: '-',
-        grade: '-',
-        status: false,
-        employment_status: 'Candidate',
-        type: 'candidate',
-        user: {
-          id: candidate.id || candidate.user_id,
-          employee_id: candidate.employee_id || '-',
-        },
-      }));
-
-      setEmployees([...mappedEmployees, ...mappedCandidates]);
+      setEmployees(mappedEmployees);
     } catch (error) {
       console.error(error);
       alert('Failed to load employees');

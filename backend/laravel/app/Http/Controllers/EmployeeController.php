@@ -78,15 +78,10 @@ class EmployeeController extends Controller
             ->first();
 
         if (!$employee) {
-            $user = User::find($id);
-            if (!$user) {
-                return response()->json(['success' => false, 'message' => 'User or Employee not found'], 404);
-            }
             return response()->json([
-                'success' => true,
-                'data' => null,
-                'candidate' => $user
-            ]);
+                'success' => false,
+                'message' => 'Employee not found'
+            ], 404);
         }
 
         return response()->json([
@@ -145,20 +140,7 @@ class EmployeeController extends Controller
         ]);
     }
 
-    // This method is for listing candidates, but if you abandon the candidate flow, you can remove this or adjust accordingly
-    public function candidates()
-    {
-        $existingEmployeeIds = Employee::pluck('user_id')->toArray();
 
-        $candidates = User::whereNotIn('id', $existingEmployeeIds)
-            ->select('id', 'name', 'email', 'employee_id')
-            ->get();
-
-        return response()->json([
-            'success' => true,
-            'data' => $candidates
-        ]);
-    }
 
     public function upsert(Request $request, $id)
     {
@@ -170,21 +152,9 @@ class EmployeeController extends Controller
             'gender' => 'required|in:M,F',
             'address' => 'required|string',
             'ck_settings_id' => 'required|exists:check_clock_settings,id',
-            'email' => [
-                'required',
-                'email',
-                Rule::unique('employees', 'email')->ignore($employee?->id)
-            ],
-            'phone' => [
-                'required',
-                'string',
-                Rule::unique('employees', 'phone')->ignore($employee?->id)
-            ],
-            'nik' => [
-                'required',
-                'string',
-                Rule::unique('employees', 'nik')->ignore($employee?->id)
-            ],
+            'email' => ['required', 'email', Rule::unique('employees', 'email')->ignore($employee?->id)],
+            'phone' => ['required', 'string', Rule::unique('employees', 'phone')->ignore($employee?->id)],
+            'nik' => ['required', 'string', Rule::unique('employees', 'nik')->ignore($employee?->id)],
             'position' => 'nullable|string|max:100',
             'department' => 'nullable|string|max:100',
             'birth_date' => 'nullable|date',
@@ -199,7 +169,7 @@ class EmployeeController extends Controller
             'nomor_rekening' => 'nullable|string|max:30',
             'atas_nama_rekening' => 'nullable|string|max:100',
             'tipe_sp' => 'nullable|in:SP 1,SP 2,SP 3',
-            'type' => 'nullable|string',
+            // 'type' => 'nullable|string',  <- REMOVED
         ];
 
         $data = $request->validate($rules);

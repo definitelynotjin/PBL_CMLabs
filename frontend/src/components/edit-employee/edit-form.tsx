@@ -43,18 +43,10 @@ interface Employee {
   email?: string;
 }
 
-interface CandidateUser {
-  id: string;
-  name: string;
-  email: string;
-}
-
 interface EmployeeFormProps {
   date: Date | undefined;
   setDate: (date: Date | undefined) => void;
   data?: Employee;
-  user?: CandidateUser;
-  userId?: string;
   onSuccess: (newEmployeeId: string) => void;
 }
 
@@ -65,13 +57,14 @@ const cabangOptions = [
   { label: 'Kantor Jakarta', value: 'a3f1c0b4-5d7e-4fbb-bfe8-6d6b7a3b9a92' },
   { label: 'Kantor Malang', value: '58b66a88-1e4f-46c1-8e90-b47194983a9a' },
 ];
-const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, userId, onSuccess }) => {
+
+const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSuccess }) => {
   const router = useRouter();
 
   const [form, setForm] = useState({
     ck_settings_id: data?.ck_settings_id || '',
-    first_name: data?.first_name || user?.name?.split(' ')[0] || '',
-    last_name: data?.last_name || (user?.name ? user.name.split(' ').slice(1).join(' ') : ''),
+    first_name: data?.first_name || '',
+    last_name: data?.last_name || '',
     phone: data?.phone || '',
     nik: data?.nik || '',
     gender: data?.gender || '',
@@ -87,6 +80,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
     atas_nama_rekening: data?.atas_nama_rekening || '',
     tipe_sp: data?.tipe_sp || 'none',
     address: data?.address || '',
+    email: data?.email || '',
   });
 
   const [clientDate, setClientDate] = useState('');
@@ -114,9 +108,8 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
 
   const handleSubmit = async () => {
     try {
-      const id = data?.id || userId;
-      if (!id) {
-        alert('Missing user or employee ID.');
+      if (!data?.id) {
+        alert('Missing employee ID.');
         return;
       }
 
@@ -126,7 +119,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
         return;
       }
 
-      const url = `${API_BASE_URL}/employees/upsert/${id}`;
+      const url = `${API_BASE_URL}/employees/upsert/${data.id}`;
       const res = await fetch(url, {
         method: 'POST',
         headers: {
@@ -144,13 +137,14 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
       }
 
       const response = await res.json();
-      alert(data ? 'Employee updated successfully!' : 'Employee created successfully!');
+      alert('Employee updated successfully!');
       onSuccess(response.id);
       router.push('/employee-database');
     } catch (error) {
       alert('Error: ' + error);
     }
   };
+
   return (
     <div className="border rounded-lg p-6">
       <h2 className="text-lg font-semibold mb-6">{data ? 'Edit Employee' : 'Add Employee'}</h2>
@@ -180,7 +174,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
         </div>
 
         {/* Email readonly */}
-        <Field label="Email" placeholder="Email" value={user?.email || ''} onChange={() => { }} />
+        <Field label="Email" placeholder="Email" value={form.email} onChange={() => { }} />
 
         <Field label="Address" placeholder="Enter address" value={form.address} onChange={handleChange('address')} />
 
