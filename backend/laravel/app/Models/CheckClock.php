@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Database\Eloquent\Model;
 
-
-
 class CheckClock extends Model
 {
     use HasFactory, SoftDeletes;
@@ -19,8 +17,8 @@ class CheckClock extends Model
     protected $fillable = [
         'id',
         'user_id',
-        'check_clock_type',
-        'check_clock_time',
+        'check_clock_type',        // '1' or '2'
+        'check_clock_time',        // stored as string, e.g. "08:00:00"
         'latitude',
         'longitude',
         'supporting_document_path',
@@ -30,8 +28,8 @@ class CheckClock extends Model
     ];
 
     protected $casts = [
-        'check_clock_type' => 'string', // 1: In, 2: Out
-        'check_clock_time' => 'string',
+        'check_clock_type' => 'string',  // enum as string is okay
+        'check_clock_time' => 'string',  // time stored as string (HH:mm:ss)
         'latitude' => 'float',
         'longitude' => 'float',
         'created_at' => 'datetime',
@@ -42,6 +40,7 @@ class CheckClock extends Model
     protected static function boot()
     {
         parent::boot();
+
         static::creating(function ($model) {
             if (empty($model->id)) {
                 $model->id = Uuid::uuid4()->toString();
@@ -49,15 +48,18 @@ class CheckClock extends Model
         });
     }
 
-    // Relationship: CheckClock belongs to a User
+    // Relationships
+
+    // CheckClock belongs to User by user_id
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    // Relationship: CheckClock belongs to an Employee
+    // CheckClock belongs to Employee by user_id
     public function employee()
     {
+        // Note: This joins CheckClock.user_id = Employee.user_id
         return $this->belongsTo(Employee::class, 'user_id', 'user_id');
     }
 }

@@ -47,13 +47,15 @@ class CheckClockSetting extends Model
         });
     }
 
-    // Relationship: CheckClockSetting has many Employees
+    // Relations
+
+    // One CheckClockSetting has many Employees
     public function employees()
     {
         return $this->hasMany(Employee::class, 'ck_settings_id');
     }
 
-    // Relationship: CheckClockSetting has many CheckClockSettingTimes
+    // One CheckClockSetting has many CheckClockSettingTimes
     public function times()
     {
         return $this->hasMany(CheckClockSettingTime::class, 'ck_settings_id');

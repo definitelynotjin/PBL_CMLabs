@@ -18,7 +18,7 @@ class CheckClockSettingTime extends Model
         'id',
         'ck_settings_id',
         'day',           // e.g. "Monday", "Tuesday", etc.
-        'clock_in',      // time only
+        'clock_in',      // time only, e.g., "08:00:00"
         'clock_out',
         'break_start',
         'break_end',
@@ -28,7 +28,7 @@ class CheckClockSettingTime extends Model
     ];
 
     protected $casts = [
-        'clock_in' => 'string',
+        'clock_in' => 'string',   // Stored as time string (HH:mm:ss)
         'clock_out' => 'string',
         'break_start' => 'string',
         'break_end' => 'string',
@@ -36,7 +36,6 @@ class CheckClockSettingTime extends Model
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
     ];
-
 
     protected static function boot()
     {

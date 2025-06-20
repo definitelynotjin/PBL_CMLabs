@@ -10,10 +10,13 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Routing\Controller;
 
-
-
 class CheckClockController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum');
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -21,9 +24,8 @@ class CheckClockController extends Controller
             'check_clock_time' => 'required|date_format:H:i:s',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
-            'supporting_document' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048', // validate the file
+            'supporting_document' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ]);
-
 
         $user = Auth::user();
 
@@ -31,16 +33,40 @@ class CheckClockController extends Controller
             return response()->json(['message' => 'Unauthenticated.'], 401);
         }
 
-        // Get today’s setting time based on weekday
-        $today = now()->format('l'); // E.g., "Monday"
-        $settingTime = CheckClockSettingTime::whereHas('setting', function ($query) {
-            $query->where('type', 1); // Optional: filter by type
-        })
+        // Get the employee record related to the user
+        $employee = $user->employee;
+
+        if (!$employee || !$employee->ck_settings_id) {
+            return response()->json(['message' => 'User does not have a clock setting assigned.'], 400);
+        }
+
+        $userSettingId = $employee->ck_settings_id;
+
+        // Get today’s weekday name e.g. "Monday"
+        $today = now()->format('l');
+
+        // Find schedule for this user's setting and today's day
+        $settingTime = CheckClockSettingTime::where('ck_settings_id', $userSettingId)
             ->where('day', $today)
             ->first();
 
         if (!$settingTime) {
             return response()->json(['message' => 'Schedule not set for today.'], 400);
+        }
+
+        // Optional: Geofence validation
+        $setting = $employee->checkClockSetting;
+        if ($setting && $validated['latitude'] && $validated['longitude']) {
+            $distance = $this->calculateDistance(
+                $setting->latitude,
+                $setting->longitude,
+                $validated['latitude'],
+                $validated['longitude']
+            );
+
+            if ($distance > $setting->radius) {
+                return response()->json(['message' => 'You are outside the allowed clock-in location.'], 400);
+            }
         }
 
         // Determine status (on_time, late, early)
@@ -70,25 +96,6 @@ class CheckClockController extends Controller
         ], 201);
     }
 
-
-    public function report(Request $request)
-    {
-        $data = $request->validate([
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
-            'user_id' => 'nullable|exists:users,id',
-        ]);
-
-        $query = CheckClock::query()
-            ->whereBetween('created_at', [$data['start_date'], $data['end_date']])
-            ->when($data['user_id'], fn($q, $id) => $q->where('user_id', $id))
-            ->with('employee'); // <-- here
-
-        $report = $query->paginate(10);
-
-        return response()->json($report);
-    }
-
     protected function determineStatus($checkTime, $settingTime, $checkType)
     {
         if ($checkType == 1) { // Check-in
@@ -101,8 +108,25 @@ class CheckClockController extends Controller
         }
     }
 
-    public function __construct()
+    // Haversine formula to calculate distance in meters between two lat/lng points
+    protected function calculateDistance($lat1, $lon1, $lat2, $lon2)
     {
-        $this->middleware('auth:sanctum');
+        $earthRadius = 6371000; // meters
+
+        $lat1 = deg2rad($lat1);
+        $lon1 = deg2rad($lon1);
+        $lat2 = deg2rad($lat2);
+        $lon2 = deg2rad($lon2);
+
+        $dLat = $lat2 - $lat1;
+        $dLon = $lon2 - $lon1;
+
+        $a = sin($dLat / 2) * sin($dLat / 2) +
+            cos($lat1) * cos($lat2) *
+            sin($dLon / 2) * sin($dLon / 2);
+
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
+        return $earthRadius * $c;
     }
 }
