@@ -13,7 +13,6 @@ interface EmployeeTableProps {
 }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
-const SANCTUM_BASE_URL = process.env.NEXT_PUBLIC_SANCTUM_BASE_URL || '';
 
 const EmployeeTable: React.FC<EmployeeTableProps> = ({
   employees,
@@ -21,13 +20,6 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
   onRowClick,
   refreshData,
 }) => {
-  const getCsrfToken = () => {
-    const match = document.cookie
-      .split('; ')
-      .find((row) => row.startsWith('XSRF-TOKEN='));
-    return match ? decodeURIComponent(match.split('=')[1]) : '';
-  };
-
   const handleStatusToggle = async (emp: Employee) => {
     let newStatus = emp.status;
     let newType = emp.type;
@@ -40,29 +32,20 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
     }
 
     try {
-      // Fetch CSRF cookie from Sanctum base URL (no /api here)
-      await fetch(`${SANCTUM_BASE_URL}/sanctum/csrf-cookie`, {
-        credentials: 'include',
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('No auth token found');
+
+      const res = await fetch(`${API_BASE_URL}/employees/upsert/${emp.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`, // Bearer token header
+        },
+        body: JSON.stringify({
+          status: newStatus,
+          type: newType,
+        }),
       });
-
-      const csrfToken = getCsrfToken();
-
-      // Update employee status via API_BASE_URL (with /api)
-      const res = await fetch(
-        `${API_BASE_URL}/employees/upsert/${emp.id}`,
-        {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-XSRF-TOKEN': csrfToken,
-          },
-          credentials: 'include',
-          body: JSON.stringify({
-            status: newStatus,
-            type: newType,
-          }),
-        }
-      );
 
       if (!res.ok) throw new Error('Failed to update status');
 

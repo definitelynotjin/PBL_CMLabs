@@ -11,7 +11,6 @@ import UploadDocumentDialog from '@/components/employee-database/employee-docume
 import { Employee } from '@/components/employee-database/types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
-const SANCTUM_BASE_URL = process.env.NEXT_PUBLIC_SANCTUM_BASE_URL || '';
 
 export default function LetterManagementPage() {
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -28,18 +27,20 @@ export default function LetterManagementPage() {
     setLoading(true);
 
     try {
-      // Fetch CSRF cookie for Sanctum (no /api here)
-      await fetch(`${SANCTUM_BASE_URL}/sanctum/csrf-cookie`, {
-        credentials: 'include',
-      });
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('No auth token found');
 
-      // Fetch employees and candidates from API
       const employeesUrl = `${API_BASE_URL}/employees?search=${encodeURIComponent(search)}&include_all=true`;
       const candidatesUrl = `${API_BASE_URL}/employees/candidates?search=${encodeURIComponent(search)}`;
 
+      const headers = {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      };
+
       const [employeesRes, candidatesRes] = await Promise.all([
-        fetch(employeesUrl, { credentials: 'include' }),
-        fetch(candidatesUrl, { credentials: 'include' }),
+        fetch(employeesUrl, { headers }),
+        fetch(candidatesUrl, { headers }),
       ]);
 
       if (!employeesRes.ok || !candidatesRes.ok) {
@@ -96,22 +97,33 @@ export default function LetterManagementPage() {
   const handleUpload = async () => {
     if (!selectedEmployee || !documentFile || !documentType) return;
 
-    const formData = new FormData();
-    formData.append('employee_id', selectedEmployee.user_id);
-    formData.append('document_type', documentType);
-    formData.append('file', documentFile);
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('No auth token found');
 
-    const res = await fetch(`${API_BASE_URL}/upload-document`, {
-      method: 'POST',
-      body: formData,
-    });
+      const formData = new FormData();
+      formData.append('employee_id', selectedEmployee.user_id);
+      formData.append('document_type', documentType);
+      formData.append('file', documentFile);
 
-    if (res.ok) {
-      alert('Document uploaded successfully');
-      setShowUpload(false);
-      setDocumentFile(null);
-      setDocumentType('');
-    } else {
+      const res = await fetch(`${API_BASE_URL}/upload-document`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (res.ok) {
+        alert('Document uploaded successfully');
+        setShowUpload(false);
+        setDocumentFile(null);
+        setDocumentType('');
+      } else {
+        alert('Upload failed');
+      }
+    } catch (error) {
+      console.error(error);
       alert('Upload failed');
     }
   };
