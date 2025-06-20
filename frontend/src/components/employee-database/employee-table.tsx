@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { ChevronsUpDown, Edit2, Trash2 } from 'lucide-react';
+import { ChevronsUpDown, Edit2, Trash2, FileText, FilePlus } from 'lucide-react';
 import { Employee } from './types';
 import Link from 'next/link';
 import { Switch } from '@/components/ui/switch';
@@ -100,12 +100,9 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
                   <div className="w-8 h-8 bg-gray-300 rounded-full" />
                 </td>
                 <td className="p-2">
-                  <button
-                    onClick={() => onRowClick(emp)}
-                    className="text-blue-600 underline cursor-pointer bg-transparent border-none p-0"
-                  >
+                  <span className="text-gray-900">
                     {emp.first_name} {emp.last_name}
-                  </button>
+                  </span>
                 </td>
                 <td className="p-2">
                   <span className="bg-muted px-2 py-1 rounded text-xs font-medium">
@@ -133,17 +130,39 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
                 </td>
                 <td className="p-2">{emp.type}</td>
                 <td className="p-2 flex gap-2">
+                  {/* Edit */}
                   <Link href={`/employees/${emp.id}/edit`}>
                     <Button variant="ghost" size="sm" title="Edit">
-                      <Edit2 />
+                      <Edit2 className="w-4 h-4" />
                     </Button>
                   </Link>
+
+                  {/* Delete */}
                   <Link href={`/employees/${emp.id}/delete`}>
                     <Button variant="ghost" size="sm" title="Delete">
-                      <Trash2 />
+                      <Trash2 className="w-4 h-4" />
                     </Button>
                   </Link>
+
+                  {/* Conditional Third Button */}
+                  {emp.type === 'employee' ? (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      title="Manage Letters"
+                      onClick={() => onRowClick(emp)}
+                    >
+                      <FileText className="w-4 h-4" />
+                    </Button>
+                  ) : (
+                    <Link href={`/employees/${emp.id}/promote`}>
+                      <Button variant="ghost" size="sm" title="Promote to Employee">
+                        <FilePlus className="w-4 h-4" />
+                      </Button>
+                    </Link>
+                  )}
                 </td>
+
               </tr>
             ))
           )}

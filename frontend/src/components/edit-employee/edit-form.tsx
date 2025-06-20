@@ -55,6 +55,8 @@ interface EmployeeFormProps {
   onSuccess: (newEmployeeId: string) => void;
 }
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
+
 const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, userId, onSuccess }) => {
   const router = useRouter();
 
@@ -110,23 +112,21 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
         return;
       }
 
-      const url = `/api/employees/upsert/${id}`;
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Authentication token not found. Please login.');
+        return;
+      }
 
-      const getCookie = (name: string): string | null => {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return decodeURIComponent(parts.pop()!.split(';').shift()!);
-        return null;
-      };
+      const url = `${API_BASE_URL}/employees/upsert/${id}`;
 
       const res = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'X-XSRF-TOKEN': getCookie('XSRF-TOKEN') || '', // ← this is key
+          Authorization: `Bearer ${token}`, // <-- Bearer token header
         },
-        credentials: 'include', // ← this ensures cookies are sent
         body: JSON.stringify(form),
       });
 
@@ -144,6 +144,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
       alert('Error: ' + error);
     }
   };
+
 
   return (
     <div className="border rounded-lg p-6">

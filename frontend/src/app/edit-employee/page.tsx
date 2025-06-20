@@ -6,6 +6,8 @@ import Sidebar from '@/components/sidebar';
 import Header from '@/components/edit-employee/header';
 import EmployeeForm from '@/components/edit-employee/edit-form';
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
+
 export default function EditEmployeePage() {
   const [date, setDate] = useState<Date | undefined>();
   const [employeeData, setEmployeeData] = useState<any>(null);
@@ -23,19 +25,19 @@ export default function EditEmployeePage() {
       setError(null);
 
       try {
-        // Replace this URL with your actual API endpoint
-        const res = await fetch(`/api/employees/${id}`, {
+        const token = localStorage.getItem('token');
+        if (!token) throw new Error('No authentication token found');
+
+        const res = await fetch(`${API_BASE_URL}/employees/${id}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            // Add Authorization header if needed, e.g.:
-            // 'Authorization': `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
           },
-          credentials: 'include', // include cookies if using session auth
         });
 
         if (!res.ok) {
-          throw new Error(`Failed to  employee data (status: ${res.status})`);
+          throw new Error(`Failed to fetch employee data (status: ${res.status})`);
         }
 
         const data = await res.json();
@@ -44,7 +46,6 @@ export default function EditEmployeePage() {
         if (data.birthDate) {
           setDate(new Date(data.birthDate));
         } else if (data.birth_date) {
-          // adjust if your API returns snake_case
           setDate(new Date(data.birth_date));
         } else {
           setDate(undefined);
@@ -77,12 +78,14 @@ export default function EditEmployeePage() {
       <Sidebar />
       <div className="flex-1 p-6 space-y-6">
         <Header />
-        <EmployeeForm date={date}
+        <EmployeeForm
+          date={date}
           setDate={setDate}
           data={employeeData}
           onSuccess={() => {
-            router.push(`/employee-database`);// Handle success (e.g., show a success message or redirect)
-          }} />
+            router.push(`/employee-database`);
+          }}
+        />
       </div>
     </div>
   );

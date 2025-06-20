@@ -8,7 +8,7 @@ interface StatsProps {
 const Stats: React.FC<StatsProps> = ({ employees, periode }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-      <div className="border rounded-lg p-1">
+      <div className="border rounded-lg p-3">
         <p className="text-sm text-muted-foreground">Periode</p>
         <p className="text-lg font-semibold">{periode}</p>
       </div>
