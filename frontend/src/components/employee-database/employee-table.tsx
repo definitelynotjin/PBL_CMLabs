@@ -31,9 +31,11 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
     let newType = emp.type;
 
     if (emp.type === 'Candidate') {
+      // Promoting candidate to employee activates them
       newType = 'Employee';
       newStatus = true;
     } else {
+      // Toggle active/inactive status for employees
       newStatus = !emp.status;
     }
 
@@ -45,7 +47,7 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`, // Bearer token header
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           status: newStatus,
@@ -79,7 +81,7 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
                 'Jabatan',
                 'Grade',
                 'Status',
-                'Type',      // Added Type header
+                'Type',
                 'Action',
               ].map((col) => (
                 <th key={col} className="p-2">
@@ -96,6 +98,12 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
               <tr>
                 <td colSpan={12} className="text-center p-4">
                   Loading...
+                </td>
+              </tr>
+            ) : employees.length === 0 ? (
+              <tr>
+                <td colSpan={12} className="text-center p-4">
+                  No employees found.
                 </td>
               </tr>
             ) : (
@@ -130,20 +138,14 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
                         {emp.type === 'Candidate'
                           ? 'Candidate'
                           : emp.status
-                            ? 'Active'
-                            : 'Inactive'}
+                          ? 'Active'
+                          : 'Inactive'}
                       </span>
                     </div>
                   </td>
-
-                  {/* Type column */}
-                  <td className="p-2">
-                    {emp.type === 'Candidate' ? 'Candidate' : 'Employee'}
-                  </td>
-
-                  {/* Actions */}
+                  <td className="p-2">{emp.type}</td>
                   <td className="p-2 flex gap-2">
-                    {/* Edit Button */}
+                    {/* Edit */}
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Link href={`/employees/${emp.id}/edit`}>
@@ -160,7 +162,7 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
                       <TooltipContent side="top">Edit</TooltipContent>
                     </Tooltip>
 
-                    {/* Delete Button */}
+                    {/* Delete */}
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Link href={`/employees/${emp.id}/delete`}>
@@ -177,7 +179,7 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
                       <TooltipContent side="top">Delete</TooltipContent>
                     </Tooltip>
 
-                    {/* Conditional Manage Letters or Promote Button */}
+                    {/* Conditional Manage Letters / Promote */}
                     {emp.type === 'Employee' ? (
                       <Tooltip>
                         <TooltipTrigger asChild>
