@@ -26,18 +26,16 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
   onRowClick,
   refreshData,
 }) => {
-  // Helper to capitalize type display
-  const capitalize = (str: string) =>
-    str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-
   const handleStatusToggle = async (emp: Employee) => {
     let newStatus = emp.status;
     let newType = emp.type;
 
-    if (emp.type.toLowerCase() === 'candidate') {
+    if (emp.type === 'Candidate') {
+      // Promoting candidate to employee activates them
       newType = 'Employee';
       newStatus = true;
     } else {
+      // Toggle active/inactive status for employees
       newStatus = !emp.status;
     }
 
@@ -102,6 +100,12 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
                   Loading...
                 </td>
               </tr>
+            ) : employees.length === 0 ? (
+              <tr>
+                <td colSpan={12} className="text-center p-4">
+                  No employees found.
+                </td>
+              </tr>
             ) : (
               employees.map((emp, index) => (
                 <tr key={emp.id} className="border-t hover:bg-gray-50">
@@ -127,11 +131,11 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
                   <td className="p-2">
                     <div className="flex items-center gap-2">
                       <Switch
-                        checked={emp.status || emp.type.toLowerCase() === 'candidate'}
+                        checked={emp.status || emp.type === 'Candidate'}
                         onCheckedChange={() => handleStatusToggle(emp)}
                       />
                       <span className="text-xs text-muted-foreground">
-                        {emp.type.toLowerCase() === 'candidate'
+                        {emp.type === 'Candidate'
                           ? 'Candidate'
                           : emp.status
                             ? 'Active'
@@ -139,7 +143,7 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
                       </span>
                     </div>
                   </td>
-                  <td className="p-2">{capitalize(emp.type)}</td>
+                  <td className="p-2">{emp.type}</td>
                   <td className="p-2 flex gap-2">
                     {/* Edit */}
                     <Tooltip>
@@ -175,8 +179,8 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
                       <TooltipContent side="top">Delete</TooltipContent>
                     </Tooltip>
 
-                    {/* Manage Letters or Promote */}
-                    {emp.type.toLowerCase() === 'employee' ? (
+                    {/* Conditional Manage Letters / Promote */}
+                    {emp.type === 'Employee' ? (
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Button
