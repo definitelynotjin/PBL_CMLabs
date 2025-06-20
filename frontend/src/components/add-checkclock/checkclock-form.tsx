@@ -19,11 +19,29 @@ const MapComponent = dynamic(() => import("@/components/mapcomponent"), {
 });
 
 const locations = [
-  { id: "58b66a88-1e4f-46c1-8e90-b47194983a9a", value: "malang", label: "Kantor Malang" },
-  { id: "a3f1c0b4-5d7e-4fbb-bfe8-6d6b7a3b9a92", value: "jakarta", label: "Kantor Jakarta" },
-  { id: "c21f07de-8e2f-4d9c-9d7b-f0a0d73637ae", value: "surabaya", label: "Kantor Surabaya" },
+  {
+    id: "58b66a88-1e4f-46c1-8e90-b47194983a9a",
+    value: "malang",
+    label: "Kantor Malang",
+    coords: [-7.983908, 112.621391], // latitude, longitude
+    address:
+      "Malang, East Java, Indonesia", // You can replace with actual address
+  },
+  {
+    id: "a3f1c0b4-5d7e-4fbb-bfe8-6d6b7a3b9a92",
+    value: "jakarta",
+    label: "Kantor Jakarta",
+    coords: [-6.208763, 106.845599],
+    address: "Jakarta, Indonesia",
+  },
+  {
+    id: "c21f07de-8e2f-4d9c-9d7b-f0a0d73637ae",
+    value: "surabaya",
+    label: "Kantor Surabaya",
+    coords: [-7.257472, 112.752088],
+    address: "Surabaya, East Java, Indonesia",
+  },
 ];
-
 
 const absenceTypes = [
   { value: "clock-in", label: "Clock In" },
@@ -46,27 +64,38 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
   const [userLocation, setUserLocation] = React.useState<LatLngTuple | null>(null);
   const [address, setAddress] = React.useState("Mengambil lokasi...");
 
+  // Whenever selectedLocation changes, update userLocation and address accordingly
   React.useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const { latitude, longitude } = position.coords;
-          setUserLocation([latitude, longitude]);
+    if (selectedLocation) {
+      // Find location details by value
+      const loc = locations.find((loc) => loc.value === selectedLocation);
+      if (loc) {
+        setUserLocation(loc.coords as LatLngTuple);
+        setAddress(loc.address);
+      }
+    } else {
+      // If no selected location, fallback to user's real geolocation
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const { latitude, longitude } = position.coords;
+            setUserLocation([latitude, longitude]);
 
-          try {
-            const res = await fetch(
-              `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
-            );
-            const data = await res.json();
-            setAddress(data.display_name || "Alamat tidak ditemukan");
-          } catch {
-            setAddress("Gagal mengambil alamat");
-          }
-        },
-        () => setAddress("Gagal mengambil lokasi")
-      );
+            try {
+              const res = await fetch(
+                `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+              );
+              const data = await res.json();
+              setAddress(data.display_name || "Alamat tidak ditemukan");
+            } catch {
+              setAddress("Gagal mengambil alamat");
+            }
+          },
+          () => setAddress("Gagal mengambil lokasi")
+        );
+      }
     }
-  }, []);
+  }, [selectedLocation]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
@@ -88,37 +117,32 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
 
     const formData = new FormData();
 
-    // If the endpoint is checkclocks, send check_clock_type and check_clock_time
     const isCheckClock = !["annual-leave", "sick-leave", "absent"].includes(selectedAbsenceType);
 
     if (isCheckClock) {
-      // Map absence type to backend check_clock_type enum "1" or "2"
       let check_clock_type = "";
       if (selectedAbsenceType === "clock-in") {
         check_clock_type = "1";
       } else if (selectedAbsenceType === "clock-out") {
         check_clock_type = "2";
       } else {
-        // fallback or handle other types if needed
-        check_clock_type = "1"; // default to clock-in
+        check_clock_type = "1"; // default fallback
       }
 
-      // Get current time in HH:mm:ss format
       const now = new Date();
       const pad = (num: number) => num.toString().padStart(2, "0");
-      const check_clock_time = `${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}:${pad(now.getUTCSeconds())}`;
-
+      const check_clock_time = `${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}:${pad(
+        now.getUTCSeconds()
+      )}`;
 
       formData.append("check_clock_type", check_clock_type);
       formData.append("check_clock_time", check_clock_time);
     } else {
-      // For absence requests, send absence_type
       formData.append("absence_type", selectedAbsenceType);
     }
 
-    const selectedLocationId = locations.find(loc => loc.value === selectedLocation)?.id || "";
+    const selectedLocationId = locations.find((loc) => loc.value === selectedLocation)?.id || "";
     formData.append("check_clock_setting_id", selectedLocationId);
-
 
     if (userLocation) {
       formData.append("latitude", userLocation[0].toString());
@@ -228,7 +252,12 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
                   Browse
                 </label>
               </Button>
-              <Input id="file-upload" type="file" className="hidden" onChange={handleFileChange} />
+              <Input
+                id="file-upload"
+                type="file"
+                className="hidden"
+                onChange={handleFileChange}
+              />
               {file && <p className="mt-2 text-sm text-gray-600">{file.name}</p>}
             </div>
           </div>
@@ -254,7 +283,7 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
 
           <div className="h-64">
             {isClient && userLocation && (
-              <MapComponent center={userLocation} markerPopupText="Lokasi Anda" />
+              <MapComponent center={userLocation} markerPopupText="Lokasi Terpilih" />
             )}
           </div>
 

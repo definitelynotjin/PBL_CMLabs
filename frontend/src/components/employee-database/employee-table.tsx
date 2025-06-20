@@ -33,11 +33,9 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
     const typeNormalized = emp.type?.trim().toLowerCase();
 
     if (typeNormalized === 'candidate') {
-      // Promote candidate to employee activates them
       newType = 'Employee';
       newStatus = true;
     } else {
-      // Toggle active/inactive status for employees
       newStatus = !emp.status;
     }
 
@@ -142,11 +140,8 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
                           onCheckedChange={() => handleStatusToggle(emp)}
                         />
                         <span className="text-xs text-muted-foreground">
-                          {isCandidate
-                            ? 'Candidate'
-                            : emp.status
-                              ? 'Active'
-                              : 'Inactive'}
+                          {/* Always show Active / Inactive */}
+                          {emp.status ? 'Active' : 'Inactive'}
                         </span>
                       </div>
                     </td>
