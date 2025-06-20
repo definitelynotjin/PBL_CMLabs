@@ -123,7 +123,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
 
       const url = `${API_BASE_URL}/employees/upsert/${id}`;
 
-      // email is NOT in form, so no need to exclude it
+      // email is NOT part of form payload; backend handles it via user relation
       const payload = { ...form };
 
       const res = await fetch(url, {
@@ -183,7 +183,16 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, user, 
         </div>
 
         {/* Email - read-only */}
-        <Field label="Email" placeholder="Email" value={user?.email || ''} readOnly />
+        <div className="space-y-1 w-full">
+          <label className="text-sm font-medium" htmlFor="email">Email</label>
+          <input
+            id="email"
+            type="email"
+            value={user?.email || ''}
+            readOnly
+            className="w-full rounded border border-gray-300 px-3 py-2 bg-gray-100 text-gray-700 cursor-not-allowed"
+          />
+        </div>
 
         {/* Address */}
         <Field label="Address" placeholder="Enter address" value={form.address} onChange={handleChange('address')} />
