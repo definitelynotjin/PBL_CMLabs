@@ -33,11 +33,15 @@ class Employee extends Model
         'pendidikan_terakhir',
         'tempat_lahir',
         'employment_status',
-        'type',
         'grade',
         'status',
-        // add more as needed
+        'bank',
+        'nomor_rekening',
+        'atas_nama_rekening',
+        'tipe_sp',
+        'contract_type',
     ];
+
 
     protected $casts = [
         'gender' => 'string',
