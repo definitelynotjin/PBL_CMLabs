@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import EmployeeForm from '@/components/edit-employee/edit-form';
+import Sidebar from '@/components/sidebar';  // import Sidebar here
 
 const EmployeeEditPage = () => {
     const router = useRouter();
@@ -35,7 +36,6 @@ const EmployeeEditPage = () => {
 
                 const data = await res.json();
 
-                // Now expect only employee under data.data
                 const employee = data.data;
 
                 if (employee?.birth_date) {
@@ -57,13 +57,16 @@ const EmployeeEditPage = () => {
     if (!employeeData) return <p>Employee not found.</p>;
 
     return (
-        <div className="container mx-auto p-4">
-            <EmployeeForm
-                data={employeeData}
-                date={date}
-                setDate={setDate}
-                onSuccess={() => router.push(`/employees/${id}/edit`)}
-            />
+        <div className="flex min-h-screen bg-white">
+            <Sidebar />
+            <main className="flex-1 p-6">
+                <EmployeeForm
+                    data={employeeData}
+                    date={date}
+                    setDate={setDate}
+                    onSuccess={() => router.push(`/employees/${id}/edit`)}
+                />
+            </main>
         </div>
     );
 };

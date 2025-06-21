@@ -87,8 +87,6 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date: propDate, setDate: pr
 
   return (
     <form onSubmit={handleSubmit} className="border rounded-lg p-6">
-      <h2 className="text-lg font-semibold mb-6">Add New Employee</h2>
-
       {/* Avatar Upload Section */}
       <div className="flex items-center gap-4 mb-6">
         <div className="w-24 h-24 bg-gray-200 rounded overflow-hidden">
