@@ -14,7 +14,7 @@ export type Employee = {
   branch?: string;
   position: string;
   grade?: string;
-  status: boolean;
+  status: number;
   employment_status?: string;
   type?: string;
   user?: User; // Ensure this property is defined

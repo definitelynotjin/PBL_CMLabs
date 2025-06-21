@@ -45,11 +45,10 @@ export default function LetterManagementPage() {
 
       const employeesData = await res.json();
 
-      // Map employees and normalize status if needed
+      // Map employees and fix status field
       const mappedEmployees = employeesData.data.data.map((emp: Employee) => ({
         ...emp,
-        status: emp.employment_status === 'Active',
-        // no 'type' field anymore
+        status: emp.status === 1, // FIXED: correctly maps numeric status to boolean
       }));
 
       setEmployees(mappedEmployees);
