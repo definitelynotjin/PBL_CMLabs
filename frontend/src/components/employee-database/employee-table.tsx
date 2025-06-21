@@ -117,7 +117,7 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
                     </span>
                   </td>
                   <td className="p-2">{emp.phone}</td>
-                  <td className="p-2">{emp.branch || '-'}</td>
+                  <td className="p-2">{emp.check_clock_setting?.name || '-'}</td>
                   <td className="p-2">{emp.position}</td>
                   <td className="p-2">{emp.grade || '-'}</td>
                   <td className="p-2">
