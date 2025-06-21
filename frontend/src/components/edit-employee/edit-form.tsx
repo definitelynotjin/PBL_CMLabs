@@ -1,3 +1,5 @@
+// Full English Version of Employee Edit Form
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -20,7 +22,7 @@ import {
   RadioGroupItem,
 } from '@/components/ui/radio-group';
 
-interface Employee {
+export interface Employee {
   id: string;
   ck_settings_id?: string;
   first_name: string;
@@ -33,7 +35,7 @@ interface Employee {
   birth_date: string;
   position: string;
   department: string;
-  contract_type: 'Tetap' | 'Kontrak' | 'Lepas' | 'none';
+  contract_type: 'Permanent' | 'Contract' | 'Freelance' | 'none';
   grade: string;
   bank: string;
   nomor_rekening: string;
@@ -52,10 +54,10 @@ interface EmployeeFormProps {
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
 
-const cabangOptions = [
-  { label: 'Kantor Surabaya', value: 'c21f07de-8e2f-4d9c-9d7b-f0a0d73637ae' },
-  { label: 'Kantor Jakarta', value: 'a3f1c0b4-5d7e-4fbb-bfe8-6d6b7a3b9a92' },
-  { label: 'Kantor Malang', value: '58b66a88-1e4f-46c1-8e90-b47194983a9a' },
+const branchOptions = [
+  { label: 'Surabaya Office', value: 'c21f07de-8e2f-4d9c-9d7b-f0a0d73637ae' },
+  { label: 'Jakarta Office', value: 'a3f1c0b4-5d7e-4fbb-bfe8-6d6b7a3b9a92' },
+  { label: 'Malang Office', value: '58b66a88-1e4f-46c1-8e90-b47194983a9a' },
 ];
 
 const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSuccess }) => {
@@ -108,19 +110,12 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
 
   const handleSubmit = async () => {
     try {
-      if (!data?.id) {
-        alert('Missing employee ID.');
-        return;
-      }
+      if (!data?.id) return alert('Missing employee ID.');
 
       const token = localStorage.getItem('token');
-      if (!token) {
-        alert('Authentication token not found. Please login.');
-        return;
-      }
+      if (!token) return alert('Authentication token not found.');
 
-      const url = `${API_BASE_URL}/employees/upsert/${data.id}`;
-      const res = await fetch(url, {
+      const res = await fetch(`${API_BASE_URL}/employees/upsert/${data.id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -132,8 +127,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
 
       if (!res.ok) {
         const errorData = await res.json();
-        alert('Failed: ' + (errorData.message || res.statusText));
-        return;
+        return alert('Failed: ' + (errorData.message || res.statusText));
       }
 
       const response = await res.json();
@@ -147,80 +141,67 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
 
   return (
     <div className="border rounded-lg p-6">
-      <h2 className="text-lg font-semibold mb-6">{data ? 'Edit Employee' : 'Add Employee'}</h2>
+      <h2 className="text-lg font-semibold mb-6">Edit Employee</h2>
 
       <div className="flex items-center gap-4 mb-6">
         <div className="w-24 h-24 bg-gray-200 rounded overflow-hidden">
-          <Image
-            src="/placeholder-avatar.png"
-            alt="Avatar Placeholder"
-            width={96}
-            height={96}
-            className="object-cover rounded"
-          />
+          <Image src="/placeholder-avatar.png" alt="Avatar Placeholder" width={96} height={96} className="object-cover rounded" />
         </div>
         <Button variant="outline">Upload Avatar</Button>
       </div>
 
       <div className="space-y-4">
-        {/* Name */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field label="First Name" placeholder="Enter first name" value={form.first_name} onChange={handleChange('first_name')} />
           <Field label="Last Name" placeholder="Enter last name" value={form.last_name} onChange={handleChange('last_name')} />
         </div>
 
-        {/* Phone & NIK */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field label="Phone" placeholder="Enter phone number" value={form.phone} onChange={handleChange('phone')} />
-          <Field label="NIK" placeholder="Enter NIK" value={form.nik} onChange={handleChange('nik')} />
+          <Field label="NIK" placeholder="Enter national ID" value={form.nik} onChange={handleChange('nik')} />
         </div>
 
-        {/* Email (readonly) */}
         <Field label="Email" placeholder="Email" value={form.email || ''} onChange={() => { }} />
-
-        {/* Address */}
         <Field label="Address" placeholder="Enter address" value={form.address} onChange={handleChange('address')} />
 
-        {/* Gender & Education */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium">Gender</label>
             <Select value={form.gender} onValueChange={handleSelectChange('gender')}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="-Pilih Gender-" />
+                <SelectValue placeholder="-Select Gender-" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="M">Laki-Laki</SelectItem>
-                <SelectItem value="F">Perempuan</SelectItem>
+                <SelectItem value="M">Male</SelectItem>
+                <SelectItem value="F">Female</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div className="space-y-1 w-full">
-            <label className="text-sm font-medium">Pendidikan Terakhir</label>
+            <label className="text-sm font-medium">Highest Education</label>
             <Select value={form.pendidikan_terakhir} onValueChange={handleSelectChange('pendidikan_terakhir')}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="-Pilih Pendidikan-" />
+                <SelectValue placeholder="-Select Education-" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="SMA">SMA/SMK</SelectItem>
-                <SelectItem value="D3">D3</SelectItem>
-                <SelectItem value="S1">S1</SelectItem>
-                <SelectItem value="S2">S2</SelectItem>
+                <SelectItem value="SMA">High School</SelectItem>
+                <SelectItem value="D3">Diploma (D3)</SelectItem>
+                <SelectItem value="S1">Bachelor (S1)</SelectItem>
+                <SelectItem value="S2">Master (S2)</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </div>
 
-        {/* Birth Place & Date */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field label="Tempat Lahir" placeholder="Enter birthplace" value={form.tempat_lahir} onChange={handleChange('tempat_lahir')} />
+          <Field label="Birthplace" placeholder="Enter birthplace" value={form.tempat_lahir} onChange={handleChange('tempat_lahir')} />
           <div className="space-y-1 w-full">
-            <label className="text-sm font-medium">Tanggal Lahir</label>
+            <label className="text-sm font-medium">Date of Birth</label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant="outline" className="w-full justify-start text-left font-normal">
-                  {clientDate || 'Pilih tanggal'}
+                  {clientDate || 'Select date'}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0">
@@ -241,36 +222,32 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
           </div>
         </div>
 
-        {/* Position & Branch */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field label="Jabatan" placeholder="Enter jabatan" value={form.position} onChange={handleChange('position')} />
+          <Field label="Position" placeholder="Enter position" value={form.position} onChange={handleChange('position')} />
           <div className="space-y-1 w-full">
-            <label className="text-sm font-medium">Cabang</label>
+            <label className="text-sm font-medium">Branch</label>
             <Select value={form.ck_settings_id} onValueChange={handleSelectChange('ck_settings_id')}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="-Pilih Cabang-" />
+                <SelectValue placeholder="-Select Branch-" />
               </SelectTrigger>
               <SelectContent>
-                {cabangOptions.map((opt) => (
-                  <SelectItem key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </SelectItem>
+                {branchOptions.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
         </div>
 
-        {/* Contract Type & Grade */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1 w-full">
-            <label className="text-sm font-medium">Tipe Kontrak</label>
+            <label className="text-sm font-medium">Contract Type</label>
             <RadioGroup value={form.contract_type} onValueChange={handleRadioChange('contract_type')} className="flex gap-4">
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="none" id="contract-none" />
                 <label htmlFor="contract-none">None</label>
               </div>
-              {['Tetap', 'Kontrak', 'Lepas'].map((type) => (
+              {['Permanent', 'Contract', 'Freelance'].map((type) => (
                 <div className="flex items-center space-x-2" key={type}>
                   <RadioGroupItem value={type} id={type} />
                   <label htmlFor={type}>{type}</label>
@@ -281,13 +258,12 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
           <Field label="Grade" placeholder="Enter grade" value={form.grade} onChange={handleChange('grade')} />
         </div>
 
-        {/* Bank & Nomor Rekening */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium">Bank</label>
             <Select value={form.bank} onValueChange={handleSelectChange('bank')}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="-Pilih Bank-" />
+                <SelectValue placeholder="-Select Bank-" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="BCA">BCA</SelectItem>
@@ -296,17 +272,16 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
               </SelectContent>
             </Select>
           </div>
-          <Field label="Nomor Rekening" placeholder="Enter rekening" value={form.nomor_rekening} onChange={handleChange('nomor_rekening')} />
+          <Field label="Account Number" placeholder="Enter account number" value={form.nomor_rekening} onChange={handleChange('nomor_rekening')} />
         </div>
 
-        {/* Atas Nama Rekening & Tipe SP */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field label="Atas Nama Rekening" placeholder="Enter A/N" value={form.atas_nama_rekening} onChange={handleChange('atas_nama_rekening')} />
+          <Field label="Account Holder Name" placeholder="Enter account holder name" value={form.atas_nama_rekening} onChange={handleChange('atas_nama_rekening')} />
           <div className="space-y-1 w-full">
-            <label className="text-sm font-medium">Tipe SP</label>
+            <label className="text-sm font-medium">SP Type</label>
             <Select value={form.tipe_sp} onValueChange={handleSelectChange('tipe_sp')}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="-Pilih SP-" />
+                <SelectValue placeholder="-Select SP Type-" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="none">None</SelectItem>
@@ -318,14 +293,9 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
           </div>
         </div>
 
-        {/* Buttons */}
         <div className="mt-6 flex justify-end gap-4">
-          <Button variant="outline" type="button" onClick={() => router.push('/employee-database')}>
-            Cancel
-          </Button>
-          <Button type="button" onClick={handleSubmit}>
-            Save
-          </Button>
+          <Button variant="outline" type="button" onClick={() => router.push('/employee-database')}>Cancel</Button>
+          <Button type="button" onClick={handleSubmit}>Save</Button>
         </div>
       </div>
     </div>

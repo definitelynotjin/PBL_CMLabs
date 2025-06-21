@@ -63,11 +63,11 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
                 'No',
                 'ID',
                 'Avatar',
-                'Nama',
-                'Jenis Kelamin',
-                'Nomor Telepon',
-                'Cabang',
-                'Jabatan',
+                'Name',
+                'Gender',
+                'Phone Number',
+                'Branch',
+                'Position',
                 'Grade',
                 'Status',
                 'Action',
@@ -81,6 +81,7 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
               ))}
             </tr>
           </thead>
+
           <tbody>
             {loading ? (
               <tr>
