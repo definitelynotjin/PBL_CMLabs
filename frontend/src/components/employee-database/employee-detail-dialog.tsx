@@ -25,7 +25,7 @@ export default function EmployeeDetailDialog({
           <p><strong>Nama:</strong> {employee.first_name} {employee.last_name}</p>
           <p><strong>Jenis Kelamin:</strong> {employee.gender}</p>
           <p><strong>Telepon:</strong> {employee.phone}</p>
-          <p><strong>Cabang:</strong> {employee.branch}</p>
+          <p><strong>Cabang:</strong> {employee.check_clock_setting?.name || '-'}</p>
           <p><strong>Jabatan:</strong> {employee.position}</p>
           <p><strong>Status:</strong> {employee.employment_status}</p>
         </div>
