@@ -1,5 +1,3 @@
-// Full English Version of Employee Edit Form
-
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -150,51 +148,21 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
         <Button variant="outline">Upload Avatar</Button>
       </div>
 
-      <div className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* PERSONAL INFORMATION */}
+      <section className="mb-8">
+        <h3 className="text-md font-semibold mb-4 border-b pb-2">Personal Information</h3>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <Field label="Email" placeholder="Email" value={form.email || ''} onChange={handleChange('email')} />
+          <Field label="Phone" placeholder="Enter phone number" value={form.phone} onChange={handleChange('phone')} />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <Field label="First Name" placeholder="Enter first name" value={form.first_name} onChange={handleChange('first_name')} />
           <Field label="Last Name" placeholder="Enter last name" value={form.last_name} onChange={handleChange('last_name')} />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field label="Phone" placeholder="Enter phone number" value={form.phone} onChange={handleChange('phone')} />
-          <Field label="NIK" placeholder="Enter national ID" value={form.nik} onChange={handleChange('nik')} />
-        </div>
-
-        <Field label="Email" placeholder="Email" value={form.email || ''} onChange={() => { }} />
-        <Field label="Address" placeholder="Enter address" value={form.address} onChange={handleChange('address')} />
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-1 w-full">
-            <label className="text-sm font-medium">Gender</label>
-            <Select value={form.gender} onValueChange={handleSelectChange('gender')}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="-Select Gender-" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="M">Male</SelectItem>
-                <SelectItem value="F">Female</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-1 w-full">
-            <label className="text-sm font-medium">Highest Education</label>
-            <Select value={form.pendidikan_terakhir} onValueChange={handleSelectChange('pendidikan_terakhir')}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="-Select Education-" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="SMA">High School</SelectItem>
-                <SelectItem value="D3">Diploma (D3)</SelectItem>
-                <SelectItem value="S1">Bachelor (S1)</SelectItem>
-                <SelectItem value="S2">Master (S2)</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <Field label="Birthplace" placeholder="Enter birthplace" value={form.tempat_lahir} onChange={handleChange('tempat_lahir')} />
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium">Date of Birth</label>
@@ -222,8 +190,14 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field label="Position" placeholder="Enter position" value={form.position} onChange={handleChange('position')} />
+        <Field label="Address" placeholder="Enter address" value={form.address} onChange={handleChange('address')} />
+      </section>
+
+      {/* EMPLOYMENT INFORMATION */}
+      <section>
+        <h3 className="text-md font-semibold mb-4 border-b pb-2">Employment Information</h3>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium">Branch</label>
             <Select value={form.ck_settings_id} onValueChange={handleSelectChange('ck_settings_id')}>
@@ -237,9 +211,12 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
               </SelectContent>
             </Select>
           </div>
+          <Field label="Position" placeholder="Enter position" value={form.position} onChange={handleChange('position')} />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Field label="Department" placeholder="Enter department" value={form.department} onChange={handleChange('department')} />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium">Contract Type</label>
             <RadioGroup value={form.contract_type} onValueChange={handleRadioChange('contract_type')} className="flex gap-4">
@@ -258,7 +235,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
           <Field label="Grade" placeholder="Enter grade" value={form.grade} onChange={handleChange('grade')} />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium">Bank</label>
             <Select value={form.bank} onValueChange={handleSelectChange('bank')}>
@@ -275,7 +252,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
           <Field label="Account Number" placeholder="Enter account number" value={form.nomor_rekening} onChange={handleChange('nomor_rekening')} />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <Field label="Account Holder Name" placeholder="Enter account holder name" value={form.atas_nama_rekening} onChange={handleChange('atas_nama_rekening')} />
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium">SP Type</label>
@@ -293,10 +270,41 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
           </div>
         </div>
 
-        <div className="mt-6 flex justify-end gap-4">
-          <Button variant="outline" type="button" onClick={() => router.push('/employee-database')}>Cancel</Button>
-          <Button type="button" onClick={handleSubmit}>Save</Button>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <Field label="NIK" placeholder="Enter national ID" value={form.nik} onChange={handleChange('nik')} />
+          <div className="space-y-1 w-full">
+            <label className="text-sm font-medium">Gender</label>
+            <Select value={form.gender} onValueChange={handleSelectChange('gender')}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="-Select Gender-" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="M">Male</SelectItem>
+                <SelectItem value="F">Female</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
+
+        <div className="space-y-1 w-full mt-4">
+          <label className="text-sm font-medium">Highest Education</label>
+          <Select value={form.pendidikan_terakhir} onValueChange={handleSelectChange('pendidikan_terakhir')}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="-Select Education-" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="SMA">High School</SelectItem>
+              <SelectItem value="D3">Diploma (D3)</SelectItem>
+              <SelectItem value="S1">Bachelor (S1)</SelectItem>
+              <SelectItem value="S2">Master (S2)</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </section>
+
+      <div className="mt-6 flex justify-end gap-4">
+        <Button variant="outline" type="button" onClick={() => router.push('/employee-database')}>Cancel</Button>
+        <Button type="button" onClick={handleSubmit}>Save</Button>
       </div>
     </div>
   );

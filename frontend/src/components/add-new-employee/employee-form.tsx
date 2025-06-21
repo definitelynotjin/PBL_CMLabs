@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import Field from './field';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
@@ -14,144 +15,248 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/ui/select';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from '@/components/ui/radio-group';
 
-interface EmployeeFormProps {
-  date?: Date;
-  setDate?: (date: Date | undefined) => void;
+interface AddEmployeeFormProps {
+  date: Date | undefined;
+  setDate: (date: Date | undefined) => void;
+  onSuccess: (newEmployeeId: string) => void;
 }
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
+
 const branchOptions = [
-  { id: 'c21f07de-8e2f-4d9c-9d7b-f0a0d73637ae', name: 'Surabaya Office' },
-  { id: 'a3f1c0b4-5d7e-4fbb-bfe8-6d6b7a3b9a92', name: 'Jakarta Office' },
-  { id: '58b66a88-1e4f-46c1-8e90-b47194983a9a', name: 'Malang Office' },
+  { label: 'Surabaya Office', value: 'c21f07de-8e2f-4d9c-9d7b-f0a0d73637ae' },
+  { label: 'Jakarta Office', value: 'a3f1c0b4-5d7e-4fbb-bfe8-6d6b7a3b9a92' },
+  { label: 'Malang Office', value: '58b66a88-1e4f-46c1-8e90-b47194983a9a' },
 ];
 
-const positionOptions = ['CEO', 'Manager', 'Supervisor', 'Staff', 'Intern'];
-const gradeOptions = ['Upper Staff', 'Staff', 'Junior Staff'];
+const AddEmployeeForm: React.FC<AddEmployeeFormProps> = ({ date, setDate, onSuccess }) => {
+  const router = useRouter();
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost/api';
+  const [form, setForm] = useState({
+    ck_settings_id: '',
+    first_name: '',
+    last_name: '',
+    phone: '',
+    nik: '',
+    gender: '',
+    pendidikan_terakhir: '',
+    tempat_lahir: '',
+    birth_date: '',
+    position: '',
+    department: '',
+    contract_type: 'none',
+    grade: '',
+    bank: '',
+    nomor_rekening: '',
+    atas_nama_rekening: '',
+    tipe_sp: 'none',
+    address: '',
+    email: '',
+  });
 
-const EmployeeForm: React.FC<EmployeeFormProps> = ({ date: propDate, setDate: propSetDate }) => {
-  const [date, setDate] = useState<Date | undefined>(propDate);
+  const [clientDate, setClientDate] = useState('');
 
-  // Form state
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [mobileNumber, setMobileNumber] = useState('');
-  const [nik, setNik] = useState('');
-  const [gender, setGender] = useState('');
-  const [education, setEducation] = useState('');
-  const [birthPlace, setBirthPlace] = useState('');
-  const [position, setPosition] = useState('');
-  const [branch, setBranch] = useState('');
-  const [contractType, setContractType] = useState('permanent');
-  const [grade, setGrade] = useState('');
-  const [bank, setBank] = useState('');
-  const [accountNumber, setAccountNumber] = useState('');
-  const [accountHolderName, setAccountHolderName] = useState('');
-  const [spType, setSpType] = useState('');
-  const [avatar, setAvatar] = useState<string | null>(null);
+  useEffect(() => {
+    if (date) {
+      setClientDate(format(date, 'dd/MM/yyyy'));
+      setForm(f => ({ ...f, birth_date: format(date, 'yyyy-MM-dd') }));
+    } else {
+      setClientDate('');
+    }
+  }, [date]);
 
-  const onDateChange = (selectedDate: Date | undefined) => {
-    setDate(selectedDate);
-    if (propSetDate) propSetDate(selectedDate);
+  const handleChange = (field: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [field]: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSelectChange = (field: keyof typeof form) => (value: string) => {
+    setForm({ ...form, [field]: value });
+  };
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      alert('Please enter a valid email address.');
-      return;
-    }
+  const handleRadioChange = (field: keyof typeof form) => (value: string) => {
+    setForm({ ...form, [field]: value });
+  };
 
-    const formData = {
-      firstName,
-      lastName,
-      email,
-      mobileNumber,
-      nik,
-      gender,
-      education,
-      birthPlace,
-      birthDate: date ? date.toISOString().split('T')[0] : null, // send ISO date string
-      position,
-      branch,
-      contractType,
-      grade,
-      bank,
-      accountNumber,
-      accountHolderName,
-      spType,
-      avatar,
-    };
-
+  const handleSubmit = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/employees`, {
+      if (!form.first_name || !form.last_name) {
+        return alert('Please fill in first and last name.');
+      }
+      if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+        return alert('Please enter a valid email address.');
+      }
+
+      const token = localStorage.getItem('token');
+      if (!token) return alert('Authentication token not found.');
+
+      const res = await fetch(`${API_BASE_URL}/employees`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          // Add Authorization header if your API requires it, e.g.:
-          // 'Authorization': `Bearer ${token}`,
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(form),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        alert(`Failed to save employee: ${errorData.message || response.statusText}`);
-        return;
+      if (!res.ok) {
+        const errorData = await res.json();
+        return alert('Failed: ' + (errorData.message || res.statusText));
       }
 
-      alert('Employee saved successfully!');
-      // Optionally reset the form here or redirect, etc.
-
+      const response = await res.json();
+      alert('Employee added successfully!');
+      onSuccess(response.id);
+      router.push('/employee-database');
     } catch (error) {
-      alert('An error occurred while saving the employee.');
+      alert('Error: ' + error);
       console.error(error);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="border rounded-lg p-6">
-      {/* Avatar Upload */}
+    <div className="border rounded-lg p-6">
+      <h2 className="text-lg font-semibold mb-6">Add Employee</h2>
+
       <div className="flex items-center gap-4 mb-6">
         <div className="w-24 h-24 bg-gray-200 rounded overflow-hidden">
-          {avatar ? (
-            <Image src={avatar} alt="Avatar" width={96} height={96} className="object-cover rounded" />
-          ) : (
-            <Image src="/placeholder-avatar.png" alt="Avatar Placeholder" width={96} height={96} className="object-cover rounded" />
-          )}
+          <Image src="/placeholder-avatar.png" alt="Avatar Placeholder" width={96} height={96} className="object-cover rounded" />
         </div>
-        <Button variant="outline" onClick={() => setAvatar('/uploaded-avatar.png')}>
-          Upload Avatar
-        </Button>
+        <Button variant="outline">Upload Avatar</Button>
       </div>
 
-      <div className="space-y-4">
-        {/* Name */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field label="First Name" placeholder="Enter first name" value={firstName} onChange={e => setFirstName(e.target.value)} />
-          <Field label="Last Name" placeholder="Enter last name" value={lastName} onChange={e => setLastName(e.target.value)} />
+      {/* PERSONAL INFORMATION */}
+      <section className="mb-8">
+        <h3 className="text-md font-semibold mb-4 border-b pb-2">Personal Information</h3>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <Field label="Email" placeholder="Email" value={form.email} onChange={handleChange('email')} />
+          <Field label="Phone" placeholder="Enter phone number" value={form.phone} onChange={handleChange('phone')} />
         </div>
 
-        {/* Email */}
-        <Field label="Email" placeholder="Enter email" value={email} onChange={e => setEmail(e.target.value)} />
-
-        {/* Mobile & NIK */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field label="Mobile Number" placeholder="Enter mobile number" value={mobileNumber} onChange={e => setMobileNumber(e.target.value)} />
-          <Field label="NIK" placeholder="Enter national ID (NIK)" value={nik} onChange={e => setNik(e.target.value)} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <Field label="First Name" placeholder="Enter first name" value={form.first_name} onChange={handleChange('first_name')} />
+          <Field label="Last Name" placeholder="Enter last name" value={form.last_name} onChange={handleChange('last_name')} />
         </div>
 
-        {/* Gender & Education */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <Field label="Birthplace" placeholder="Enter birthplace" value={form.tempat_lahir} onChange={handleChange('tempat_lahir')} />
+          <div className="space-y-1 w-full">
+            <label className="text-sm font-medium">Date of Birth</label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="w-full justify-start text-left font-normal">
+                  {clientDate || 'Select date'}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={(selectedDate) => {
+                    setDate(selectedDate);
+                    if (selectedDate) {
+                      setForm((f) => ({ ...f, birth_date: format(selectedDate, 'yyyy-MM-dd') }));
+                      setClientDate(format(selectedDate, 'dd/MM/yyyy'));
+                    }
+                  }}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+        </div>
+
+        <Field label="Address" placeholder="Enter address" value={form.address} onChange={handleChange('address')} />
+      </section>
+
+      {/* EMPLOYMENT INFORMATION */}
+      <section>
+        <h3 className="text-md font-semibold mb-4 border-b pb-2">Employment Information</h3>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div className="space-y-1 w-full">
+            <label className="text-sm font-medium">Branch</label>
+            <Select value={form.ck_settings_id} onValueChange={handleSelectChange('ck_settings_id')}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="-Select Branch-" />
+              </SelectTrigger>
+              <SelectContent>
+                {branchOptions.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <Field label="Position" placeholder="Enter position" value={form.position} onChange={handleChange('position')} />
+        </div>
+
+        <Field label="Department" placeholder="Enter department" value={form.department} onChange={handleChange('department')} />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div className="space-y-1 w-full">
+            <label className="text-sm font-medium">Contract Type</label>
+            <RadioGroup value={form.contract_type} onValueChange={handleRadioChange('contract_type')} className="flex gap-4">
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="none" id="contract-none" />
+                <label htmlFor="contract-none">None</label>
+              </div>
+              {['Permanent', 'Contract', 'Freelance'].map((type) => (
+                <div className="flex items-center space-x-2" key={type}>
+                  <RadioGroupItem value={type} id={type} />
+                  <label htmlFor={type}>{type}</label>
+                </div>
+              ))}
+            </RadioGroup>
+          </div>
+          <Field label="Grade" placeholder="Enter grade" value={form.grade} onChange={handleChange('grade')} />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div className="space-y-1 w-full">
+            <label className="text-sm font-medium">Bank</label>
+            <Select value={form.bank} onValueChange={handleSelectChange('bank')}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="-Select Bank-" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="BCA">BCA</SelectItem>
+                <SelectItem value="BRI">BRI</SelectItem>
+                <SelectItem value="BNI">BNI</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <Field label="Account Number" placeholder="Enter account number" value={form.nomor_rekening} onChange={handleChange('nomor_rekening')} />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <Field label="Account Holder Name" placeholder="Enter account holder name" value={form.atas_nama_rekening} onChange={handleChange('atas_nama_rekening')} />
+          <div className="space-y-1 w-full">
+            <label className="text-sm font-medium">SP Type</label>
+            <Select value={form.tipe_sp} onValueChange={handleSelectChange('tipe_sp')}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="-Select SP Type-" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">None</SelectItem>
+                <SelectItem value="SP 1">SP-1</SelectItem>
+                <SelectItem value="SP 2">SP-2</SelectItem>
+                <SelectItem value="SP 3">SP-3</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Field label="NIK" placeholder="Enter national ID" value={form.nik} onChange={handleChange('nik')} />
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium">Gender</label>
-            <Select value={gender} onValueChange={setGender}>
+            <Select value={form.gender} onValueChange={handleSelectChange('gender')}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="-Select Gender-" />
               </SelectTrigger>
@@ -161,169 +266,31 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date: propDate, setDate: pr
               </SelectContent>
             </Select>
           </div>
-          <div className="space-y-1 w-full">
-            <label className="text-sm font-medium">Last Education</label>
-            <Select value={education} onValueChange={setEducation}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="-Select Education-" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="sma">High School</SelectItem>
-                <SelectItem value="d3">Diploma (D3)</SelectItem>
-                <SelectItem value="s1">Bachelor's Degree (S1)</SelectItem>
-                <SelectItem value="s2">Master's Degree (S2)</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
         </div>
 
-        {/* Birth Place & Date */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field label="Birth Place" placeholder="Enter birth place" value={birthPlace} onChange={e => setBirthPlace(e.target.value)} />
-          <div className="space-y-1 w-full">
-            <label className="text-sm font-medium">Birth Date</label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline" className="w-full justify-start text-left font-normal">
-                  {date ? format(date, 'dd/MM/yyyy') : 'dd/mm/yyyy'}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <Calendar mode="single" selected={date} onSelect={onDateChange} initialFocus />
-              </PopoverContent>
-            </Popover>
-          </div>
+        <div className="space-y-1 w-full mt-4">
+          <label className="text-sm font-medium">Highest Education</label>
+          <Select value={form.pendidikan_terakhir} onValueChange={handleSelectChange('pendidikan_terakhir')}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="-Select Education-" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="SMA">High School</SelectItem>
+              <SelectItem value="D3">Diploma (D3)</SelectItem>
+              <SelectItem value="S1">Bachelor (S1)</SelectItem>
+              <SelectItem value="S2">Master (S2)</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
-
-        {/* Position & Branch */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-1 w-full">
-            <label className="text-sm font-medium">Position</label>
-            <Select value={position} onValueChange={setPosition}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="-Select Position-" />
-              </SelectTrigger>
-              <SelectContent>
-                {positionOptions.map(pos => (
-                  <SelectItem key={pos} value={pos}>{pos}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-1 w-full">
-            <label className="text-sm font-medium">Branch</label>
-            <Select value={branch} onValueChange={setBranch}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="-Select Branch-" />
-              </SelectTrigger>
-              <SelectContent>
-                {branchOptions.map(branch => (
-                  <SelectItem key={branch.id} value={branch.id}>{branch.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        {/* Contract & Grade */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-1 w-full">
-            <label className="text-sm font-medium">Contract Type</label>
-            <RadioGroup value={contractType} onValueChange={setContractType} className="flex gap-4">
-              {[
-                { value: 'permanent', label: 'Permanent' },
-                { value: 'contract', label: 'Contract' },
-                { value: 'freelance', label: 'Freelance' },
-              ].map(({ value, label }) => (
-                <div className="flex items-center space-x-2" key={value}>
-                  <RadioGroupItem value={value} id={value} />
-                  <label htmlFor={value}>{label}</label>
-                </div>
-              ))}
-            </RadioGroup>
-          </div>
-          <div className="space-y-1 w-full">
-            <label className="text-sm font-medium">Grade</label>
-            <Select value={grade} onValueChange={setGrade}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="-Select Grade-" />
-              </SelectTrigger>
-              <SelectContent>
-                {gradeOptions.map(gr => (
-                  <SelectItem key={gr} value={gr}>{gr}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        {/* Bank & Account Number */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-1 w-full">
-            <label className="text-sm font-medium">Bank</label>
-            <Select value={bank} onValueChange={setBank}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="-Select Bank-" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="bca">BCA</SelectItem>
-                <SelectItem value="bri">BRI</SelectItem>
-                <SelectItem value="bni">BNI</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <Field label="Account Number" placeholder="Enter account number" value={accountNumber} onChange={e => setAccountNumber(e.target.value)} />
-        </div>
-
-        {/* Account Holder Name & SP Type */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field label="Account Holder Name" placeholder="Enter account holder name" value={accountHolderName} onChange={e => setAccountHolderName(e.target.value)} />
-          <div className="space-y-1 w-full">
-            <label className="text-sm font-medium">SP Type</label>
-            <Select value={spType} onValueChange={setSpType}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="-Select SP Type-" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="sp1">SP 1</SelectItem>
-                <SelectItem value="sp2">SP 2</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-      </div>
+      </section>
 
       {/* Footer Buttons */}
-      <div className="flex justify-end mt-6 gap-2">
-        <Button
-          variant="outline"
-          type="button"
-          onClick={() => {
-            setFirstName('');
-            setLastName('');
-            setMobileNumber('');
-            setNik('');
-            setGender('');
-            setEducation('');
-            setBirthPlace('');
-            setDate(undefined);
-            setPosition('');
-            setBranch('');
-            setContractType('permanent');
-            setGrade('');
-            setBank('');
-            setAccountNumber('');
-            setAccountHolderName('');
-            setSpType('');
-            setAvatar(null);
-          }}
-        >
-          Cancel
-        </Button>
-        <Button type="submit">Save</Button>
+      <div className="mt-6 flex justify-end gap-4">
+        <Button variant="outline" type="button" onClick={() => router.push('/employee-database')}>Cancel</Button>
+        <Button type="button" onClick={handleSubmit}>Save</Button>
       </div>
-    </form>
+    </div>
   );
 };
 
-export default EmployeeForm;
+export default AddEmployeeForm;
