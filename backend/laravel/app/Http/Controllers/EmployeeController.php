@@ -214,4 +214,15 @@ class EmployeeController extends Controller
             'data' => $employee,
         ]);
     }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate(['status' => 'required|boolean']);
+
+        $employee = Employee::findOrFail($id);
+        $employee->status = $request->status;
+        $employee->save();
+
+        return response()->json(['success' => true, 'status' => $employee->status]);
+    }
 }

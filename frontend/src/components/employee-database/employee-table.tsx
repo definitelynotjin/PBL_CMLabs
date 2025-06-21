@@ -35,8 +35,8 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
       const token = localStorage.getItem('token');
       if (!token) throw new Error('No auth token found');
 
-      const res = await fetch(`${API_BASE_URL}/employees/upsert/${emp.id}`, {
-        method: 'PUT',
+      const res = await fetch(`${API_BASE_URL}/employees/${emp.id}/status`, { // <-- updated URL here
+        method: 'PATCH', // <-- changed method to PATCH
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
@@ -54,6 +54,7 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
       alert('Failed to update employee status');
     }
   };
+
 
   return (
     <TooltipProvider>

@@ -28,6 +28,9 @@ Route::get('/check-email', function (Request $request) {
     return response()->json(['exists' => $exists]);
 });
 
+//Status toggling
+Route::middleware('auth:sanctum')->patch('/employees/{id}/status', [EmployeeController::class, 'updateStatus']);
+
 
 // Documents
 Route::get('/employees/{userId}/documents', [DocumentController::class, 'index']);
