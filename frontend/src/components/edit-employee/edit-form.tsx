@@ -211,7 +211,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
       // Prepare payload with cleaned fields for backend
       const payload = {
         ...form,
-        tipe_sp: form.tipe_sp === 'unset' || form.tipe_sp === '' ? null : form.tipe_sp,
+        tipe_sp: form.tipe_sp === 'unset' ? null : form.tipe_sp,
         contract_type: form.contract_type === 'unset' ? null : form.contract_type,
       };
 
