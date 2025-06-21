@@ -217,7 +217,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
         <Field label="Department" placeholder="Enter department" value={form.department} onChange={handleChange('department')} />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <div className="space-y-1 w-full">
+          <div className="space-y-1 w-full mt-4">
             <label className="text-sm font-medium">Contract Type</label>
             <RadioGroup value={form.contract_type} onValueChange={handleRadioChange('contract_type')} className="flex gap-4">
               <div className="flex items-center space-x-2">
