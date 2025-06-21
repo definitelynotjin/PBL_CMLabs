@@ -83,12 +83,17 @@ class AuthController extends Controller
         $login = $request->input('login');
         $password = $request->input('password');
 
-        $user = User::where('email', $login)
+        $user = User::with('employee')->where('email', $login)
             ->orWhere('phone', $login)
             ->first();
 
         if (!$user || !Hash::check($password, $user->password)) {
             return response()->json(['message' => 'Invalid credentials'], 401);
+        }
+
+        // Check if user has employee record and if status is inactive (0)
+        if ($user->employee && $user->employee->status == 0) {
+            return response()->json(['message' => 'Your account is inactive. Please contact admin.'], 403);
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -98,6 +103,7 @@ class AuthController extends Controller
             'user' => $user,
         ]);
     }
+
 
     public function loginEmployee(Request $request)
     {
@@ -121,6 +127,10 @@ class AuthController extends Controller
             return response()->json(['message' => 'Invalid employee credentials'], 401);
         }
 
+        if ($user->employee && $user->employee->status == 0) {
+            return response()->json(['message' => 'Your account is inactive. Please contact admin.'], 403);
+        }
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
@@ -129,6 +139,7 @@ class AuthController extends Controller
             'employee' => $user->employee,
         ]);
     }
+
 
     public function logout(Request $request)
     {

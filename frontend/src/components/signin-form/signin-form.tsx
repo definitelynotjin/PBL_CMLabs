@@ -40,7 +40,15 @@ export function SignInForm({
       });
 
       if (!response.ok) {
-        throw new Error("Invalid credentials");
+        const errorData = await response.json();
+
+        // Check if 403 and inactive user message
+        if (response.status === 403) {
+          setError(errorData.message || "Your account is inactive. Please contact admin.");
+        } else {
+          setError(errorData.message || "Invalid credentials");
+        }
+        return;
       }
 
       const data = await response.json();
@@ -57,11 +65,11 @@ export function SignInForm({
       } else {
         setError("Unknown role");
       }
-
     } catch (err: any) {
       setError(err.message || "An error occurred during sign-in");
     }
   };
+
 
   return (
     <form className={cn("flex flex-col gap-6", className)} onSubmit={handleSubmit} {...props}>

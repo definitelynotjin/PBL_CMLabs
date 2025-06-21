@@ -37,14 +37,21 @@ export function EmployeeSignInForm({
         },
         credentials: "include",
         body: JSON.stringify({
-          login: identifier, password
+          login: identifier,
+          password,
         }),
       });
 
       if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(errorData.message || "Invalid credentials");
-    }
+        const errorData = await res.json();
+
+        if (res.status === 403) {
+          setError(errorData.message || "Your account is inactive. Please contact admin.");
+        } else {
+          setError(errorData.message || "Invalid credentials");
+        }
+        return;
+      }
 
       const data = await res.json();
 
@@ -55,11 +62,12 @@ export function EmployeeSignInForm({
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
 
-      router.push("/dashboard-user"); // Change if employee dashboard route differs
+      router.push("/dashboard-user");
     } catch (err: any) {
       setError(err.message || "Something went wrong");
     }
   };
+
 
   return (
     <form onSubmit={handleSubmit} className={cn("flex flex-col gap-6", className)} {...props}>
