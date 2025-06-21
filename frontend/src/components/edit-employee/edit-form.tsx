@@ -208,6 +208,13 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
       const token = localStorage.getItem('token');
       if (!token) return alert('Authentication token not found.');
 
+      // Prepare payload with cleaned fields for backend
+      const payload = {
+        ...form,
+        tipe_sp: form.tipe_sp === 'none' || form.tipe_sp === '' ? null : form.tipe_sp,
+        contract_type: form.contract_type === 'none' ? null : form.contract_type,
+      };
+
       const res = await fetch(`${API_BASE_URL}/employees/upsert/${data.id}`, {
         method: 'POST',
         headers: {
@@ -215,7 +222,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
           Accept: 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       });
 
       if (!res.ok) {
@@ -229,8 +236,10 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
       router.push('/employee-database');
     } catch (error) {
       alert('Error: ' + error);
+      console.error(error);
     }
   };
+
 
   return (
     <div className="border rounded-lg p-6">
