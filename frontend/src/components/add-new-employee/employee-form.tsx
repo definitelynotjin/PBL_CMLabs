@@ -130,7 +130,7 @@ const AddEmployeeForm: React.FC<AddEmployeeFormProps> = ({ date, setDate, onSucc
     birth_date: '',
     position: '',
     department: '',
-    contract_type: 'none',
+    contract_type: 'unset',
     grade: '',
     bank: '',
     nomor_rekening: '',
@@ -193,7 +193,7 @@ const AddEmployeeForm: React.FC<AddEmployeeFormProps> = ({ date, setDate, onSucc
       const payload = {
         ...form,
         tipe_sp: form.tipe_sp === 'unset' ? null : form.tipe_sp,
-        contract_type: form.contract_type === 'none' ? null : form.contract_type,
+        contract_type: form.contract_type === 'unset' ? null : form.contract_type,
       };
 
       const res = await fetch(`${API_BASE_URL}/employees`, {
@@ -361,8 +361,8 @@ const AddEmployeeForm: React.FC<AddEmployeeFormProps> = ({ date, setDate, onSucc
             <label className="text-sm font-medium">Contract Type</label>
             <RadioGroup value={form.contract_type} onValueChange={handleRadioChange('contract_type')} className="flex gap-4">
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="none" id="contract-none" />
-                <label htmlFor="contract-none">None</label>
+                <RadioGroupItem value="unset" id="contract-unset" />
+                <label htmlFor="contract-unset">Unset</label>
               </div>
               {[
                 { label: 'Permanent', value: 'Tetap' },

@@ -33,12 +33,12 @@ export interface Employee {
   birth_date: string;
   position: string;
   department: string;
-  contract_type: 'none';
+  contract_type: 'unset';
   grade: string;
   bank: string;
   nomor_rekening: string;
   atas_nama_rekening: string;
-  tipe_sp: 'SP 1' | 'SP 2' | 'SP 3' | 'none' | '';
+  tipe_sp: 'SP 1' | 'SP 2' | 'SP 3' | 'unset' | '';
   address: string;
   email?: string;
 }
@@ -154,7 +154,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
     birth_date: data?.birth_date || '',
     position: data?.position || '',
     department: data?.department || '',
-    contract_type: data?.contract_type || 'none',
+    contract_type: data?.contract_type || 'unset',
     grade: data?.grade || '',
     bank: data?.bank || '',
     nomor_rekening: data?.nomor_rekening || '',
@@ -212,7 +212,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
       const payload = {
         ...form,
         tipe_sp: form.tipe_sp === 'unset' || form.tipe_sp === '' ? null : form.tipe_sp,
-        contract_type: form.contract_type === 'none' ? null : form.contract_type,
+        contract_type: form.contract_type === 'unset' ? null : form.contract_type,
       };
 
       const res = await fetch(`${API_BASE_URL}/employees/upsert/${data.id}`, {
@@ -380,8 +380,8 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
             <label className="text-sm font-medium">Contract Type</label>
             <RadioGroup value={form.contract_type} onValueChange={handleRadioChange('contract_type')} className="flex gap-4">
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="none" id="contract-none" />
-                <label htmlFor="contract-none">None</label>
+                <RadioGroupItem value="unset" id="contract-unset" />
+                <label htmlFor="contract-unset">Unset</label>
               </div>
               {[
                 { label: 'Permanent', value: 'Tetap' },
@@ -423,7 +423,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
                 <SelectValue placeholder="-Select SP Type-" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="none">None</SelectItem>
+                <SelectItem value="unset">None</SelectItem>
                 <SelectItem value="SP 1">SP-1</SelectItem>
                 <SelectItem value="SP 2">SP-2</SelectItem>
                 <SelectItem value="SP 3">SP-3</SelectItem>
