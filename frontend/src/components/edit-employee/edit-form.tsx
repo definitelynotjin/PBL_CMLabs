@@ -52,6 +52,43 @@ interface EmployeeFormProps {
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
 
+const departmentOptions = [
+  { label: 'Engineering', value: 'Engineering' },
+  { label: 'Product', value: 'Product' },
+  { label: 'HR', value: 'HR' },
+  { label: 'Marketing', value: 'Marketing' },
+  { label: 'Sales', value: 'Sales' },
+  { label: 'Finance', value: 'Finance' },
+];
+
+
+const positionOptions = [
+  { label: 'Frontend Developer', value: 'Frontend Developer' },
+  { label: 'Backend Developer', value: 'Backend Developer' },
+  { label: 'Fullstack Developer', value: 'Fullstack Developer' },
+  { label: 'UI/UX Designer', value: 'UI/UX Designer' },
+  { label: 'QA Engineer', value: 'QA Engineer' },
+  { label: 'DevOps Engineer', value: 'DevOps Engineer' },
+  { label: 'HR Manager', value: 'HR Manager' },
+  { label: 'Recruiter', value: 'Recruiter' },
+  { label: 'Project Manager', value: 'Project Manager' },
+  { label: 'Product Owner', value: 'Product Owner' },
+  { label: 'Data Analyst', value: 'Data Analyst' },
+  { label: 'Marketing Specialist', value: 'Marketing Specialist' },
+  { label: 'Content Writer', value: 'Content Writer' },
+  { label: 'Customer Support', value: 'Customer Support' },
+];
+
+const gradeOptions = [
+  { label: 'Intern', value: 'Intern' },
+  { label: 'Junior', value: 'Junior' },
+  { label: 'Middle', value: 'Middle' },
+  { label: 'Senior', value: 'Senior' },
+  { label: 'Lead', value: 'Lead' },
+  { label: 'Manager', value: 'Manager' },
+  { label: 'Staff', value: 'Staff' },
+];
+
 const branchOptions = [
   { label: 'Surabaya Office', value: 'c21f07de-8e2f-4d9c-9d7b-f0a0d73637ae' },
   { label: 'Jakarta Office', value: 'a3f1c0b4-5d7e-4fbb-bfe8-6d6b7a3b9a92' },
@@ -211,10 +248,36 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
               </SelectContent>
             </Select>
           </div>
-          <Field label="Position" placeholder="Enter position" value={form.position} onChange={handleChange('position')} />
+          <div className="space-y-1 w-full">
+            <label className="text-sm font-medium">Position</label>
+            <Select value={form.position} onValueChange={handleSelectChange('position')}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="-Select Position-" />
+              </SelectTrigger>
+              <SelectContent>
+                {positionOptions.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
         </div>
 
-        <Field label="Department" placeholder="Enter department" value={form.department} onChange={handleChange('department')} />
+        <div className="space-y-1 w-full">
+          <label className="text-sm font-medium">Department</label>
+          <Select value={form.department} onValueChange={handleSelectChange('department')}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="-Select Department-" />
+            </SelectTrigger>
+            <SelectContent>
+              {departmentOptions.map((opt) => (
+                <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div className="space-y-1 w-full mt-4">
@@ -232,7 +295,20 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
               ))}
             </RadioGroup>
           </div>
-          <Field label="Grade" placeholder="Enter grade" value={form.grade} onChange={handleChange('grade')} />
+          <div className="space-y-1 w-full mt-4">
+            <label className="text-sm font-medium">Grade</label>
+            <Select value={form.grade} onValueChange={handleSelectChange('grade')}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="-Select Grade-" />
+              </SelectTrigger>
+              <SelectContent>
+                {gradeOptions.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
