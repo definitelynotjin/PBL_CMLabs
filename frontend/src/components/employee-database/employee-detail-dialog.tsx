@@ -27,7 +27,7 @@ export default function EmployeeDetailDialog({
           <p><strong>Telepon:</strong> {employee.phone}</p>
           <p><strong>Cabang:</strong> {employee.check_clock_setting?.name || '-'}</p>
           <p><strong>Jabatan:</strong> {employee.position}</p>
-          <p><strong>Status:</strong> {employee.status === 1 ? 'Active' : 'Inactive'}</p>
+          <p><strong>Status:</strong> {Number(employee.status) === 1 ? 'Active' : 'Inactive'}</p>
         </div>
         <div className="flex gap-2 pt-4">
           <Button onClick={() => {
