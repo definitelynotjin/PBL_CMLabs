@@ -30,6 +30,8 @@ const branchOptions = [
 const positionOptions = ['CEO', 'Manager', 'Supervisor', 'Staff', 'Intern'];
 const gradeOptions = ['Upper Staff', 'Staff', 'Junior Staff'];
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost/api';
+
 const EmployeeForm: React.FC<EmployeeFormProps> = ({ date: propDate, setDate: propSetDate }) => {
   const [date, setDate] = useState<Date | undefined>(propDate);
 
@@ -52,7 +54,12 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date: propDate, setDate: pr
   const [spType, setSpType] = useState('');
   const [avatar, setAvatar] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const onDateChange = (selectedDate: Date | undefined) => {
+    setDate(selectedDate);
+    if (propSetDate) propSetDate(selectedDate);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -70,7 +77,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date: propDate, setDate: pr
       gender,
       education,
       birthPlace,
-      birthDate: date,
+      birthDate: date ? date.toISOString().split('T')[0] : null, // send ISO date string
       position,
       branch,
       contractType,
@@ -82,13 +89,30 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date: propDate, setDate: pr
       avatar,
     };
 
-    console.log('Submitting employee data:', formData);
-    // TODO: Connect API here
-  };
+    try {
+      const response = await fetch(`${API_BASE_URL}/employees`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          // Add Authorization header if your API requires it, e.g.:
+          // 'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
 
-  const onDateChange = (selectedDate: Date | undefined) => {
-    setDate(selectedDate);
-    if (propSetDate) propSetDate(selectedDate);
+      if (!response.ok) {
+        const errorData = await response.json();
+        alert(`Failed to save employee: ${errorData.message || response.statusText}`);
+        return;
+      }
+
+      alert('Employee saved successfully!');
+      // Optionally reset the form here or redirect, etc.
+
+    } catch (error) {
+      alert('An error occurred while saving the employee.');
+      console.error(error);
+    }
   };
 
   return (
