@@ -21,6 +21,14 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/auth/login-employee', [AuthController::class, 'loginEmployee']);
 
+// Check if email exists
+Route::get('/check-email', function (Request $request) {
+    $email = $request->query('email');
+    $exists = \App\Models\User::where('email', $email)->exists();
+    return response()->json(['exists' => $exists]);
+});
+
+
 // Documents
 Route::get('/employees/{userId}/documents', [DocumentController::class, 'index']);
 Route::post('/documents', [DocumentController::class, 'store']);

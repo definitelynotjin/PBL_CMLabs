@@ -124,7 +124,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json',
+          Accept: 'application/json',
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(form),
@@ -150,7 +150,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
       <h2 className="text-lg font-semibold mb-6">{data ? 'Edit Employee' : 'Add Employee'}</h2>
 
       <div className="flex items-center gap-4 mb-6">
-        <div className="w-24 h-24 bg-gray-200 rounded">
+        <div className="w-24 h-24 bg-gray-200 rounded overflow-hidden">
           <Image
             src="/placeholder-avatar.png"
             alt="Avatar Placeholder"
@@ -163,21 +163,25 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
       </div>
 
       <div className="space-y-4">
+        {/* Name */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field label="First Name" placeholder="Enter first name" value={form.first_name} onChange={handleChange('first_name')} />
           <Field label="Last Name" placeholder="Enter last name" value={form.last_name} onChange={handleChange('last_name')} />
         </div>
 
+        {/* Phone & NIK */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field label="Phone" placeholder="Enter phone number" value={form.phone} onChange={handleChange('phone')} />
           <Field label="NIK" placeholder="Enter NIK" value={form.nik} onChange={handleChange('nik')} />
         </div>
 
-        {/* Email readonly */}
-        <Field label="Email" placeholder="Email" value={form.email} onChange={() => { }} />
+        {/* Email (readonly) */}
+        <Field label="Email" placeholder="Email" value={form.email || ''} onChange={() => { }} />
 
+        {/* Address */}
         <Field label="Address" placeholder="Enter address" value={form.address} onChange={handleChange('address')} />
 
+        {/* Gender & Education */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium">Gender</label>
@@ -208,6 +212,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
           </div>
         </div>
 
+        {/* Birth Place & Date */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field label="Tempat Lahir" placeholder="Enter birthplace" value={form.tempat_lahir} onChange={handleChange('tempat_lahir')} />
           <div className="space-y-1 w-full">
@@ -236,7 +241,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
           </div>
         </div>
 
-        {/* Job Info */}
+        {/* Position & Branch */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field label="Jabatan" placeholder="Enter jabatan" value={form.position} onChange={handleChange('position')} />
           <div className="space-y-1 w-full">
@@ -256,7 +261,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
           </div>
         </div>
 
-        {/* Contract & Grade */}
+        {/* Contract Type & Grade */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium">Tipe Kontrak</label>
@@ -276,7 +281,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
           <Field label="Grade" placeholder="Enter grade" value={form.grade} onChange={handleChange('grade')} />
         </div>
 
-        {/* Bank & Rekening */}
+        {/* Bank & Nomor Rekening */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium">Bank</label>
@@ -294,7 +299,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
           <Field label="Nomor Rekening" placeholder="Enter rekening" value={form.nomor_rekening} onChange={handleChange('nomor_rekening')} />
         </div>
 
-        {/* Rekening Name & SP */}
+        {/* Atas Nama Rekening & Tipe SP */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field label="Atas Nama Rekening" placeholder="Enter A/N" value={form.atas_nama_rekening} onChange={handleChange('atas_nama_rekening')} />
           <div className="space-y-1 w-full">
@@ -313,6 +318,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
           </div>
         </div>
 
+        {/* Buttons */}
         <div className="mt-6 flex justify-end gap-4">
           <Button variant="outline" type="button" onClick={() => router.push('/employee-database')}>
             Cancel

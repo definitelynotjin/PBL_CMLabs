@@ -37,14 +37,13 @@ class EmployeeController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'user_id' => 'required|exists:users,id',
+        $validated = $request->validate([
             'ck_settings_id' => 'required|exists:check_clock_settings,id',
             'first_name' => 'required|string|max:100',
             'last_name' => 'required|string|max:100',
             'gender' => 'required|in:M,F',
             'address' => 'required|string',
-            'email' => 'required|email|unique:employees,email',
+            'email' => 'required|email|unique:users,email',
             'phone' => 'required|string|unique:employees,phone',
             'position' => 'nullable|string|max:100',
             'department' => 'nullable|string|max:100',
@@ -62,14 +61,32 @@ class EmployeeController extends Controller
             'tipe_sp' => 'nullable|in:SP 1,SP 2,SP 3',
         ]);
 
-        $employee = Employee::create(array_merge($data, ['id' => Uuid::uuid4()->toString()]));
+        // 1. Create the user
+        $user = User::create([
+            'id' => Uuid::uuid4()->toString(),
+            'name' => $validated['first_name'] . ' ' . $validated['last_name'],
+            'email' => $validated['email'],
+            'password' => bcrypt('defaultpassword'), // or Str::random(8)
+            'role' => 'employee', // optional, depending on your system
+            'status' => 'active',
+        ]);
+
+        // 2. Create the employee, link it to the user
+        $employee = Employee::create(array_merge(
+            $validated,
+            [
+                'id' => Uuid::uuid4()->toString(),
+                'user_id' => $user->id,
+            ]
+        ));
 
         return response()->json([
             'success' => true,
-            'message' => 'Employee created successfully',
+            'message' => 'Employee and user created successfully',
             'data' => $employee,
         ], 201);
     }
+
 
     public function show($id)
     {

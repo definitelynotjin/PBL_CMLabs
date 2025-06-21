@@ -4,13 +4,13 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Sidebar from '@/components/sidebar';
 import Header from '@/components/edit-employee/header';
-import EmployeeForm from '@/components/edit-employee/edit-form';
+import EmployeeForm, { Employee } from '@/components/edit-employee/edit-form'; // if you export Employee type there
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
 
 export default function EditEmployeePage() {
   const [date, setDate] = useState<Date | undefined>();
-  const [employeeData, setEmployeeData] = useState<any>(null);
+  const [employeeData, setEmployeeData] = useState<Employee | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const params = useParams();
@@ -26,7 +26,10 @@ export default function EditEmployeePage() {
 
       try {
         const token = localStorage.getItem('token');
-        if (!token) throw new Error('No authentication token found');
+        if (!token) {
+          router.push('/login');
+          return;
+        }
 
         const res = await fetch(`${API_BASE_URL}/employees/${id}`, {
           method: 'GET',
@@ -43,10 +46,10 @@ export default function EditEmployeePage() {
         const data = await res.json();
 
         setEmployeeData(data);
-        if (data.birthDate) {
-          setDate(new Date(data.birthDate));
-        } else if (data.birth_date) {
+        if (data.birth_date) {
           setDate(new Date(data.birth_date));
+        } else if (data.birthDate) {
+          setDate(new Date(data.birthDate));
         } else {
           setDate(undefined);
         }
@@ -59,7 +62,7 @@ export default function EditEmployeePage() {
     };
 
     fetchData();
-  }, [params]);
+  }, [params.id, router]);
 
   if (loading) {
     return <div className="p-6">Loading employee data...</div>;

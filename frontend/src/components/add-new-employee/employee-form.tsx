@@ -1,6 +1,5 @@
 'use client';
 
-
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
@@ -22,13 +21,22 @@ interface EmployeeFormProps {
   setDate?: (date: Date | undefined) => void;
 }
 
+const branchOptions = [
+  { id: 'c21f07de-8e2f-4d9c-9d7b-f0a0d73637ae', name: 'Kantor Surabaya' },
+  { id: 'a3f1c0b4-5d7e-4fbb-bfe8-6d6b7a3b9a92', name: 'Kantor Jakarta' },
+  { id: '58b66a88-1e4f-46c1-8e90-b47194983a9a', name: 'Kantor Malang' },
+];
+
+const positionOptions = ['CEO', 'Manager', 'Supervisor', 'Staff', 'Intern'];
+const gradeOptions = ['Upper Staff', 'Staff', 'Junior Staff'];
+
 const EmployeeForm: React.FC<EmployeeFormProps> = ({ date: propDate, setDate: propSetDate }) => {
-  // Manage date locally if props not passed
   const [date, setDate] = useState<Date | undefined>(propDate);
 
-  // Form state for all inputs
+  // Form state
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
   const [nik, setNik] = useState('');
   const [gender, setGender] = useState('');
@@ -42,18 +50,21 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date: propDate, setDate: pr
   const [accountNumber, setAccountNumber] = useState('');
   const [accountHolderName, setAccountHolderName] = useState('');
   const [spType, setSpType] = useState('');
-
-  // Avatar upload placeholder (just a string for filename/url)
   const [avatar, setAvatar] = useState<string | null>(null);
 
-  // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Gather all form data here
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      alert("Please enter a valid email address.");
+      return;
+    }
+
     const formData = {
       firstName,
       lastName,
+      email,
       mobileNumber,
       nik,
       gender,
@@ -72,14 +83,9 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date: propDate, setDate: pr
     };
 
     console.log('Submitting employee data:', formData);
-
-    // TODO: Connect to API or parent callback to save the data
-
-    // Optionally clear form after submit:
-    // setFirstName(''); // and others...
+    // TODO: Connect API here
   };
 
-  // For date, if props passed, update both local and prop
   const onDateChange = (selectedDate: Date | undefined) => {
     setDate(selectedDate);
     if (propSetDate) propSetDate(selectedDate);
@@ -87,7 +93,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date: propDate, setDate: pr
 
   return (
     <form onSubmit={handleSubmit} className="border rounded-lg p-6">
-      {/* Avatar Upload Section */}
+      {/* Avatar Upload */}
       <div className="flex items-center gap-4 mb-6">
         <div className="w-24 h-24 bg-gray-200 rounded overflow-hidden">
           {avatar ? (
@@ -98,10 +104,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date: propDate, setDate: pr
         </div>
         <Button
           variant="outline"
-          onClick={() => {
-            // For demo, just simulate upload by setting a placeholder string
-            setAvatar('/uploaded-avatar.png');
-          }}
+          onClick={() => setAvatar('/uploaded-avatar.png')}
         >
           Upload Avatar
         </Button>
@@ -109,36 +112,24 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date: propDate, setDate: pr
 
       {/* Form Fields */}
       <div className="space-y-4">
+        {/* Name */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field
-            label="First Name"
-            placeholder="Enter the first name"
-            value={firstName}
-            onChange={e => setFirstName(e.target.value)}
-          />
-          <Field
-            label="Last Name"
-            placeholder="Enter the last name"
-            value={lastName}
-            onChange={e => setLastName(e.target.value)}
-          />
+          <Field label="First Name" placeholder="Enter the first name" value={firstName} onChange={e => setFirstName(e.target.value)} />
+          <Field label="Last Name" placeholder="Enter the last name" value={lastName} onChange={e => setLastName(e.target.value)} />
         </div>
 
+        {/* Email */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field
-            label="Mobile Number"
-            placeholder="Enter the Mobile Number"
-            value={mobileNumber}
-            onChange={e => setMobileNumber(e.target.value)}
-          />
-          <Field
-            label="NIK"
-            placeholder="Enter the NIK"
-            value={nik}
-            onChange={e => setNik(e.target.value)}
-          />
+          <Field label="Email" placeholder="Enter the email" value={email} onChange={e => setEmail(e.target.value)} />
         </div>
 
+        {/* Mobile & NIK */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Field label="Mobile Number" placeholder="Enter the Mobile Number" value={mobileNumber} onChange={e => setMobileNumber(e.target.value)} />
+          <Field label="NIK" placeholder="Enter the NIK" value={nik} onChange={e => setNik(e.target.value)} />
+        </div>
+
+        {/* Gender & Education */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium">Gender</label>
@@ -147,8 +138,8 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date: propDate, setDate: pr
                 <SelectValue placeholder="-Choose Gender-" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="male">Laki-Laki</SelectItem>
-                <SelectItem value="female">Perempuan</SelectItem>
+                <SelectItem value="M">Laki-Laki</SelectItem>
+                <SelectItem value="F">Perempuan</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -168,21 +159,14 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date: propDate, setDate: pr
           </div>
         </div>
 
+        {/* Birth Place & Date */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field
-            label="Tempat Lahir"
-            placeholder="Masukan Tempat Lahir"
-            value={birthPlace}
-            onChange={e => setBirthPlace(e.target.value)}
-          />
+          <Field label="Tempat Lahir" placeholder="Masukan Tempat Lahir" value={birthPlace} onChange={e => setBirthPlace(e.target.value)} />
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium">Tanggal Lahir</label>
             <Popover>
               <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start text-left font-normal"
-                >
+                <Button variant="outline" className="w-full justify-start text-left font-normal">
                   {date ? format(date, 'dd/MM/yyyy') : 'dd/mm/yyyy'}
                 </Button>
               </PopoverTrigger>
@@ -193,29 +177,45 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date: propDate, setDate: pr
           </div>
         </div>
 
+        {/* Position & Branch */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field
-            label="Jabatan"
-            placeholder="Enter your jabatan"
-            value={position}
-            onChange={e => setPosition(e.target.value)}
-          />
-          <Field
-            label="Cabang"
-            placeholder="Enter the cabang"
-            value={branch}
-            onChange={e => setBranch(e.target.value)}
-          />
+          <div className="space-y-1 w-full">
+            <label className="text-sm font-medium">Jabatan</label>
+            <Select value={position} onValueChange={setPosition}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="-Pilih Jabatan-" />
+              </SelectTrigger>
+              <SelectContent>
+                {positionOptions.map((pos) => (
+                  <SelectItem key={pos} value={pos}>
+                    {pos}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-1 w-full">
+            <label className="text-sm font-medium">Cabang</label>
+            <Select value={branch} onValueChange={setBranch}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="-Pilih Cabang-" />
+              </SelectTrigger>
+              <SelectContent>
+                {branchOptions.map((branchOption) => (
+                  <SelectItem key={branchOption.id} value={branchOption.id}>
+                    {branchOption.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
+        {/* Contract Type & Grade */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium">Tipe Kontrak</label>
-            <RadioGroup
-              value={contractType}
-              onValueChange={setContractType}
-              className="flex gap-4"
-            >
+            <RadioGroup value={contractType} onValueChange={setContractType} className="flex gap-4">
               {['Tetap', 'Kontrak', 'Lepas'].map(type => (
                 <div className="flex items-center space-x-2" key={type}>
                   <RadioGroupItem value={type} id={type.toLowerCase()} />
@@ -224,14 +224,24 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date: propDate, setDate: pr
               ))}
             </RadioGroup>
           </div>
-          <Field
-            label="Grade"
-            placeholder="Masukan Grade Anda"
-            value={grade}
-            onChange={e => setGrade(e.target.value)}
-          />
+          <div className="space-y-1 w-full">
+            <label className="text-sm font-medium">Grade</label>
+            <Select value={grade} onValueChange={setGrade}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="-Pilih Grade-" />
+              </SelectTrigger>
+              <SelectContent>
+                {gradeOptions.map((gr) => (
+                  <SelectItem key={gr} value={gr}>
+                    {gr}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
+        {/* Bank & Account Number */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium">Bank</label>
@@ -246,21 +256,12 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date: propDate, setDate: pr
               </SelectContent>
             </Select>
           </div>
-          <Field
-            label="Nomor Rekening"
-            placeholder="Masukan Nomor Rekening"
-            value={accountNumber}
-            onChange={e => setAccountNumber(e.target.value)}
-          />
+          <Field label="Nomor Rekening" placeholder="Masukan Nomor Rekening" value={accountNumber} onChange={e => setAccountNumber(e.target.value)} />
         </div>
 
+        {/* Account Holder Name & SP Type */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field
-            label="Atas Nama Rekening"
-            placeholder="Masukan A/N Rekening"
-            value={accountHolderName}
-            onChange={e => setAccountHolderName(e.target.value)}
-          />
+          <Field label="Atas Nama Rekening" placeholder="Masukan A/N Rekening" value={accountHolderName} onChange={e => setAccountHolderName(e.target.value)} />
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium">Tipe SP</label>
             <Select value={spType} onValueChange={setSpType}>
@@ -282,7 +283,6 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date: propDate, setDate: pr
           variant="outline"
           type="button"
           onClick={() => {
-            // Reset form if needed
             setFirstName('');
             setLastName('');
             setMobileNumber('');
