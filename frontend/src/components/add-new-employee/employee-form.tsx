@@ -356,10 +356,14 @@ const AddEmployeeForm: React.FC<AddEmployeeFormProps> = ({ date, setDate, onSucc
                 <RadioGroupItem value="none" id="contract-none" />
                 <label htmlFor="contract-none">None</label>
               </div>
-              {['Permanent', 'Contract', 'Freelance'].map((type) => (
-                <div className="flex items-center space-x-2" key={type}>
-                  <RadioGroupItem value={type} id={type} />
-                  <label htmlFor={type}>{type}</label>
+              {[
+                { label: 'Permanent', value: 'Tetap' },
+                { label: 'Contract', value: 'Kontrak' },
+                { label: 'Freelance', value: 'Lepas' },
+              ].map(({ label, value }) => (
+                <div className="flex items-center space-x-2" key={value}>
+                  <RadioGroupItem value={value} id={value} />
+                  <label htmlFor={value}>{label}</label>
                 </div>
               ))}
             </RadioGroup>
