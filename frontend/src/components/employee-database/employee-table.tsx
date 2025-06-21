@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ChevronsUpDown, Edit2, Trash2, FileText } from 'lucide-react';
@@ -27,7 +29,7 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
   refreshData,
 }) => {
   const handleStatusToggle = async (emp: Employee) => {
-    const newStatus = !emp.status;
+    const newStatus = emp.status ? 0 : 1;
 
     try {
       const token = localStorage.getItem('token');
@@ -120,7 +122,7 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
                   <td className="p-2">
                     <div className="flex items-center gap-2">
                       <Switch
-                        checked={emp.status}
+                        checked={Boolean(emp.status)}
                         onCheckedChange={() => handleStatusToggle(emp)}
                       />
                       <span className="text-xs text-muted-foreground">
@@ -129,7 +131,6 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
                     </div>
                   </td>
                   <td className="p-2 flex gap-2">
-                    {/* Edit */}
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Link href={`/employees/${emp.id}/edit`}>
@@ -146,7 +147,6 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
                       <TooltipContent side="top">Edit</TooltipContent>
                     </Tooltip>
 
-                    {/* Delete */}
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Link href={`/employees/${emp.id}/delete`}>
@@ -163,7 +163,6 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
                       <TooltipContent side="top">Delete</TooltipContent>
                     </Tooltip>
 
-                    {/* Always show Manage Letters */}
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Button
