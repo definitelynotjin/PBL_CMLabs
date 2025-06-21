@@ -159,7 +159,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
     bank: data?.bank || '',
     nomor_rekening: data?.nomor_rekening || '',
     atas_nama_rekening: data?.atas_nama_rekening || '',
-    tipe_sp: data?.tipe_sp || 'none',
+    tipe_sp: data?.tipe_sp || 'unset',
     address: data?.address || '',
     email: data?.email || '',
   });
@@ -211,7 +211,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
       // Prepare payload with cleaned fields for backend
       const payload = {
         ...form,
-        tipe_sp: form.tipe_sp === 'none' || form.tipe_sp === '' ? null : form.tipe_sp,
+        tipe_sp: form.tipe_sp === 'unset' || form.tipe_sp === '' ? null : form.tipe_sp,
         contract_type: form.contract_type === 'none' ? null : form.contract_type,
       };
 
