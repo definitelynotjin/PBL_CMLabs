@@ -135,7 +135,7 @@ const AddEmployeeForm: React.FC<AddEmployeeFormProps> = ({ date, setDate, onSucc
     bank: '',
     nomor_rekening: '',
     atas_nama_rekening: '',
-    tipe_sp: 'none',
+    tipe_sp: '',
     address: '',
     email: '',
   });
@@ -397,7 +397,7 @@ const AddEmployeeForm: React.FC<AddEmployeeFormProps> = ({ date, setDate, onSucc
                 <SelectValue placeholder="-Select SP Type-" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="none">None</SelectItem>
+                <SelectItem value="">None</SelectItem>
                 <SelectItem value="SP 1">SP-1</SelectItem>
                 <SelectItem value="SP 2">SP-2</SelectItem>
                 <SelectItem value="SP 3">SP-3</SelectItem>
