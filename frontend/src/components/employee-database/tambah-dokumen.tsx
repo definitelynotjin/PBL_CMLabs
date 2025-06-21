@@ -46,10 +46,10 @@ const TambahDokumen: React.FC<TambahDokumenProps> = ({ employee, onClose, onUplo
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white rounded-lg shadow-lg p-6 w-96 max-w-full">
         <h2 className="text-xl font-bold mb-4">
-          Tambah Dokumen untuk {employee.first_name} {employee.last_name}
+          Add document for {employee.first_name} {employee.last_name}
         </h2>
 
-        <label htmlFor="doc-type" className="block mb-1 font-medium">Tipe Dokumen</label>
+        <label htmlFor="doc-type" className="block mb-1 font-medium">Document Type</label>
         <select
           id="doc-type"
           value={documentType}
@@ -58,15 +58,15 @@ const TambahDokumen: React.FC<TambahDokumenProps> = ({ employee, onClose, onUplo
           disabled={loading}
         >
           <option value="" disabled>
-            Pilih tipe dokumen
+            Select document type
           </option>
-          <option value="Surat Peringatan">Surat Peringatan</option>
-          <option value="Kontrak">Kontrak</option>
-          <option value="Lainnya">Lainnya</option>
+          <option value="Surat Peringatan">Warning Letter</option>
+          <option value="Kontrak">Contract</option>
+          <option value="Lainnya">Other</option>
         </select>
 
         <label htmlFor="file-upload" className="block mb-2 font-medium">
-          Upload Dokumen
+          Upload File
         </label>
         <input
           id="file-upload"

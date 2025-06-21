@@ -18,9 +18,12 @@ export type Employee = {
   ck_settings_id?: string; // FK to CheckClockSetting
   check_clock_setting?: CheckClockSetting; // The related branch info
   position: string;
+  contract_type?: string;
   grade?: string;
   status: number;
   employment_status?: string;
   type?: string;
   user?: User;
+  join_date?: string;
+  created_at?: string;
 };

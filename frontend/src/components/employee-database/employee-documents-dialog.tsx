@@ -21,7 +21,7 @@ export default function UploadDocumentDialog({
 
   const handleSubmit = () => {
     if (!localFile || !localType) {
-      alert('Harap pilih jenis dokumen dan file');
+      alert('Please select a document type and file');
       return;
     }
     setDocumentType(localType);
@@ -33,11 +33,11 @@ export default function UploadDocumentDialog({
     <Dialog open={true} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Upload Dokumen</DialogTitle>
+          <DialogTitle>Upload Document</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <Input
-            placeholder="Jenis dokumen (contoh: Kontrak Kerja)"
+            placeholder="Document Type (e.g., Employment Contract)"
             value={localType}
             onChange={e => setLocalType(e.target.value)}
           />
@@ -47,7 +47,7 @@ export default function UploadDocumentDialog({
           />
         </div>
         <DialogFooter className="mt-4">
-          <Button variant="outline" onClick={onClose}>Batal</Button>
+          <Button variant="outline" onClick={onClose}>Cancel</Button>
           <Button onClick={handleSubmit}>Upload</Button>
         </DialogFooter>
       </DialogContent>

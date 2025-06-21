@@ -35,7 +35,7 @@ export function EmployeeDocuments({ employeeId }: { employeeId: string }) {
     }
 
     if (documents.length === 0) {
-        return <p className="text-sm text-muted-foreground">Tidak ada dokumen ditemukan.</p>;
+        return <p className="text-sm text-muted-foreground">No documents found.</p>;
     }
 
     return (

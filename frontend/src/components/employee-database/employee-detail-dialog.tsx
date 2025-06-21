@@ -19,14 +19,14 @@ export default function EmployeeDetailDialog({
     <Dialog open={true} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Detail Karyawan</DialogTitle>
+          <DialogTitle>Employee Details</DialogTitle>
         </DialogHeader>
         <div className="space-y-2">
-          <p><strong>Nama:</strong> {employee.first_name} {employee.last_name}</p>
-          <p><strong>Jenis Kelamin:</strong> {employee.gender}</p>
-          <p><strong>Telepon:</strong> {employee.phone}</p>
-          <p><strong>Cabang:</strong> {employee.check_clock_setting?.name || '-'}</p>
-          <p><strong>Jabatan:</strong> {employee.position}</p>
+          <p><strong>Name:</strong> {employee.first_name} {employee.last_name}</p>
+          <p><strong>Gender:</strong> {employee.gender}</p>
+          <p><strong>Phone Number:</strong> {employee.phone}</p>
+          <p><strong>Department:</strong> {employee.check_clock_setting?.name || '-'}</p>
+          <p><strong>Position:</strong> {employee.position}</p>
           <p><strong>Status:</strong> {Number(employee.status) === 1 ? 'Active' : 'Inactive'}</p>
         </div>
         <div className="flex gap-2 pt-4">
@@ -34,10 +34,10 @@ export default function EmployeeDetailDialog({
             onClose();
             setTimeout(onShowUpload, 200);
           }}>
-            Tambah Dokumen
+            Add Document
           </Button>
           <Button variant="secondary" onClick={onShowDocuments}>
-            Lihat Dokumen
+            View Documents
           </Button>
         </div>
       </DialogContent>

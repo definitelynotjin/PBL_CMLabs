@@ -1,9 +1,62 @@
+'use client';
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Filter, Download, Upload } from 'lucide-react';
 import Link from 'next/link';
+import { Employee } from './types'; // make sure this import exists
 
-const Actions: React.FC = () => {
+interface ActionsProps {
+  employees: Employee[];
+}
+
+const exportToCSV = (employees: Employee[]) => {
+  if (!employees.length) return alert('No employee data to export.');
+
+  const headers = [
+    'First Name',
+    'Last Name',
+    'Gender',
+    'Phone',
+    'Position',
+    'Grade',
+    'Contract Type',
+    'Employment Status',
+    'Join Date',
+    'Branch',
+  ];
+
+  const rows = employees.map(emp => [
+    emp.first_name,
+    emp.last_name,
+    emp.gender,
+    emp.phone,
+    emp.position,
+    emp.grade || '',
+    emp.contract_type || '',
+    emp.employment_status || '',
+    emp.join_date || '',
+    emp.check_clock_setting?.name || '',
+  ]);
+
+  const csvContent = [
+    headers.join(','),
+    ...rows.map(row =>
+      row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(',')
+    ),
+  ].join('\n');
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute('download', 'employees.csv');
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+const Actions: React.FC<ActionsProps> = ({ employees }) => {
   return (
     <div className="flex items-center justify-between">
       <h2 className="text-xl font-semibold">All Employees Information</h2>
@@ -11,7 +64,7 @@ const Actions: React.FC = () => {
         <Button variant="outline">
           <Filter className="w-4 h-4 mr-2" /> Filter
         </Button>
-        <Button variant="outline">
+        <Button variant="outline" onClick={() => exportToCSV(employees)}>
           <Download className="w-4 h-4 mr-2" /> Export
         </Button>
         <Button variant="outline">
