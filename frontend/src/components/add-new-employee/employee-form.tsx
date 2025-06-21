@@ -135,7 +135,7 @@ const AddEmployeeForm: React.FC<AddEmployeeFormProps> = ({ date, setDate, onSucc
     bank: '',
     nomor_rekening: '',
     atas_nama_rekening: '',
-    tipe_sp: '',
+    tipe_sp: 'unset',
     address: '',
     email: '',
   });
@@ -189,6 +189,13 @@ const AddEmployeeForm: React.FC<AddEmployeeFormProps> = ({ date, setDate, onSucc
       const token = localStorage.getItem('token');
       if (!token) return alert('Authentication token not found.');
 
+      // Map "unset" and "none" values to null before sending
+      const payload = {
+        ...form,
+        tipe_sp: form.tipe_sp === 'unset' ? null : form.tipe_sp,
+        contract_type: form.contract_type === 'none' ? null : form.contract_type,
+      };
+
       const res = await fetch(`${API_BASE_URL}/employees`, {
         method: 'POST',
         headers: {
@@ -196,7 +203,7 @@ const AddEmployeeForm: React.FC<AddEmployeeFormProps> = ({ date, setDate, onSucc
           Accept: 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       });
 
       if (!res.ok) {
@@ -213,6 +220,7 @@ const AddEmployeeForm: React.FC<AddEmployeeFormProps> = ({ date, setDate, onSucc
       console.error(error);
     }
   };
+
 
   return (
     <div className="border rounded-lg p-6">
@@ -397,7 +405,7 @@ const AddEmployeeForm: React.FC<AddEmployeeFormProps> = ({ date, setDate, onSucc
                 <SelectValue placeholder="-Select SP Type-" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">None</SelectItem>
+                <SelectItem value="unset">None</SelectItem>
                 <SelectItem value="SP 1">SP-1</SelectItem>
                 <SelectItem value="SP 2">SP-2</SelectItem>
                 <SelectItem value="SP 3">SP-3</SelectItem>
