@@ -101,11 +101,11 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
             <tr className="bg-muted text-left">
               {[
                 { label: 'No', key: null },
-                { label: 'ID', key: 'user' },
+                { label: 'ID', key: null },
                 { label: 'Name', key: 'first_name' },
                 { label: 'Gender', key: 'gender' },
                 { label: 'Phone Number', key: 'phone' },
-                { label: 'Branch', key: 'check_clock_setting' },
+                { label: 'Branch', key: null },
                 { label: 'Position', key: 'position' },
                 { label: 'Grade', key: 'grade' },
                 { label: 'Status', key: 'status' },
@@ -127,30 +127,19 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={11} className="text-center p-4">
-                  Loading...
-                </td>
+                <td colSpan={10} className="text-center p-4">Loading...</td>
               </tr>
             ) : sortedEmployees.length === 0 ? (
               <tr>
-                <td colSpan={11} className="text-center p-4">
-                  No employees found.
-                </td>
+                <td colSpan={10} className="text-center p-4">No employees found.</td>
               </tr>
             ) : (
               sortedEmployees.map((emp, index) => (
                 <tr key={emp.id} className="border-t hover:bg-gray-50">
                   <td className="p-2">{index + 1}</td>
                   <td className="p-2">{emp.user?.employee_id || '-'}</td>
-                  <td className="p-2">
-                    <div className="w-8 h-8 bg-gray-300 rounded-full" />
-                  </td>
                   <td className="p-2">{emp.first_name} {emp.last_name}</td>
-                  <td className="p-2">
-                    <span className="bg-muted px-2 py-1 rounded text-xs font-medium">
-                      {emp.gender}
-                    </span>
-                  </td>
+                  <td className="p-2">{emp.gender}</td>
                   <td className="p-2">{emp.phone}</td>
                   <td className="p-2">{emp.check_clock_setting?.name || '-'}</td>
                   <td className="p-2">{emp.position}</td>
@@ -173,7 +162,6 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
                           <Button
                             variant="ghost"
                             size="sm"
-                            title="Edit"
                             className="hover:bg-[#FFAB00] hover:text-white"
                           >
                             <Edit2 className="w-4 h-4" />
@@ -189,7 +177,6 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
                           <Button
                             variant="ghost"
                             size="sm"
-                            title="Delete"
                             className="hover:bg-[#C11106] hover:text-white"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -204,7 +191,6 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
                         <Button
                           variant="ghost"
                           size="sm"
-                          title="Manage Letters"
                           onClick={() => onRowClick(emp)}
                           className="hover:bg-[#2D8EFF] hover:text-white"
                         >
