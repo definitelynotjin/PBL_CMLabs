@@ -110,7 +110,7 @@ export default function LetterManagementPage() {
       <div className="flex-1 p-4 md:p-6 space-y-6">
         <Header search={search} setSearch={setSearch} />
         <Stats employees={employees} periode={periode} />
-        <Actions />
+        <Actions employees={employees} />
         <EmployeeTable
           employees={employees}
           loading={loading}
