@@ -23,6 +23,7 @@ export default function EmployeeDetailDialog({
         </DialogHeader>
         <div className="space-y-2">
           <p><strong>Name:</strong> {employee.first_name} {employee.last_name}</p>
+          <p><strong>Email:</strong> {employee.email}</p>
           <p><strong>Gender:</strong> {employee.gender}</p>
           <p><strong>Phone Number:</strong> {employee.phone}</p>
           <p><strong>Department:</strong> {employee.check_clock_setting?.name || '-'}</p>

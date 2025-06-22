@@ -20,8 +20,6 @@ export default function LetterManagementPage() {
   const [periode, setPeriode] = useState('');
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
   const [showUpload, setShowUpload] = useState(false);
-  const [documentFile, setDocumentFile] = useState<File | null>(null);
-  const [documentType, setDocumentType] = useState('');
   const [showDocuments, setShowDocuments] = useState(false);
 
   const fetchEmployees = async () => {
@@ -71,8 +69,9 @@ export default function LetterManagementPage() {
     setPeriode(formatted);
   }, []);
 
-  const handleUpload = async () => {
-    if (!selectedEmployee || !documentFile || !documentType) return;
+  const handleUpload = async (file: File, type: string) => {
+    if (!selectedEmployee) return;
+
 
     try {
       const token = localStorage.getItem('token');
@@ -80,8 +79,9 @@ export default function LetterManagementPage() {
 
       const formData = new FormData();
       formData.append('employee_id', selectedEmployee.user_id);
-      formData.append('document_type', documentType);
-      formData.append('file', documentFile);
+      formData.append('document_type', type);
+      formData.append('file', file);
+
 
       const res = await fetch(`${API_BASE_URL}/upload-document`, {
         method: 'POST',
@@ -132,9 +132,8 @@ export default function LetterManagementPage() {
           <UploadDocumentDialog
             onClose={() => setShowUpload(false)}
             onSubmit={handleUpload}
-            setDocumentType={setDocumentType}
-            setDocumentFile={setDocumentFile}
           />
+
         )}
 
         {showDocuments && selectedEmployee && (

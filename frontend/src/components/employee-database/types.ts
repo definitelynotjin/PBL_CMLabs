@@ -13,6 +13,7 @@ export type Employee = {
   user_id: string;
   first_name: string;
   last_name: string;
+  email: string; //
   gender: string;
   phone: string;
   ck_settings_id?: string; // FK to CheckClockSetting

@@ -5,29 +5,25 @@ import { Input } from '@/components/ui/input';
 
 type Props = {
   onClose: () => void;
-  onSubmit: () => Promise<void>;
-  setDocumentType: React.Dispatch<React.SetStateAction<string>>;
-  setDocumentFile: React.Dispatch<React.SetStateAction<File | null>>;
+  onSubmit: (file: File, type: string) => Promise<void>;
 };
+
 
 export default function UploadDocumentsDialog({
   onClose,
   onSubmit,
-  setDocumentType,
-  setDocumentFile,
 }: Props) {
   const [localType, setLocalType] = useState('');
   const [localFile, setLocalFile] = useState<File | null>(null);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!localFile || !localType) {
       alert('Please select a document type and file');
       return;
     }
-    setDocumentType(localType);
-    setDocumentFile(localFile);
-    onSubmit();
+    await onSubmit(localFile, localType);
   };
+
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
