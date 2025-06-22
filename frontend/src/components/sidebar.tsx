@@ -26,12 +26,11 @@ const Sidebar: React.FC = () => (
         <Image
           src="/HRIS_White_Transparent.png"
           alt="Logo"
-          width={32}
-          height={32}
+          width={28}
+          height={28}
           className="mb-8"
         />
-        {/* White line divider */}
-        <div className="w-8 h-px bg-white opacity-50 mb-2" />
+
         <Tooltip>
           <TooltipTrigger asChild>
             <Link href="/dashboard">
