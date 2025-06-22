@@ -9,7 +9,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 
 export default function AddNewEmployeePage() {
-  const [date, setDate] = useState<Date | undefined>(undefined);
+  const [date, setDate] = useState<Date | null>(null);
   const router = useRouter();
 
   return (

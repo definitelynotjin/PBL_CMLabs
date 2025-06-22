@@ -11,7 +11,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
 
 export default function EditEmployeePage() {
-  const [date, setDate] = useState<Date | undefined>();
+  const [date, setDate] = useState<Date | null>(null);
   const [employeeData, setEmployeeData] = useState<Employee | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -53,7 +53,7 @@ export default function EditEmployeePage() {
         } else if (data.birthDate) {
           setDate(new Date(data.birthDate));
         } else {
-          setDate(undefined);
+          setDate(null);
         }
       } catch (err: any) {
         setError(err.message || 'Unexpected error');
