@@ -9,11 +9,11 @@ interface CollaboratorProps {
 
 const collaborators: CollaboratorProps[] = [
   {
-    image: "/images/logo-cmlabs.png",
+    image: "/logo-cmlabs.png",
     name: "PT CMLABS INDONESIA DIGITAL",
   },
   {
-    image: "/images/logo-polinema-nobg.png",
+    image: "/logo-polinema-nobg.png",
     name: "Jurusan Teknologi Informasi Politeknik Negeri Malang",
   },
 ];

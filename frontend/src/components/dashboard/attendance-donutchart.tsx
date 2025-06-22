@@ -2,17 +2,18 @@
 
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
 
-// Sample attendance data
-const data = [
-  { name: "On Time", value: 142 },
-  { name: "Late", value: 34 },
-  { name: "Absent", value: 9 },
-];
+interface AttendanceDataItem {
+  name: string;
+  value: number;
+}
 
-// Colors for each category
+interface AttendanceDonutChartProps {
+  data: AttendanceDataItem[];
+}
+
 const COLORS = ["#00C49F", "#FFBB28", "#FF8042"];
 
-export default function AttendanceDonutChart() {
+export default function AttendanceDonutChart({ data }: AttendanceDonutChartProps) {
   return (
     <div className="bg-white rounded-2xl shadow p-4 w-full">
       <div className="flex justify-between mb-4">
@@ -40,18 +41,12 @@ export default function AttendanceDonutChart() {
         </PieChart>
       </div>
       <div className="mt-4">
-        <div className="flex justify-between">
-          <span className="font-medium">On Time</span>
-          <span className="font-semibold">{data[0].value}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="font-medium">Late</span>
-          <span className="font-semibold">{data[1].value}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="font-medium">Absent</span>
-          <span className="font-semibold">{data[2].value}</span>
-        </div>
+        {data.map((item, i) => (
+          <div key={i} className="flex justify-between">
+            <span className="font-medium">{item.name}</span>
+            <span className="font-semibold">{item.value}</span>
+          </div>
+        ))}
       </div>
     </div>
   );

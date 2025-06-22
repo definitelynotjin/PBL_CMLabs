@@ -8,7 +8,7 @@ import { Edit } from "lucide-react";
 import { AttendanceStatusBadge } from "./attendance-status-badge-props";
 
 interface EmployeeAttendanceItem {
-  id: number;
+  id: string;
   name: string;
   status: string;
   clockIn?: string;
