@@ -230,7 +230,7 @@ const AddEmployeeForm: React.FC<AddEmployeeFormProps> = ({ date, setDate, onSucc
     formData.append('avatar', file);
 
     try {
-      const res = await fetch(`${API_BASE_URL}/users/avatar`, {
+      const res = await fetch(`${API_BASE_URL}/user/avatar`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
