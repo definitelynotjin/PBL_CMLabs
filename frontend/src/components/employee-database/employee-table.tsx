@@ -69,6 +69,31 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
     });
   }, [employees, sortKey, sortDirection]);
 
+  const handleDelete = async (empId: string) => {
+    if (!confirm('Are you sure you want to delete this employee?')) return;
+
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('No auth token found');
+
+      const res = await fetch(`${API_BASE_URL}/employees/${empId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) throw new Error('Failed to delete employee');
+
+      alert('Employee deleted successfully');
+      refreshData(); // reload employee list after deletion
+    } catch (err) {
+      console.error(err);
+      alert('Failed to delete employee');
+    }
+  };
+
+
   const handleStatusToggle = async (emp: Employee) => {
     const newStatus = emp.status ? 0 : 1;
 
@@ -173,18 +198,19 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
 
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Link href={`/employees/${emp.id}/delete`}>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="hover:bg-[#C11106] hover:text-white"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </Link>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleDelete(emp.id)}
+                          className="hover:bg-[#C11106] hover:text-white"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
                       </TooltipTrigger>
                       <TooltipContent side="top">Delete</TooltipContent>
                     </Tooltip>
+
+
 
                     <Tooltip>
                       <TooltipTrigger asChild>

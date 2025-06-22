@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,7 @@ import Field from './field';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { format } from 'date-fns';
+import { XCircle } from 'lucide-react';
 import {
   Select,
   SelectTrigger,
@@ -177,6 +178,9 @@ const AddEmployeeForm: React.FC<AddEmployeeFormProps> = ({ date, setDate, onSucc
     setForm({ ...form, [field]: value });
   };
 
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const handleSubmit = async () => {
     try {
       if (!form.first_name || !form.last_name) {
@@ -192,6 +196,7 @@ const AddEmployeeForm: React.FC<AddEmployeeFormProps> = ({ date, setDate, onSucc
       // Map "unset" and "none" values to null before sending
       const payload = {
         ...form,
+        avatar: avatarUrl || null,
         tipe_sp: form.tipe_sp === 'unset' ? null : form.tipe_sp,
         contract_type: form.contract_type === 'unset' ? null : form.contract_type,
       };
@@ -222,22 +227,87 @@ const AddEmployeeForm: React.FC<AddEmployeeFormProps> = ({ date, setDate, onSucc
   };
 
 
+  const onAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const token = localStorage.getItem('token');
+    if (!token) return alert('Authentication token not found.');
+
+    const formData = new FormData();
+    formData.append('avatar', file);
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/auth/avatar`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || 'Failed to upload avatar');
+      }
+
+      const data = await res.json();
+      const uploadedUrl = data.avatar?.startsWith('http')
+        ? data.avatar
+        : `${API_BASE_URL}/storage/${data.avatar}`;
+
+      setAvatarUrl(uploadedUrl);
+    } catch (err) {
+      console.error('Avatar upload failed', err);
+      alert('Failed to upload avatar');
+    }
+  };
+
+  const onCancelAvatar = () => {
+    setAvatarUrl(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+
+
   return (
     <div className="border rounded-lg p-6">
       <h2 className="text-lg font-semibold mb-6">Add Employee</h2>
 
-      <div className="flex items-center gap-4 mb-6">
-        <div className="w-24 h-24 bg-gray-200 rounded overflow-hidden">
-          <Image
-            src="/placeholder-avatar.png"
-            alt="Avatar Placeholder"
-            width={96}
-            height={96}
-            className="object-cover rounded"
-          />
-        </div>
-        <Button variant="outline">Upload Avatar</Button>
+      <div className="relative w-24 h-24 bg-gray-200 rounded overflow-hidden">
+        <Image
+          src={avatarUrl || "/placeholder-avatar.png"}
+          alt="Avatar"
+          width={96}
+          height={96}
+          className="object-cover rounded"
+        />
+
+        {avatarUrl && (
+          <button
+            type="button"
+            onClick={onCancelAvatar}
+            className="absolute top-0 right-0 bg-white rounded-full p-1 shadow hover:bg-red-500 hover:text-white transition"
+            title="Remove Avatar"
+          >
+            <XCircle className="w-4 h-4" />
+          </button>
+        )}
       </div>
+
+      <Button variant="outline" type="button" onClick={onAvatarClick}>
+        {avatarUrl ? "Change Avatar" : "Upload Avatar"}
+      </Button>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={onFileChange}
+      />
+
 
       {/* PERSONAL INFORMATION */}
       <section className="mb-8">

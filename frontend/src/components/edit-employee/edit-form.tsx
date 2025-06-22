@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,7 @@ import Field from './field';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { format } from 'date-fns';
+import { XCircle } from 'lucide-react';
 import {
   Select,
   SelectTrigger,
@@ -41,6 +42,7 @@ export interface Employee {
   tipe_sp: 'SP 1' | 'SP 2' | 'SP 3' | 'unset' | '';
   address: string;
   email?: string;
+  avatar_url?: string;
 }
 
 interface EmployeeFormProps {
@@ -142,6 +144,11 @@ const branchOptions = [
 const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSuccess }) => {
   const router = useRouter();
 
+  // Avatar state and ref
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarPreview, setAvatarPreview] = useState(data?.avatar_url || '/default-avatar.png');
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [form, setForm] = useState({
     ck_settings_id: data?.ck_settings_id || '',
     first_name: data?.first_name || '',
@@ -201,6 +208,24 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
     setForm({ ...form, [field]: value });
   };
 
+  // Avatar upload change
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files && e.target.files[0];
+    if (file) {
+      setAvatarFile(file);
+      setAvatarPreview(URL.createObjectURL(file));
+    }
+  };
+
+  // Cancel avatar upload
+  const handleAvatarCancel = () => {
+    setAvatarFile(null);
+    setAvatarPreview(data?.avatar_url || '/default-avatar.png');
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   const handleSubmit = async () => {
     try {
       if (!data?.id) return alert('Missing employee ID.');
@@ -214,6 +239,8 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
         tipe_sp: form.tipe_sp === 'unset' ? null : form.tipe_sp,
         contract_type: form.contract_type === 'unset' ? null : form.contract_type,
       };
+
+      // If you want to upload avatar as well, you'd handle FormData here instead (not shown)
 
       const res = await fetch(`${API_BASE_URL}/employees/upsert/${data.id}`, {
         method: 'POST',
@@ -240,22 +267,44 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
     }
   };
 
-
   return (
     <div className="border rounded-lg p-6">
       <h2 className="text-lg font-semibold mb-6">Edit Employee</h2>
 
       <div className="flex items-center gap-4 mb-6">
-        <div className="w-24 h-24 bg-gray-200 rounded overflow-hidden">
+        <div className="w-24 h-24 bg-gray-200 rounded overflow-hidden relative">
           <Image
-            src="/placeholder-avatar.png"
-            alt="Avatar Placeholder"
+            src={avatarPreview}
+            alt="Avatar Preview"
             width={96}
             height={96}
             className="object-cover rounded"
           />
         </div>
-        <Button variant="outline">Upload Avatar</Button>
+
+        <input
+          type="file"
+          accept="image/*"
+          className="hidden"
+          ref={fileInputRef}
+          onChange={handleAvatarChange}
+          id="avatar-upload"
+        />
+        <label htmlFor="avatar-upload">
+          <Button variant="outline" as="span">Upload Avatar</Button>
+        </label>
+
+        {avatarFile && (
+          <Button
+            variant="destructive"
+            onClick={handleAvatarCancel}
+            className="flex items-center gap-1"
+            title="Cancel avatar upload"
+          >
+            <XCircle size={20} />
+            Cancel
+          </Button>
+        )}
       </div>
 
       {/* PERSONAL INFORMATION */}

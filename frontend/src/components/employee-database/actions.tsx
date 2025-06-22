@@ -14,6 +14,7 @@ const exportToCSV = (employees: Employee[]) => {
   if (!employees.length) return alert('No employee data to export.');
 
   const headers = [
+    'ID',
     'First Name',
     'Last Name',
     'Gender',
@@ -27,6 +28,7 @@ const exportToCSV = (employees: Employee[]) => {
   ];
 
   const rows = employees.map(emp => [
+    emp.id,
     emp.first_name,
     emp.last_name,
     emp.gender,
