@@ -323,28 +323,28 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <Field label="Birthplace" placeholder="Enter birthplace" value={form.tempat_lahir} onChange={handleChange('tempat_lahir')} />
-          <div className="space-y-1 w-full">
-            <label className="text-sm font-medium">Date of Birth</label>
-            <ReactDatePicker
-              selected={date}
-              onChange={(selectedDate: Date | null) => {
-                setDate(selectedDate);
-                if (selectedDate) {
-                  setForm((f) => ({ ...f, birth_date: format(selectedDate, 'yyyy-MM-dd') }));
-                } else {
-                  setForm((f) => ({ ...f, birth_date: '' }));
-                }
-              }}
-              dateFormat="dd/MM/yyyy"
-              placeholderText="Select date"
-              className="w-full rounded border border-gray-300 px-3 py-2"
-              maxDate={new Date()}
-              showYearDropdown
-              showMonthDropdown
-              dropdownMode="select"
-            />
+        </div>
 
-          </div>
+        <div className="mb-4">
+          <label className="text-sm font-medium block mb-1">Date of Birth</label>
+          <ReactDatePicker
+            selected={date}
+            onChange={(selectedDate: Date | null) => {
+              setDate(selectedDate);
+              if (selectedDate) {
+                setForm((f) => ({ ...f, birth_date: format(selectedDate, 'yyyy-MM-dd') }));
+              } else {
+                setForm((f) => ({ ...f, birth_date: '' }));
+              }
+            }}
+            dateFormat="dd/MM/yyyy"
+            placeholderText="Select date"
+            className="w-full rounded border border-gray-300 px-3 py-2"
+            maxDate={new Date()}
+            showYearDropdown
+            showMonthDropdown
+            dropdownMode="select"
+          />
         </div>
 
         <Field label="Address" placeholder="Enter address" value={form.address} onChange={handleChange('address')} />
