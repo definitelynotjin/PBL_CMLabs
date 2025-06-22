@@ -339,12 +339,16 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
             }}
             dateFormat="dd/MM/yyyy"
             placeholderText="Select date"
-            className="w-full rounded border border-gray-300 px-3 py-2"
+            className="w-full rounded-md border border-[#7CA5BF] px-3 py-2 text-[#1E3A5F] bg-white placeholder:text-gray-400 focus:ring-2 focus:ring-[#1E3A5F]"
+            calendarClassName="custom-datepicker-calendar"
+            popperClassName="z-50"
+            dayClassName={() => 'hover:bg-[#7CA5BF]/20 rounded-md transition'}
             maxDate={new Date()}
             showYearDropdown
             showMonthDropdown
             dropdownMode="select"
           />
+
         </div>
 
         <Field label="Address" placeholder="Enter address" value={form.address} onChange={handleChange('address')} />
