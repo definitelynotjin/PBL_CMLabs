@@ -94,8 +94,6 @@ export default function LetterManagementPage() {
       if (res.ok) {
         alert('Document uploaded successfully');
         setShowUpload(false);
-        setDocumentFile(null);
-        setDocumentType('');
       } else {
         alert('Upload failed');
       }
