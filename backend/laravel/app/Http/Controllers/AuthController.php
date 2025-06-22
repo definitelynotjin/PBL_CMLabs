@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Hash;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Facades\Password;
 use App\Http\Controllers\Controller;
+use App\Helpers\EmployeeIdGenerator;
+
 
 class AuthController extends Controller
 {
@@ -36,10 +38,9 @@ class AuthController extends Controller
             'role' => $request->role ?? 'admin',
         ]);
 
-        if ($user->role === 'employee') {
-            $user->employee_id = $this->generateUniqueEmployeeId();
-            $user->save();
-        }
+        $user->employee_id = EmployeeIdGenerator::generate();
+        $user->save();
+
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
@@ -57,21 +58,6 @@ class AuthController extends Controller
         ], 201);
     }
 
-    private function generateUniqueEmployeeId()
-    {
-        $lastUser = User::whereNotNull('employee_id')
-            ->orderBy('employee_id', 'desc')
-            ->first();
-
-        if (!$lastUser || !$lastUser->employee_id) {
-            return 'EMP001';
-        }
-
-        $lastNumber = (int) filter_var($lastUser->employee_id, FILTER_SANITIZE_NUMBER_INT);
-        $nextNumber = $lastNumber + 1;
-
-        return 'EMP' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
-    }
 
     public function login(Request $request)
     {

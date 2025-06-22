@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
+use App\Helpers\EmployeeIdGenerator;
 
 class EmployeeController extends Controller
 {
@@ -70,6 +71,10 @@ class EmployeeController extends Controller
             'role' => 'employee', // optional, depending on your system
             'status' => 'active',
         ]);
+
+        $user->employee_id = EmployeeIdGenerator::generate();
+        $user->save();
+
 
         // 2. Create the employee, link it to the user
         $employee = Employee::create(array_merge(
