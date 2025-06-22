@@ -311,37 +311,53 @@ const AddEmployeeForm: React.FC<AddEmployeeFormProps> = ({ date, setDate, onSucc
           <Field label="Last Name" placeholder="Enter last name" value={form.last_name} onChange={handleChange('last_name')} />
         </div>
 
+        {/* Birthplace and Date of Birth side by side */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <Field label="Birthplace" placeholder="Enter birthplace" value={form.tempat_lahir} onChange={handleChange('tempat_lahir')} />
+
+          <div className="mb-4">
+            <label className="text-sm font-medium block mb-1">Date of Birth</label>
+            <ReactDatePicker
+              selected={date}
+              onChange={(selectedDate: Date | null) => {
+                setDate(selectedDate);
+                if (selectedDate) {
+                  setForm((f) => ({ ...f, birth_date: format(selectedDate, 'yyyy-MM-dd') }));
+                } else {
+                  setForm((f) => ({ ...f, birth_date: '' }));
+                }
+              }}
+              dateFormat="dd/MM/yyyy"
+              placeholderText="Select date"
+              className="w-full rounded-md border border-[#7CA5BF] px-3 py-2 text-[#1E3A5F] bg-white placeholder:text-gray-400 focus:ring-2 focus:ring-[#1E3A5F]"
+              calendarClassName="custom-datepicker-calendar"
+              popperClassName="z-50"
+              dayClassName={() => 'hover:bg-[#7CA5BF]/20 rounded-md transition'}
+              maxDate={new Date()}
+              showYearDropdown
+              showMonthDropdown
+              dropdownMode="select"
+            />
+          </div>
         </div>
 
-        <div className="mb-4">
-          <label className="text-sm font-medium block mb-1">Date of Birth</label>
-          <ReactDatePicker
-            selected={date}
-            onChange={(selectedDate: Date | null) => {
-              setDate(selectedDate);
-              if (selectedDate) {
-                setForm((f) => ({ ...f, birth_date: format(selectedDate, 'yyyy-MM-dd') }));
-              } else {
-                setForm((f) => ({ ...f, birth_date: '' }));
-              }
-            }}
-            dateFormat="dd/MM/yyyy"
-            placeholderText="Select date"
-            className="w-full rounded-md border border-[#7CA5BF] px-3 py-2 text-[#1E3A5F] bg-white placeholder:text-gray-400 focus:ring-2 focus:ring-[#1E3A5F]"
-            calendarClassName="custom-datepicker-calendar"
-            popperClassName="z-50"
-            dayClassName={() => 'hover:bg-[#7CA5BF]/20 rounded-md transition'}
-            maxDate={new Date()}
-            showYearDropdown
-            showMonthDropdown
-            dropdownMode="select"
-          />
+        {/* Address and Gender side by side */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Field label="Address" placeholder="Enter address" value={form.address} onChange={handleChange('address')} />
 
+          <div className="space-y-1 w-full">
+            <label className="text-sm font-medium">Gender</label>
+            <Select value={form.gender} onValueChange={handleSelectChange('gender')}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="-Select Gender-" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="M">Male</SelectItem>
+                <SelectItem value="F">Female</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
-
-        <Field label="Address" placeholder="Enter address" value={form.address} onChange={handleChange('address')} />
       </section>
 
       {/* EMPLOYMENT INFORMATION */}
