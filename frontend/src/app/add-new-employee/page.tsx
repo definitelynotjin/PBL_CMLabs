@@ -5,6 +5,8 @@ import Sidebar from '@/components/sidebar';
 import Header from '@/components/add-new-employee/header';
 import EmployeeForm from '@/components/add-new-employee/employee-form';
 import { useRouter } from 'next/navigation';
+import 'react-datepicker/dist/react-datepicker.css';
+
 
 export default function AddNewEmployeePage() {
   const [date, setDate] = useState<Date | undefined>(undefined);

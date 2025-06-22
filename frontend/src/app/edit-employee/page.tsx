@@ -4,7 +4,9 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Sidebar from '@/components/sidebar';
 import Header from '@/components/edit-employee/header';
-import EmployeeForm, { Employee } from '@/components/edit-employee/edit-form';// if you export Employee type there
+import EmployeeForm, { Employee } from '@/components/edit-employee/edit-form';
+import 'react-datepicker/dist/react-datepicker.css';
+// if you export Employee type there
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
 

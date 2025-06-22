@@ -1,5 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+/* react-datepicker styles */
+@import 'react-datepicker/dist/react-datepicker.css';
+
 
 
 @custom-variant dark (&:is(.dark *));

@@ -1,14 +1,13 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import Field from './field';
-import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
-import { Calendar } from '@/components/ui/calendar';
 import { format } from 'date-fns';
 import { XCircle } from 'lucide-react';
+import ReactDatePicker from 'react-datepicker';
 import {
   Select,
   SelectTrigger,
@@ -46,8 +45,8 @@ export interface Employee {
 }
 
 interface EmployeeFormProps {
-  date: Date | undefined;
-  setDate: (date: Date | undefined) => void;
+  date: Date | null;
+  setDate: (date: Date | null) => void;
   data?: Employee;
   onSuccess: (newEmployeeId: string) => void;
 }
@@ -143,8 +142,6 @@ const branchOptions = [
 
 const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSuccess }) => {
   const router = useRouter();
-
-  // Avatar state and ref
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState(data?.avatar_url || '/default-avatar.png');
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -171,16 +168,6 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
     email: data?.email || '',
   });
 
-  const [clientDate, setClientDate] = useState('');
-
-  useEffect(() => {
-    if (date) {
-      setClientDate(format(date, 'dd/MM/yyyy'));
-      setForm(f => ({ ...f, birth_date: format(date, 'yyyy-MM-dd') }));
-    } else {
-      setClientDate('');
-    }
-  }, [date]);
 
   // When department changes, reset position and grade
   const handleDepartmentChange = (value: string) => {
@@ -210,37 +197,54 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
 
   // Avatar upload change
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files && e.target.files[0];
+    const file = e.target.files?.[0];
     if (file) {
       setAvatarFile(file);
       setAvatarPreview(URL.createObjectURL(file));
     }
   };
 
-  // Cancel avatar upload
   const handleAvatarCancel = () => {
     setAvatarFile(null);
     setAvatarPreview(data?.avatar_url || '/default-avatar.png');
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const handleSubmit = async () => {
     try {
       if (!data?.id) return alert('Missing employee ID.');
-
       const token = localStorage.getItem('token');
       if (!token) return alert('Authentication token not found.');
 
-      // Prepare payload with cleaned fields for backend
+      // Upload avatar first (if changed)
+      let avatarUrl = data?.avatar_url || null;
+      if (avatarFile) {
+        const formData = new FormData();
+        formData.append('avatar', avatarFile);
+
+        const uploadRes = await fetch(`${API_BASE_URL}/users/avatar`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        });
+
+        if (!uploadRes.ok) {
+          const err = await uploadRes.json();
+          return alert('Avatar upload failed: ' + (err.message || uploadRes.statusText));
+        }
+
+        const uploadData = await uploadRes.json();
+        avatarUrl = `${API_BASE_URL.replace('/api', '')}/storage/${uploadData.avatar}`;
+      }
+
       const payload = {
         ...form,
+        avatar_url: avatarUrl,
         tipe_sp: form.tipe_sp === 'unset' ? null : form.tipe_sp,
         contract_type: form.contract_type === 'unset' ? null : form.contract_type,
       };
-
-      // If you want to upload avatar as well, you'd handle FormData here instead (not shown)
 
       const res = await fetch(`${API_BASE_URL}/employees/upsert/${data.id}`, {
         method: 'POST',
@@ -253,17 +257,17 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
       });
 
       if (!res.ok) {
-        const errorData = await res.json();
-        return alert('Failed: ' + (errorData.message || res.statusText));
+        const err = await res.json();
+        return alert('Failed: ' + (err.message || res.statusText));
       }
 
       const response = await res.json();
       alert('Employee updated successfully!');
       onSuccess(response.id);
       router.push('/employee-database');
-    } catch (error) {
-      alert('Error: ' + error);
-      console.error(error);
+    } catch (err) {
+      alert('Error: ' + err);
+      console.error(err);
     }
   };
 
@@ -291,18 +295,12 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
           id="avatar-upload"
         />
 
-        <label htmlFor="avatar-upload">
-          <Button variant="outline">Upload Avatar</Button>
-        </label>
-
+        <Button variant="outline" type="button" onClick={() => fileInputRef.current?.click()}>
+          Upload Avatar
+        </Button>
 
         {avatarFile && (
-          <Button
-            variant="destructive"
-            onClick={handleAvatarCancel}
-            className="flex items-center gap-1"
-            title="Cancel avatar upload"
-          >
+          <Button variant="destructive" onClick={handleAvatarCancel} className="flex items-center gap-1">
             <XCircle size={20} />
             Cancel
           </Button>
@@ -327,27 +325,25 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
           <Field label="Birthplace" placeholder="Enter birthplace" value={form.tempat_lahir} onChange={handleChange('tempat_lahir')} />
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium">Date of Birth</label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline" className="w-full justify-start text-left font-normal">
-                  {clientDate || 'Select date'}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={(selectedDate) => {
-                    setDate(selectedDate);
-                    if (selectedDate) {
-                      setForm((f) => ({ ...f, birth_date: format(selectedDate, 'yyyy-MM-dd') }));
-                      setClientDate(format(selectedDate, 'dd/MM/yyyy'));
-                    }
-                  }}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
+            <ReactDatePicker
+              selected={date}
+              onChange={(selectedDate: Date | null) => {
+                setDate(selectedDate);
+                if (selectedDate) {
+                  setForm((f) => ({ ...f, birth_date: format(selectedDate, 'yyyy-MM-dd') }));
+                } else {
+                  setForm((f) => ({ ...f, birth_date: '' }));
+                }
+              }}
+              dateFormat="dd/MM/yyyy"
+              placeholderText="Select date"
+              className="w-full rounded border border-gray-300 px-3 py-2"
+              maxDate={new Date()}
+              showYearDropdown
+              showMonthDropdown
+              dropdownMode="select"
+            />
+
           </div>
         </div>
 

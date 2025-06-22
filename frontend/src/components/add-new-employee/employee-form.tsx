@@ -1,13 +1,12 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import Field from './field';
-import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
-import { Calendar } from '@/components/ui/calendar';
 import { format } from 'date-fns';
+import ReactDatePicker from 'react-datepicker';
 import { XCircle } from 'lucide-react';
 import {
   Select,
@@ -22,8 +21,8 @@ import {
 } from '@/components/ui/radio-group';
 
 interface AddEmployeeFormProps {
-  date: Date | undefined;
-  setDate: (date: Date | undefined) => void;
+  date: Date | null;
+  setDate: (date: Date | null) => void;
   onSuccess: (newEmployeeId: string) => void;
 }
 
@@ -118,7 +117,6 @@ const branchOptions = [
 
 const AddEmployeeForm: React.FC<AddEmployeeFormProps> = ({ date, setDate, onSuccess }) => {
   const router = useRouter();
-
   const [form, setForm] = useState({
     ck_settings_id: '',
     first_name: '',
@@ -141,16 +139,6 @@ const AddEmployeeForm: React.FC<AddEmployeeFormProps> = ({ date, setDate, onSucc
     email: '',
   });
 
-  const [clientDate, setClientDate] = useState('');
-
-  useEffect(() => {
-    if (date) {
-      setClientDate(format(date, 'dd/MM/yyyy'));
-      setForm(f => ({ ...f, birth_date: format(date, 'yyyy-MM-dd') }));
-    } else {
-      setClientDate('');
-    }
-  }, [date]);
 
   // When department changes, reset position and grade
   const handleDepartmentChange = (value: string) => {
@@ -242,7 +230,7 @@ const AddEmployeeForm: React.FC<AddEmployeeFormProps> = ({ date, setDate, onSucc
     formData.append('avatar', file);
 
     try {
-      const res = await fetch(`${API_BASE_URL}/auth/avatar`, {
+      const res = await fetch(`${API_BASE_URL}/users/avatar`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
@@ -327,27 +315,25 @@ const AddEmployeeForm: React.FC<AddEmployeeFormProps> = ({ date, setDate, onSucc
           <Field label="Birthplace" placeholder="Enter birthplace" value={form.tempat_lahir} onChange={handleChange('tempat_lahir')} />
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium">Date of Birth</label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline" className="w-full justify-start text-left font-normal">
-                  {clientDate || 'Select date'}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={(selectedDate) => {
-                    setDate(selectedDate);
-                    if (selectedDate) {
-                      setForm((f) => ({ ...f, birth_date: format(selectedDate, 'yyyy-MM-dd') }));
-                      setClientDate(format(selectedDate, 'dd/MM/yyyy'));
-                    }
-                  }}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
+            <ReactDatePicker
+              selected={date}
+              onChange={(selectedDate: Date | null) => {
+                setDate(selectedDate);
+                if (selectedDate) {
+                  setForm((f) => ({ ...f, birth_date: format(selectedDate, 'yyyy-MM-dd') }));
+                } else {
+                  setForm((f) => ({ ...f, birth_date: '' }));
+                }
+              }}
+              dateFormat="dd/MM/yyyy"
+              placeholderText="Select date"
+              className="w-full rounded border border-gray-300 px-3 py-2"
+              maxDate={new Date()}
+              showYearDropdown
+              showMonthDropdown
+              dropdownMode="select"
+            />
+
           </div>
         </div>
 
