@@ -7,7 +7,8 @@ import Stats from '@/components/employee-database/stats';
 import Actions from '@/components/employee-database/actions';
 import EmployeeTable from '@/components/employee-database/employee-table';
 import EmployeeDetailDialog from '@/components/employee-database/employee-detail-dialog';
-import UploadDocumentDialog from '@/components/employee-database/employee-documents-dialog';
+import UploadDocumentDialog from '@/components/employee-database/upload-documents-dialog';
+import EmployeeDocumentsDialog from '@/components/employee-database/employee-documents-dialog';
 import { Employee } from '@/components/employee-database/types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
@@ -123,7 +124,7 @@ export default function LetterManagementPage() {
             employee={selectedEmployee}
             onClose={() => setSelectedEmployee(null)}
             onShowUpload={() => setShowUpload(true)}
-            onShowDocuments={() => setShowDocuments(true)}
+            onShowDocuments={() => setShowDocuments(true)}  // opens documents dialog
           />
         )}
 
@@ -135,7 +136,15 @@ export default function LetterManagementPage() {
             setDocumentFile={setDocumentFile}
           />
         )}
+
+        {showDocuments && selectedEmployee && (
+          <EmployeeDocumentsDialog
+            employeeId={selectedEmployee.id}  // or selectedEmployee.user_id if that fits your API
+            onClose={() => setShowDocuments(false)}
+          />
+        )}
       </div>
     </div>
   );
+
 }
