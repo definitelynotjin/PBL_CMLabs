@@ -290,9 +290,11 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
           onChange={handleAvatarChange}
           id="avatar-upload"
         />
+
         <label htmlFor="avatar-upload">
-          <Button variant="outline" as="span">Upload Avatar</Button>
+          <Button variant="outline">Upload Avatar</Button>
         </label>
+
 
         {avatarFile && (
           <Button
