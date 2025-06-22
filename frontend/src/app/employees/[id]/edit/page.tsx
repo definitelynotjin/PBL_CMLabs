@@ -12,7 +12,7 @@ const EmployeeEditPage = () => {
 
     const [employeeData, setEmployeeData] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [date, setDate] = useState<Date | undefined>(undefined);
+    const [date, setDate] = useState<Date | null>(null);
 
     useEffect(() => {
         if (!id) return;
