@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import { parseISO, format } from 'date-fns';
 import Image from 'next/image';
 import { Employee } from '@/components/edit-employee/edit-form';
@@ -8,6 +8,8 @@ import { Employee } from '@/components/edit-employee/edit-form';
 export default function ViewProfilePage() {
     const [userData, setUserData] = useState<Employee | null>(null);
     const [loading, setLoading] = useState(true);
+    const [avatarFile, setAvatarFile] = useState<File | null>(null);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
     const branchOptions = [
         { label: 'Surabaya Office', value: 'c21f07de-8e2f-4d9c-9d7b-f0a0d73637ae' },
@@ -15,10 +17,12 @@ export default function ViewProfilePage() {
         { label: 'Malang Office', value: '58b66a88-1e4f-46c1-8e90-b47194983a9a' },
     ];
 
-    function getBranchLabel(value: string) {
+    const getBranchLabel = (value: string) => {
+        if (!value) return '-';
         const option = branchOptions.find((opt) => opt.value === value);
         return option ? option.label : value;
-    }
+    };
+
     useEffect(() => {
         const fetchUser = async () => {
             try {
@@ -30,9 +34,6 @@ export default function ViewProfilePage() {
                 });
 
                 const rawData = await res.json();
-                console.log("RAW USER DATA:", rawData);
-
-                // Fallback if no employee object
                 const employeeData = rawData.employee ?? {};
 
                 const data: Employee = {
@@ -73,45 +74,90 @@ export default function ViewProfilePage() {
             }
         };
 
-
         fetchUser();
     }, []);
+
+    const handleAvatarChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        setAvatarFile(file);
+        setPreviewUrl(URL.createObjectURL(file));
+    };
+
+    const handleCancel = () => {
+        setAvatarFile(null);
+        setPreviewUrl(null);
+    };
+
+    const handleSave = async () => {
+        if (!avatarFile) return;
+        // TODO: Implement actual API upload here
+        alert('Avatar saved (this is a placeholder)');
+        handleCancel();
+    };
 
     if (loading) return <p className="p-6 text-center">Loading...</p>;
     if (!userData) return <p className="p-6 text-center text-red-500">Failed to load user data.</p>;
 
-    const InfoRow = ({ label, value }: { label: string; value?: string }) => (
+    const InfoRow = ({ label, value }: { label: string; value?: string | null }) => (
         <div className="grid grid-cols-3 gap-4 py-2">
-            <span className="text-gray-500 font-medium">{label}</span>
-            <span className="col-span-2">{value ?? '-'}</span>
+            <span className="text-gray-600 font-medium">{label}</span>
+            <span className="col-span-2">{value || '-'}</span>
         </div>
     );
 
-
     return (
-        <div className="max-w-4xl mx-auto p-8 bg-white rounded-xl shadow-md">
+        <div className="max-w-4xl mx-auto p-8 bg-white rounded-xl shadow-md border border-gray-200">
             {/* Header */}
-            <div className="flex items-center gap-6 border-b pb-6 mb-6">
-                <Image
-                    src={userData.avatar_url || '/default-avatar.png'}
-                    alt="Profile Picture"
-                    width={100}
-                    height={100}
-                    className="rounded-full object-cover border"
-                />
-                <div>
-                    <h1 className="text-2xl font-semibold">
-                        {userData.first_name} {userData.last_name}
-                    </h1>
-                    <p className="text-gray-500">
-                        {userData.position} &mdash; {userData.department}
-                    </p>
+            <div className="flex items-center justify-between border-b pb-6 mb-6">
+                <div className="flex items-center gap-6">
+                    <Image
+                        src={previewUrl || userData.avatar_url || '/default-avatar.png'}
+                        alt="Profile Picture"
+                        width={100}
+                        height={100}
+                        className="rounded-full object-cover border"
+                    />
+                    <div>
+                        <h1 className="text-2xl font-semibold text-[#1E3A5F]">
+                            {userData.first_name} {userData.last_name}
+                        </h1>
+                        <p className="text-[#7CA5BF]">{userData.position} &mdash; {userData.department}</p>
+                    </div>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                    <label className="text-sm font-medium text-[#1E3A5F]">
+                        Upload Avatar
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleAvatarChange}
+                            className="block mt-1 text-sm text-gray-500 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#1E3A5F] file:text-white hover:file:bg-[#163152]"
+                        />
+                    </label>
+                    {avatarFile && (
+                        <div className="flex gap-2 mt-2">
+                            <button
+                                onClick={handleSave}
+                                className="px-4 py-1 rounded bg-[#1E3A5F] text-white text-sm hover:bg-[#163152]"
+                            >
+                                Save
+                            </button>
+                            <button
+                                onClick={handleCancel}
+                                className="px-4 py-1 rounded border border-gray-300 text-sm hover:bg-gray-100"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
 
             {/* Personal Info */}
             <section className="mb-6">
-                <h2 className="text-lg font-semibold border-b pb-2 mb-4">Personal Information</h2>
+                <h2 className="text-lg font-semibold text-[#1E3A5F] border-b pb-2 mb-4">Personal Information</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
                     <InfoRow label="Email" value={userData.email} />
                     <InfoRow label="Phone" value={userData.phone} />
@@ -123,11 +169,7 @@ export default function ViewProfilePage() {
                     <InfoRow
                         label="Gender"
                         value={
-                            userData.gender === 'M'
-                                ? 'Male'
-                                : userData.gender === 'F'
-                                    ? 'Female'
-                                    : '-'
+                            userData.gender === 'M' ? 'Male' : userData.gender === 'F' ? 'Female' : '-'
                         }
                     />
                     <InfoRow label="Address" value={userData.address} />
@@ -137,7 +179,7 @@ export default function ViewProfilePage() {
 
             {/* Employment Info */}
             <section>
-                <h2 className="text-lg font-semibold border-b pb-2 mb-4">Employment Information</h2>
+                <h2 className="text-lg font-semibold text-[#1E3A5F] border-b pb-2 mb-4">Employment Information</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
                     <InfoRow label="Branch" value={getBranchLabel(userData.ck_settings_id ?? '')} />
                     <InfoRow label="NIK" value={userData.nik} />
