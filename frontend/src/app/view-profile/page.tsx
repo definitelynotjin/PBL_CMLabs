@@ -9,6 +9,16 @@ export default function ViewProfilePage() {
     const [userData, setUserData] = useState<Employee | null>(null);
     const [loading, setLoading] = useState(true);
 
+    const branchOptions = [
+        { label: 'Surabaya Office', value: 'c21f07de-8e2f-4d9c-9d7b-f0a0d73637ae' },
+        { label: 'Jakarta Office', value: 'a3f1c0b4-5d7e-4fbb-bfe8-6d6b7a3b9a92' },
+        { label: 'Malang Office', value: '58b66a88-1e4f-46c1-8e90-b47194983a9a' },
+    ];
+
+    function getBranchLabel(value: string) {
+        const option = branchOptions.find((opt) => opt.value === value);
+        return option ? option.label : value;
+    }
     useEffect(() => {
         const fetchUser = async () => {
             try {
@@ -73,9 +83,10 @@ export default function ViewProfilePage() {
     const InfoRow = ({ label, value }: { label: string; value?: string }) => (
         <div className="grid grid-cols-3 gap-4 py-2">
             <span className="text-gray-500 font-medium">{label}</span>
-            <span className="col-span-2">{value || '-'}</span>
+            <span className="col-span-2">{value ?? '-'}</span>
         </div>
     );
+
 
     return (
         <div className="max-w-4xl mx-auto p-8 bg-white rounded-xl shadow-md">
@@ -128,7 +139,7 @@ export default function ViewProfilePage() {
             <section>
                 <h2 className="text-lg font-semibold border-b pb-2 mb-4">Employment Information</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
-                    <InfoRow label="Branch" value={userData.ck_settings_id} />
+                    <InfoRow label="Branch" value={getBranchLabel(userData.ck_settings_id ?? '')} />
                     <InfoRow label="NIK" value={userData.nik} />
                     <InfoRow label="Contract Type" value={userData.contract_type} />
                     <InfoRow label="Grade" value={userData.grade} />
