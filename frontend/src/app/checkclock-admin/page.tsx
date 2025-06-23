@@ -1,12 +1,12 @@
 'use client';
 
 import * as React from "react";
-import  Sidebar  from "@/components/sidebar";
-import CheckclockHeader from "@/components/checkclock-admin/header";
+import Sidebar from "@/components/sidebar";
+import { DashboardHeader } from "@/components/checkclock-admin/CheckClockHeader"; // Adjust path accordingly
 import { EmployeeTable } from "@/components/checkclock-admin/employee-table";
 import { ConfirmDialog } from "@/components/checkclock-admin/confirm-dialog";
 import { ViewDialog } from "@/components/checkclock-admin/view-dialog";
-import { Employee } from "@/components/checkclock-admin/type"
+import { Employee } from "@/components/checkclock-admin/type";
 import Title from '@/components/checkclock-user/title';
 
 const initialEmployees: Employee[] = [
@@ -68,25 +68,28 @@ const Checkclock: React.FC = () => {
   return (
     <div className="flex min-h-screen bg-white">
       <Sidebar />
-      <div className="flex-1 p-6">
-        <CheckclockHeader />
-        <Title />
-        <EmployeeTable 
-          employees={employees} 
-          openConfirmDialog={openConfirmDialog}
-          setSelectedEmployee={setSelectedEmployee}
-          setOpenDialog={setOpenDialog}
-        />
+      <div className="flex-1 flex flex-col">
+        <DashboardHeader />
+        <div className="p-6 flex-1 overflow-auto">
+          <Title />
+          <EmployeeTable
+            employees={employees}
+            openConfirmDialog={openConfirmDialog}
+            setSelectedEmployee={setSelectedEmployee}
+            setOpenDialog={setOpenDialog}
+          />
+        </div>
       </div>
-      <ConfirmDialog 
-        showConfirmModal={showConfirmModal} 
+
+      <ConfirmDialog
+        showConfirmModal={showConfirmModal}
         setShowConfirmModal={setShowConfirmModal}
         handleConfirmAction={handleConfirmAction}
         confirmAction={confirmAction}
       />
-      <ViewDialog 
-        openDialog={openDialog} 
-        setOpenDialog={setOpenDialog} 
+      <ViewDialog
+        openDialog={openDialog}
+        setOpenDialog={setOpenDialog}
         selectedEmployee={selectedEmployee}
       />
     </div>

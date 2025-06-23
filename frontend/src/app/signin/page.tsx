@@ -2,6 +2,7 @@ import { GalleryVerticalEnd } from "lucide-react";
 import { SignInForm } from "@/components/signin-form/signin-form";
 import SignInHeader from "@/components/signin-form/signin-header";
 import SignInBackground from "@/components/signin-form/signin-background";
+import Link from "next/link";
 
 const SignInPage = () => {
   return (
