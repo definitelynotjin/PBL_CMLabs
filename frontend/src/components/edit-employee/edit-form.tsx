@@ -33,7 +33,7 @@ export interface Employee {
   birth_date: string;
   position: string;
   department: string;
-  contract_type: 'unset';
+  contract_type: 'unset' | string;
   grade: string;
   bank: string;
   nomor_rekening: string;
@@ -49,6 +49,7 @@ interface EmployeeFormProps {
   setDate: (date: Date | null) => void;
   data?: Employee;
   onSuccess: (newEmployeeId: string) => void;
+  readOnly: boolean;
 }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
@@ -62,7 +63,6 @@ const departmentOptions = [
   { label: 'Finance', value: 'Finance' },
 ];
 
-// Position options grouped by department
 const positionsByDepartment: Record<string, { label: string; value: string }[]> = {
   Engineering: [
     { label: 'Frontend Developer', value: 'Frontend Developer' },
@@ -96,7 +96,6 @@ const positionsByDepartment: Record<string, { label: string; value: string }[]> 
   ],
 };
 
-// Grade options grouped by department
 const gradesByDepartment: Record<string, { label: string; value: string }[]> = {
   Engineering: [
     { label: 'Intern', value: 'Intern' },
@@ -140,7 +139,7 @@ const branchOptions = [
   { label: 'Malang Office', value: '58b66a88-1e4f-46c1-8e90-b47194983a9a' },
 ];
 
-const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSuccess }) => {
+const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSuccess, readOnly }) => {
   const router = useRouter();
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState(data?.avatar_url || '/default-avatar.png');
@@ -168,8 +167,6 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
     email: data?.email || '',
   });
 
-
-  // When department changes, reset position and grade
   const handleDepartmentChange = (value: string) => {
     setForm({
       ...form,
@@ -180,10 +177,12 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
   };
 
   const handleChange = (field: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (readOnly) return;
     setForm({ ...form, [field]: e.target.value });
   };
 
   const handleSelectChange = (field: keyof typeof form) => (value: string) => {
+    if (readOnly) return;
     if (field === 'department') {
       handleDepartmentChange(value);
     } else {
@@ -192,10 +191,10 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
   };
 
   const handleRadioChange = (field: keyof typeof form) => (value: string) => {
+    if (readOnly) return;
     setForm({ ...form, [field]: value });
   };
 
-  // Avatar upload change
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -271,9 +270,11 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
     }
   };
 
+  const disabledInputClass = 'opacity-50 cursor-not-allowed';
+
   return (
     <div className="border rounded-lg p-6">
-      <h2 className="text-lg font-semibold mb-6">Edit Employee</h2>
+      <h2 className="text-lg font-semibold mb-6">{readOnly ? 'View Employee' : 'Edit Employee'}</h2>
 
       <div className="flex items-center gap-4 mb-6">
         <div className="w-24 h-24 bg-gray-200 rounded overflow-hidden relative">
@@ -295,12 +296,21 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
           id="avatar-upload"
         />
 
-        <Button variant="outline" type="button" onClick={() => fileInputRef.current?.click()}>
+        <Button
+          variant="outline"
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+        // Avatar upload always enabled even if readOnly
+        >
           Upload Avatar
         </Button>
 
         {avatarFile && (
-          <Button variant="destructive" onClick={handleAvatarCancel} className="flex items-center gap-1">
+          <Button
+            variant="destructive"
+            onClick={handleAvatarCancel}
+            className="flex items-center gap-1"
+          >
             <XCircle size={20} />
             Cancel
           </Button>
@@ -312,13 +322,41 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
         <h3 className="text-md font-semibold mb-4 border-b pb-2">Personal Information</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <Field label="Email" placeholder="Email" value={form.email || ''} onChange={handleChange('email')} />
-          <Field label="Phone" placeholder="Enter phone number" value={form.phone} onChange={handleChange('phone')} />
+          <Field
+            label="Email"
+            placeholder="Email"
+            value={form.email || ''}
+            onChange={handleChange('email')}
+            disabled={readOnly}
+            className={readOnly ? disabledInputClass : ''}
+          />
+          <Field
+            label="Phone"
+            placeholder="Enter phone number"
+            value={form.phone}
+            onChange={handleChange('phone')}
+            disabled={readOnly}
+            className={readOnly ? disabledInputClass : ''}
+          />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <Field label="First Name" placeholder="Enter first name" value={form.first_name} onChange={handleChange('first_name')} />
-          <Field label="Last Name" placeholder="Enter last name" value={form.last_name} onChange={handleChange('last_name')} />
+          <Field
+            label="First Name"
+            placeholder="Enter first name"
+            value={form.first_name}
+            onChange={handleChange('first_name')}
+            disabled={readOnly}
+            className={readOnly ? disabledInputClass : ''}
+          />
+          <Field
+            label="Last Name"
+            placeholder="Enter last name"
+            value={form.last_name}
+            onChange={handleChange('last_name')}
+            disabled={readOnly}
+            className={readOnly ? disabledInputClass : ''}
+          />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -327,12 +365,14 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
             placeholder="Enter birthplace"
             value={form.tempat_lahir}
             onChange={handleChange('tempat_lahir')}
+            disabled={readOnly}
+            className={readOnly ? disabledInputClass : ''}
           />
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium block">Date of Birth</label>
             <ReactDatePicker
               selected={date}
-              onChange={(selectedDate: Date | null) => {
+              onChange={readOnly ? () => { } : (selectedDate: Date | null) => {
                 setDate(selectedDate);
                 if (selectedDate) {
                   setForm((f) => ({ ...f, birth_date: format(selectedDate, 'yyyy-MM-dd') }));
@@ -342,7 +382,8 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
               }}
               dateFormat="dd/MM/yyyy"
               placeholderText="Select date"
-              className="w-full rounded-md border border-[#7CA5BF] px-3 py-2 text-[#1E3A5F] bg-white placeholder:text-gray-400 focus:ring-2 focus:ring-[#1E3A5F]"
+              className={`w-full rounded-md border border-[#7CA5BF] px-3 py-2 text-[#1E3A5F] bg-white placeholder:text-gray-400 focus:ring-2 focus:ring-[#1E3A5F] ${readOnly ? disabledInputClass : ''
+                }`}
               calendarClassName="custom-datepicker-calendar"
               popperClassName="z-50"
               dayClassName={() => 'hover:bg-[#7CA5BF]/20 rounded-md transition'}
@@ -350,10 +391,10 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
               showYearDropdown
               showMonthDropdown
               dropdownMode="select"
+              disabled={readOnly}
             />
           </div>
         </div>
-
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <Field
@@ -361,11 +402,17 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
             placeholder="Enter address"
             value={form.address}
             onChange={handleChange('address')}
+            disabled={readOnly}
+            className={readOnly ? disabledInputClass : ''}
           />
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium">Gender</label>
-            <Select value={form.gender} onValueChange={handleSelectChange('gender')}>
-              <SelectTrigger className="w-full">
+            <Select
+              value={form.gender}
+              onValueChange={handleSelectChange('gender')}
+              disabled={readOnly}
+            >
+              <SelectTrigger className={`w-full ${readOnly ? disabledInputClass : ''}`}>
                 <SelectValue placeholder="-Select Gender-" />
               </SelectTrigger>
               <SelectContent>
@@ -377,7 +424,6 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
         </div>
       </section>
 
-
       {/* EMPLOYMENT INFORMATION */}
       <section>
         <h3 className="text-md font-semibold mb-4 border-b pb-2">Employment Information</h3>
@@ -385,13 +431,19 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium">Branch</label>
-            <Select value={form.ck_settings_id} onValueChange={handleSelectChange('ck_settings_id')}>
-              <SelectTrigger className="w-full">
+            <Select
+              value={form.ck_settings_id}
+              onValueChange={handleSelectChange('ck_settings_id')}
+              disabled={readOnly}
+            >
+              <SelectTrigger className={`w-full ${readOnly ? disabledInputClass : ''}`}>
                 <SelectValue placeholder="-Select Branch-" />
               </SelectTrigger>
               <SelectContent>
                 {branchOptions.map((opt) => (
-                  <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -399,13 +451,19 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
 
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium">Department</label>
-            <Select value={form.department} onValueChange={handleSelectChange('department')}>
-              <SelectTrigger className="w-full">
+            <Select
+              value={form.department}
+              onValueChange={handleSelectChange('department')}
+              disabled={readOnly}
+            >
+              <SelectTrigger className={`w-full ${readOnly ? disabledInputClass : ''}`}>
                 <SelectValue placeholder="-Select Department-" />
               </SelectTrigger>
               <SelectContent>
                 {departmentOptions.map((opt) => (
-                  <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -418,14 +476,20 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
             <Select
               value={form.position}
               onValueChange={handleSelectChange('position')}
-              disabled={!form.department}
+              disabled={readOnly || !form.department}
             >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder={form.department ? "-Select Position-" : "Select department first"} />
+              <SelectTrigger className={`w-full ${readOnly ? disabledInputClass : ''}`}>
+                <SelectValue
+                  placeholder={
+                    form.department ? '-Select Position-' : 'Select department first'
+                  }
+                />
               </SelectTrigger>
               <SelectContent>
                 {(positionsByDepartment[form.department] || []).map((opt) => (
-                  <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -436,14 +500,18 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
             <Select
               value={form.grade}
               onValueChange={handleSelectChange('grade')}
-              disabled={!form.department}
+              disabled={readOnly || !form.department}
             >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder={form.department ? "-Select Grade-" : "Select department first"} />
+              <SelectTrigger className={`w-full ${readOnly ? disabledInputClass : ''}`}>
+                <SelectValue
+                  placeholder={form.department ? '-Select Grade-' : 'Select department first'}
+                />
               </SelectTrigger>
               <SelectContent>
                 {(gradesByDepartment[form.department] || []).map((opt) => (
-                  <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -451,82 +519,90 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <div className="space-y-1 w-full mt-4">
+          <div className="space-y-1 w-full">
             <label className="text-sm font-medium">Contract Type</label>
-            <RadioGroup value={form.contract_type} onValueChange={handleRadioChange('contract_type')} className="flex gap-4">
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="unset" id="contract-unset" />
-                <label htmlFor="contract-unset">Unset</label>
-              </div>
-              {[
-                { label: 'Permanent', value: 'Tetap' },
-                { label: 'Contract', value: 'Kontrak' },
-                { label: 'Freelance', value: 'Lepas' },
-              ].map(({ label, value }) => (
-                <div className="flex items-center space-x-2" key={value}>
-                  <RadioGroupItem value={value} id={value} />
-                  <label htmlFor={value}>{label}</label>
+            <Select
+              value={form.contract_type}
+              onValueChange={handleSelectChange('contract_type')}
+              disabled={readOnly}
+            >
+              <SelectTrigger className={`w-full ${readOnly ? disabledInputClass : ''}`}>
+                <SelectValue placeholder="-Select Contract Type-" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="unset">-Select-</SelectItem>
+                <SelectItem value="PKWT">PKWT</SelectItem>
+                <SelectItem value="PKWTT">PKWTT</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <Field
+            label="NIK"
+            placeholder="Enter NIK"
+            value={form.nik}
+            onChange={handleChange('nik')}
+            disabled={readOnly}
+            className={readOnly ? disabledInputClass : ''}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <Field
+            label="Bank"
+            placeholder="Enter Bank"
+            value={form.bank}
+            onChange={handleChange('bank')}
+            disabled={readOnly}
+            className={readOnly ? disabledInputClass : ''}
+          />
+          <Field
+            label="Account Number"
+            placeholder="Enter Account Number"
+            value={form.nomor_rekening}
+            onChange={handleChange('nomor_rekening')}
+            disabled={readOnly}
+            className={readOnly ? disabledInputClass : ''}
+          />
+        </div>
+
+        <Field
+          label="Account Holder Name"
+          placeholder="Enter Account Holder Name"
+          value={form.atas_nama_rekening}
+          onChange={handleChange('atas_nama_rekening')}
+          disabled={readOnly}
+          className={readOnly ? disabledInputClass : ''}
+        />
+
+        <div className="mt-4 space-y-2">
+          <label className="text-sm font-medium">Tipe SP</label>
+          <RadioGroup
+            onValueChange={handleRadioChange('tipe_sp')}
+            value={form.tipe_sp}
+            disabled={readOnly}
+            className={readOnly ? disabledInputClass : ''}
+          >
+            <div className="flex items-center gap-4">
+              {['SP 1', 'SP 2', 'SP 3'].map((label) => (
+                <div key={label} className="flex items-center gap-1">
+                  <RadioGroupItem value={label} id={`tipe_sp_${label}`} />
+                  <label htmlFor={`tipe_sp_${label}`}>{label}</label>
                 </div>
               ))}
-            </RadioGroup>
-          </div>
-          <div className="space-y-1 w-full mt-4">
-            <label className="text-sm font-medium">Bank</label>
-            <Select value={form.bank} onValueChange={handleSelectChange('bank')}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="-Select Bank-" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="BCA">BCA</SelectItem>
-                <SelectItem value="BRI">BRI</SelectItem>
-                <SelectItem value="BNI">BNI</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <Field label="Account Number" placeholder="Enter account number" value={form.nomor_rekening} onChange={handleChange('nomor_rekening')} />
-          <Field label="Account Holder Name" placeholder="Enter account holder name" value={form.atas_nama_rekening} onChange={handleChange('atas_nama_rekening')} />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <div className="space-y-1 w-full">
-            <label className="text-sm font-medium">SP Type</label>
-            <Select value={form.tipe_sp} onValueChange={handleSelectChange('tipe_sp')}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="-Select SP Type-" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="unset">None</SelectItem>
-                <SelectItem value="SP 1">SP-1</SelectItem>
-                <SelectItem value="SP 2">SP-2</SelectItem>
-                <SelectItem value="SP 3">SP-3</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <Field label="NIK" placeholder="Enter national ID" value={form.nik} onChange={handleChange('nik')} />
-        </div>
-
-        <div className="space-y-1 w-full mt-4">
-          <label className="text-sm font-medium">Highest Education</label>
-          <Select value={form.pendidikan_terakhir} onValueChange={handleSelectChange('pendidikan_terakhir')}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="-Select Education-" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="SMA">High School</SelectItem>
-              <SelectItem value="D3">Diploma (D3)</SelectItem>
-              <SelectItem value="S1">Bachelor (S1)</SelectItem>
-              <SelectItem value="S2">Master (S2)</SelectItem>
-            </SelectContent>
-          </Select>
+            </div>
+          </RadioGroup>
         </div>
       </section>
 
+      {/* BUTTONS */}
       <div className="mt-6 flex justify-end gap-4">
-        <Button variant="outline" type="button" onClick={() => router.push('/employee-database')}>Cancel</Button>
-        <Button type="button" onClick={handleSubmit}>Save</Button>
+        <Button variant="outline" type="button" onClick={() => router.push('/employee-database')}>
+          Cancel
+        </Button>
+        <Button type="button" onClick={handleSubmit}>
+          Save
+        </Button>
       </div>
     </div>
   );
