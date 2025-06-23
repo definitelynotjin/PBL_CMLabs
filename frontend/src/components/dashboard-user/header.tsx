@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef, ChangeEvent } from "react";
 import { Input } from "@/components/ui/input";
-import { Bell, ChevronDown, Search } from "lucide-react"; \
+import { Bell, ChevronDown, Search } from "lucide-react";
 import { useRouter } from 'next/navigation';
 
 export function DashboardHeader() {
