@@ -3,11 +3,13 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Bell, ChevronDown, Search } from "lucide-react";
+import { useRouter } from 'next/navigation';
 
 const CheckclockHeader = () => {
   const [user, setUser] = useState<any>(null);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -91,6 +93,15 @@ const CheckclockHeader = () => {
               <div className="text-lg font-semibold">{user?.name}</div>
               <div className="text-sm text-gray-600">{user?.role === "admin" ? "ADM" : user?.employee_id}</div>
             </div>
+            <button
+              onClick={() => {
+                setDropdownOpen(false);
+                router.push('/view-profile');  // navigate to your ViewProfilePage route
+              }}
+              className="w-full px-4 py-2 mb-2 rounded bg-gray-700 text-white font-semibold hover:bg-gray-800 transition"
+            >
+              View Profile
+            </button>
             <button
               onClick={handleLogout}
               className="w-full px-4 py-2 rounded-md text-white font-semibold text-center hover:brightness-90 transition"

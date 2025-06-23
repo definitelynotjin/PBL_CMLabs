@@ -3,6 +3,7 @@
 import React, { useEffect, useState, useRef, ChangeEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { Bell, ChevronDown, Search } from "lucide-react";
+import { useRouter } from 'next/navigation';
 
 type HeaderProps = {
   search: string;
@@ -14,6 +15,8 @@ export function Header({ search, setSearch }: HeaderProps) {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
+
 
   // Fetch user info and normalize avatar URL
   useEffect(() => {
@@ -195,6 +198,15 @@ export function Header({ search, setSearch }: HeaderProps) {
                 {user?.role === "admin" ? "ADM" : user?.employee_id}
               </div>
             </div>
+            <button
+              onClick={() => {
+                setDropdownOpen(false);
+                router.push('/view-profile');  // navigate to your ViewProfilePage route
+              }}
+              className="w-full px-4 py-2 mb-2 rounded bg-gray-700 text-white font-semibold hover:bg-gray-800 transition"
+            >
+              View Profile
+            </button>
 
             <button
               onClick={handleLogout}
