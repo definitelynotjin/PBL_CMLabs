@@ -18,7 +18,7 @@ const iconClass = "w-5 h-5 text-white hover:text-[#7CA5BF] transition-colors dur
 
 const Sidebar: React.FC = () => (
   <TooltipProvider>
-    <aside className="w-16 h-screen flex flex-col justify-between items-center bg-[#1E3A5F] py-4">
+    <aside className="w-16 h-screen sticky top-0 flex flex-col justify-between items-center bg-[#1E3A5F] py-4 overflow-y-auto">
       <div className="flex flex-col items-center gap-10">
         <Image
           src="/HRIS_White_Transparent.png"
