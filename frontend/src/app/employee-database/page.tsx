@@ -22,7 +22,7 @@ export default function LetterManagementPage() {
   const [showUpload, setShowUpload] = useState(false);
   const [showDocuments, setShowDocuments] = useState(false);
 
-  const fetchEmployees = async () => {
+  const fetchEmployees = React.useCallback(async () => {
     setLoading(true);
 
     try {
@@ -47,7 +47,7 @@ export default function LetterManagementPage() {
       // Map employees and fix status field
       const mappedEmployees = employeesData.data.data.map((emp: Employee) => ({
         ...emp,
-        status: Number(emp.status) === 1, // FIXED: correctly maps numeric status to boolean
+        status: Number(emp.status) === 1,
       }));
 
       setEmployees(mappedEmployees);
@@ -57,11 +57,11 @@ export default function LetterManagementPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [search]);
 
   useEffect(() => {
     fetchEmployees();
-  }, [search]);
+  }, [fetchEmployees]);
 
   useEffect(() => {
     const today = new Date();
@@ -72,7 +72,6 @@ export default function LetterManagementPage() {
   const handleUpload = async (file: File, type: string) => {
     if (!selectedEmployee) return;
 
-
     try {
       const token = localStorage.getItem('token');
       if (!token) throw new Error('No auth token found');
@@ -82,11 +81,11 @@ export default function LetterManagementPage() {
       formData.append('document_type', type);
       formData.append('file', file);
 
-
       const res = await fetch(`${API_BASE_URL}/documents`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
+          // DO NOT set Content-Type when sending FormData; browser handles it
         },
         body: formData,
       });
@@ -94,6 +93,7 @@ export default function LetterManagementPage() {
       if (res.ok) {
         alert('Document uploaded successfully');
         setShowUpload(false);
+        fetchEmployees(); // Refresh employees after upload if needed
       } else {
         alert('Upload failed');
       }
@@ -122,7 +122,7 @@ export default function LetterManagementPage() {
             employee={selectedEmployee}
             onClose={() => setSelectedEmployee(null)}
             onShowUpload={() => setShowUpload(true)}
-            onShowDocuments={() => setShowDocuments(true)}  // opens documents dialog
+            onShowDocuments={() => setShowDocuments(true)}
           />
         )}
 
@@ -131,17 +131,15 @@ export default function LetterManagementPage() {
             onClose={() => setShowUpload(false)}
             onSubmit={handleUpload}
           />
-
         )}
 
         {showDocuments && selectedEmployee && (
           <EmployeeDocumentsDialog
-            employeeId={selectedEmployee.id}  // or selectedEmployee.user_id if that fits your API
+            employeeId={selectedEmployee.id}
             onClose={() => setShowDocuments(false)}
           />
         )}
       </div>
     </div>
   );
-
 }
