@@ -22,31 +22,30 @@ export default function ViewProfilePage() {
                 const rawData = await res.json();
                 console.log("RAW USER DATA:", rawData);
 
-                if (!rawData.employee) {
-                    throw new Error('Employee data not found in response.');
-                }
+                // Fallback if no employee object
+                const employeeData = rawData.employee ?? {};
 
                 const data: Employee = {
-                    id: rawData.employee.id,
-                    ck_settings_id: rawData.employee.ck_settings_id || '',
-                    first_name: rawData.employee.first_name || '',
-                    last_name: rawData.employee.last_name || '',
-                    phone: rawData.employee.phone || '',
-                    nik: rawData.employee.nik || '',
-                    gender: rawData.employee.gender || '',
-                    pendidikan_terakhir: rawData.employee.pendidikan_terakhir || '',
-                    tempat_lahir: rawData.employee.tempat_lahir || '',
-                    birth_date: rawData.employee.birth_date || '',
-                    position: rawData.employee.position || '',
-                    department: rawData.employee.department || '',
-                    contract_type: rawData.employee.contract_type || 'unset',
-                    grade: rawData.employee.grade || '',
-                    bank: rawData.employee.bank || '',
-                    nomor_rekening: rawData.employee.nomor_rekening || '',
-                    atas_nama_rekening: rawData.employee.atas_nama_rekening || '',
-                    tipe_sp: rawData.employee.tipe_sp || 'unset',
-                    address: rawData.employee.address || '',
-                    email: rawData.email || '',
+                    id: employeeData.id ?? rawData.id,
+                    ck_settings_id: employeeData.ck_settings_id ?? '',
+                    first_name: employeeData.first_name ?? rawData.name?.split(' ')[0] ?? '',
+                    last_name: employeeData.last_name ?? rawData.name?.split(' ').slice(1).join(' ') ?? '',
+                    phone: employeeData.phone ?? rawData.phone ?? '',
+                    nik: employeeData.nik ?? '',
+                    gender: employeeData.gender ?? '',
+                    pendidikan_terakhir: employeeData.pendidikan_terakhir ?? '',
+                    tempat_lahir: employeeData.tempat_lahir ?? '',
+                    birth_date: employeeData.birth_date ?? '',
+                    position: employeeData.position ?? rawData.role ?? '',
+                    department: employeeData.department ?? '',
+                    contract_type: employeeData.contract_type ?? 'unset',
+                    grade: employeeData.grade ?? '',
+                    bank: employeeData.bank ?? '',
+                    nomor_rekening: employeeData.nomor_rekening ?? '',
+                    atas_nama_rekening: employeeData.atas_nama_rekening ?? '',
+                    tipe_sp: employeeData.tipe_sp ?? 'unset',
+                    address: employeeData.address ?? '',
+                    email: rawData.email ?? '',
                     avatar_url:
                         typeof rawData.avatar === 'string' && rawData.avatar.startsWith('http')
                             ? rawData.avatar
@@ -58,11 +57,12 @@ export default function ViewProfilePage() {
                 setUserData(data);
             } catch (error) {
                 console.error('Failed to fetch user data:', error);
-                setUserData(null); // ensure it’s null on failure
+                setUserData(null);
             } finally {
                 setLoading(false);
             }
         };
+
 
         fetchUser();
     }, []);
