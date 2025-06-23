@@ -64,9 +64,9 @@ class CheckClockController extends Controller
                 $validated['longitude']
             );
 
-            if ($distance > $setting->radius) {
-                return response()->json(['message' => 'You are outside the allowed clock-in location.'], 400);
-            }
+            // if ($distance > $setting->radius) {
+            //     return response()->json(['message' => 'You are outside the allowed clock-in location.'], 400);
+            // }
         }
 
         // Determine status (on_time, late, early)
