@@ -10,36 +10,40 @@ export default function ViewProfilePage() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchUserProfile = async () => {
+        const fetchUser = async () => {
             try {
                 const token = localStorage.getItem('token');
-
-                // 1. Get logged-in user
-                const meRes = await fetch('https://pblcmlabs.duckdns.org/api/me', {
+                const res = await fetch('https://pblcmlabs.duckdns.org/api/me', {
                     headers: { Authorization: `Bearer ${token}` },
                 });
-                const meData = await meRes.json();
 
-                // 2. Fetch full employee data using the user id
-                const profileRes = await fetch(`https://pblcmlabs.duckdns.org/api/employees/${meData.id}`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-                const employeeData: Employee = await profileRes.json();
+                const rawData = await res.json();
 
-                setUserData(employeeData);
+                const data: Employee = {
+                    ...rawData.employee, // ✅ gets all real employee fields
+                    email: rawData.email, // ✅ override email from user table if needed
+                    employee_id: rawData.employee_id, // ✅ or rawData.employee.employee_id if that's correct
+                    avatar: rawData.avatar?.startsWith('http')
+                        ? rawData.avatar
+                        : `https://pblcmlabs.duckdns.org/storage/${rawData.avatar}`,
+                    name: rawData.name, // full name if needed
+                };
 
-                if (employeeData.birth_date) {
-                    setDate(parseISO(employeeData.birth_date));
+                setUserData(data);
+
+                if (data.birth_date) {
+                    setDate(parseISO(data.birth_date));
                 }
             } catch (error) {
-                console.error('Failed to fetch full user profile:', error);
+                console.error('Failed to fetch user data:', error);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchUserProfile();
+        fetchUser();
     }, []);
+
 
     if (loading) return <p>Loading...</p>;
     if (!userData) return <p>Failed to load user data.</p>;

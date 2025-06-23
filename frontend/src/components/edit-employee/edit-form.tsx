@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -51,6 +51,7 @@ interface EmployeeFormProps {
   onSuccess: (newEmployeeId: string) => void;
   readOnly?: boolean;
 }
+
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
 
@@ -208,6 +209,34 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
     setAvatarPreview(data?.avatar_url || '/default-avatar.png');
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
+
+  useEffect(() => {
+    if (data) {
+      setForm({
+        ck_settings_id: data.ck_settings_id || '',
+        first_name: data.first_name || '',
+        last_name: data.last_name || '',
+        phone: data.phone || '',
+        nik: data.nik || '',
+        gender: data.gender || '',
+        pendidikan_terakhir: data.pendidikan_terakhir || '',
+        tempat_lahir: data.tempat_lahir || '',
+        birth_date: data.birth_date || '',
+        position: data.position || '',
+        department: data.department || '',
+        contract_type: data.contract_type || 'unset',
+        grade: data.grade || '',
+        bank: data.bank || '',
+        nomor_rekening: data.nomor_rekening || '',
+        atas_nama_rekening: data.atas_nama_rekening || '',
+        tipe_sp: data.tipe_sp || 'unset',
+        address: data.address || '',
+        email: data.email || '',
+      });
+
+      setAvatarPreview(data.avatar_url || '/default-avatar.png');
+    }
+  }, [data]);
 
   const handleSubmit = async () => {
     try {
