@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import EmployeeForm, { Employee } from '@/components/edit-employee/edit-form.tsx'; // same import
+import EmployeeForm, { Employee } from '@/components/edit-employee/edit-form.tsx';
 import { parseISO } from 'date-fns';
 
 export default function ViewProfilePage() {
@@ -10,27 +10,35 @@ export default function ViewProfilePage() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchUser = async () => {
+        const fetchUserProfile = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const res = await fetch('https://pblcmlabs.duckdns.org/api/me', {
+
+                // 1. Get logged-in user
+                const meRes = await fetch('https://pblcmlabs.duckdns.org/api/me', {
                     headers: { Authorization: `Bearer ${token}` },
                 });
-                const data: Employee = await res.json();
+                const meData = await meRes.json();
 
-                setUserData(data);
+                // 2. Fetch full employee data using the user id
+                const profileRes = await fetch(`https://pblcmlabs.duckdns.org/api/employees/${meData.id}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                const employeeData: Employee = await profileRes.json();
 
-                if (data.birth_date) {
-                    setDate(parseISO(data.birth_date)); // convert string to Date for ReactDatePicker
+                setUserData(employeeData);
+
+                if (employeeData.birth_date) {
+                    setDate(parseISO(employeeData.birth_date));
                 }
             } catch (error) {
-                console.error('Failed to fetch user data:', error);
+                console.error('Failed to fetch full user profile:', error);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchUser();
+        fetchUserProfile();
     }, []);
 
     if (loading) return <p>Loading...</p>;
