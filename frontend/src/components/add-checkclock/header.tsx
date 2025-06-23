@@ -102,17 +102,23 @@ const Header: React.FC = () => {
             <button
               onClick={() => {
                 setDropdownOpen(false);
-                router.push('/view-profile');  // navigate to your ViewProfilePage route
+                router.push('/view-profile');
               }}
-              className="w-full px-4 py-2 mb-2 rounded bg-gray-700 text-white font-semibold hover:bg-gray-800 transition"
+              className="w-full flex items-center gap-2 px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 transition text-sm font-medium text-gray-800"
             >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804A10.956 10.956 0 0112 15c2.21 0 4.26.637 5.879 1.804M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
               View Profile
             </button>
+
             <button
               onClick={handleLogout}
-              className="w-full px-4 py-2 rounded-md text-white font-semibold text-center hover:brightness-90 transition"
-              style={{ backgroundColor: '#C11106' }}
+              className="w-full flex items-center gap-2 px-4 py-2 rounded-md bg-red-600 hover:bg-red-700 transition text-sm font-medium text-white"
             >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1m0-10v1" />
+              </svg>
               Logout
             </button>
           </div>
