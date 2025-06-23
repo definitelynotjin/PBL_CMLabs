@@ -78,7 +78,7 @@ export default function LetterManagementPage() {
       if (!token) throw new Error('No auth token found');
 
       const formData = new FormData();
-      formData.append('employee_id', selectedEmployee.user_id);
+      formData.append('user_id', selectedEmployee.user_id);
       formData.append('document_type', type);
       formData.append('file', file);
 

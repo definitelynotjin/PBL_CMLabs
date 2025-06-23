@@ -21,7 +21,13 @@ export default function UploadDocumentsDialog({
       alert('Please select a document type and file');
       return;
     }
-    await onSubmit(localFile, localType);
+    console.log("Submitting:", localFile, localType);
+    try {
+      await onSubmit(localFile, localType);
+      console.log("Upload complete");
+    } catch (err) {
+      console.error("Upload failed:", err);
+    }
   };
 
 
