@@ -83,7 +83,7 @@ export default function LetterManagementPage() {
       formData.append('file', file);
 
 
-      const res = await fetch(`${API_BASE_URL}/upload-document`, {
+      const res = await fetch(`${API_BASE_URL}/documents`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
