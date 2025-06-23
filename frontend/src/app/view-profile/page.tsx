@@ -13,11 +13,18 @@ export default function ViewProfilePage() {
         const fetchUser = async () => {
             try {
                 const token = localStorage.getItem('token');
+                if (!token) throw new Error('No token found in localStorage.');
+
                 const res = await fetch('https://pblcmlabs.duckdns.org/api/me', {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
                 const rawData = await res.json();
+                console.log("RAW USER DATA:", rawData);
+
+                if (!rawData.employee) {
+                    throw new Error('Employee data not found in response.');
+                }
 
                 const data: Employee = {
                     id: rawData.employee.id,
@@ -40,14 +47,18 @@ export default function ViewProfilePage() {
                     tipe_sp: rawData.employee.tipe_sp || 'unset',
                     address: rawData.employee.address || '',
                     email: rawData.email || '',
-                    avatar_url: rawData.avatar?.startsWith('http')
-                        ? rawData.avatar
-                        : `https://pblcmlabs.duckdns.org/storage/${rawData.avatar}`,
+                    avatar_url:
+                        typeof rawData.avatar === 'string' && rawData.avatar.startsWith('http')
+                            ? rawData.avatar
+                            : rawData.avatar
+                                ? `https://pblcmlabs.duckdns.org/storage/${rawData.avatar}`
+                                : '/default-avatar.png',
                 };
 
                 setUserData(data);
             } catch (error) {
                 console.error('Failed to fetch user data:', error);
+                setUserData(null); // ensure it’s null on failure
             } finally {
                 setLoading(false);
             }
@@ -59,7 +70,7 @@ export default function ViewProfilePage() {
     if (loading) return <p className="p-6 text-center">Loading...</p>;
     if (!userData) return <p className="p-6 text-center text-red-500">Failed to load user data.</p>;
 
-    const InfoRow = ({ label, value }: { label: string; value: string | undefined }) => (
+    const InfoRow = ({ label, value }: { label: string; value?: string }) => (
         <div className="grid grid-cols-3 gap-4 py-2">
             <span className="text-gray-500 font-medium">{label}</span>
             <span className="col-span-2">{value || '-'}</span>
@@ -78,8 +89,12 @@ export default function ViewProfilePage() {
                     className="rounded-full object-cover border"
                 />
                 <div>
-                    <h1 className="text-2xl font-semibold">{userData.first_name} {userData.last_name}</h1>
-                    <p className="text-gray-500">{userData.position} &mdash; {userData.department}</p>
+                    <h1 className="text-2xl font-semibold">
+                        {userData.first_name} {userData.last_name}
+                    </h1>
+                    <p className="text-gray-500">
+                        {userData.position} &mdash; {userData.department}
+                    </p>
                 </div>
             </div>
 
@@ -94,7 +109,16 @@ export default function ViewProfilePage() {
                         label="Date of Birth"
                         value={userData.birth_date ? format(parseISO(userData.birth_date), 'dd MMM yyyy') : ''}
                     />
-                    <InfoRow label="Gender" value={userData.gender === 'M' ? 'Male' : userData.gender === 'F' ? 'Female' : ''} />
+                    <InfoRow
+                        label="Gender"
+                        value={
+                            userData.gender === 'M'
+                                ? 'Male'
+                                : userData.gender === 'F'
+                                    ? 'Female'
+                                    : '-'
+                        }
+                    />
                     <InfoRow label="Address" value={userData.address} />
                     <InfoRow label="Last Education" value={userData.pendidikan_terakhir} />
                 </div>
