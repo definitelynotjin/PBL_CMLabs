@@ -2,8 +2,8 @@
 
 import * as React from "react";
 import Sidebar from "@/components/sidebar";
-import { DashboardHeader } from "@/components/checkclock-admin/CheckClockHeader"; // Adjust path accordingly
-import { EmployeeTable } from "@/components/checkclock-admin/employee-table";
+import DashboardHeader from "@/components/checkclock-admin/header.tsx"; // Adjust path accordingly
+import EmployeeTable from "@/components/checkclock-admin/employee-table";
 import { ConfirmDialog } from "@/components/checkclock-admin/confirm-dialog";
 import { ViewDialog } from "@/components/checkclock-admin/view-dialog";
 import { Employee } from "@/components/checkclock-admin/type";
