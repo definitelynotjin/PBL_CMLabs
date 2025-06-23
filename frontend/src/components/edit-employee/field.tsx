@@ -10,7 +10,7 @@ export interface FieldProps {
   className?: string;  // you already have this
 }
 
-const Field: React.FC<FieldProps> = ({ label, placeholder, value, onChange, disabled }) => {
+const Field: React.FC<FieldProps> = ({ label, placeholder, value, onChange, disabled, className }) => {
   return (
     <div className="space-y-1 w-full">
       <label className="text-sm font-medium">{label}</label>
@@ -18,7 +18,8 @@ const Field: React.FC<FieldProps> = ({ label, placeholder, value, onChange, disa
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        disabled={disabled}  // <-- pass disabled here
+        disabled={disabled}
+        className={className}  // pass className here
       />
     </div>
   );
