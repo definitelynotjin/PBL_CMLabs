@@ -49,7 +49,7 @@ interface EmployeeFormProps {
   setDate: (date: Date | null) => void;
   data?: Employee;
   onSuccess: (newEmployeeId: string) => void;
-  readOnly: boolean;
+  readOnly?: boolean;
 }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
@@ -139,7 +139,7 @@ const branchOptions = [
   { label: 'Malang Office', value: '58b66a88-1e4f-46c1-8e90-b47194983a9a' },
 ];
 
-const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSuccess, readOnly }) => {
+const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSuccess, readOnly = false, }) => {
   const router = useRouter();
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState(data?.avatar_url || '/default-avatar.png');
