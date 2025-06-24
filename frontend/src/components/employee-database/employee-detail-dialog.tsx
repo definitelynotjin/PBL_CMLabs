@@ -42,10 +42,7 @@ export default function EmployeeDetailDialog({
         </div>
 
         <div className="flex gap-2 pt-4">
-          <Button onClick={() => {
-            onClose();
-            setTimeout(onShowUpload, 300);
-          }}>
+          <Button onClick={onShowUpload}>
             Add Document
           </Button>
           <Button variant="secondary" onClick={onShowDocuments}>
@@ -53,6 +50,6 @@ export default function EmployeeDetailDialog({
           </Button>
         </div>
       </DialogContent>
-    </Dialog>
+    </Dialog >
   );
 }
