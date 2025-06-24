@@ -19,26 +19,26 @@ const exportToCSV = (employees: Employee[]) => {
     'Last Name',
     'Gender',
     'Phone',
+    'Branch',
     'Position',
     'Grade',
     'Contract Type',
     'Employment Status',
     'Join Date',
-    'Branch',
   ];
 
   const rows = employees.map(emp => [
-    emp.id,
+    emp.user?.employee_id || '',
     emp.first_name,
     emp.last_name,
     emp.gender,
     emp.phone,
+    emp.check_clock_setting?.name || '',
     emp.position,
     emp.grade || '',
     emp.contract_type || '',
     emp.employment_status || '',
     emp.join_date || '',
-    emp.check_clock_setting?.name || '',
   ]);
 
   const csvContent = [

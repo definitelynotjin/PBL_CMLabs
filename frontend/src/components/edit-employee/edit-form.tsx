@@ -550,20 +550,22 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium">Contract Type</label>
-            <Select
-              value={form.contract_type}
-              onValueChange={handleSelectChange('contract_type')}
-              disabled={readOnly}
-            >
-              <SelectTrigger className={`w-full ${readOnly ? disabledInputClass : ''}`}>
-                <SelectValue placeholder="-Select Contract Type-" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="unset">-Select-</SelectItem>
-                <SelectItem value="PKWT">PKWT</SelectItem>
-                <SelectItem value="PKWTT">PKWTT</SelectItem>
-              </SelectContent>
-            </Select>
+            <RadioGroup value={form.contract_type} onValueChange={handleRadioChange('contract_type')} className="flex gap-4">
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="unset" id="contract-unset" />
+                <label htmlFor="contract-unset">Unset</label>
+              </div>
+              {[
+                { label: 'Permanent', value: 'Tetap' },
+                { label: 'Contract', value: 'Kontrak' },
+                { label: 'Freelance', value: 'Lepas' },
+              ].map(({ label, value }) => (
+                <div className="flex items-center space-x-2" key={value}>
+                  <RadioGroupItem value={value} id={value} />
+                  <label htmlFor={value}>{label}</label>
+                </div>
+              ))}
+            </RadioGroup>
           </div>
 
           <Field
