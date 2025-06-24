@@ -22,7 +22,7 @@ export const ConfirmDialog = ({ showConfirmModal, setShowConfirmModal, handleCon
         <DialogHeader>
           <DialogTitle>{confirmAction === 'approve' ? 'Approve Attendance' : 'Reject Attendance'}</DialogTitle>
           <DialogDescription>
-            Are you sure you want to {confirmAction} this employee's attendance? This action cannot be undone.
+            Are you sure you want to {confirmAction} this employees attendance? This action cannot be undone.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>

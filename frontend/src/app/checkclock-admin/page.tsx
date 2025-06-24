@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Sidebar from "@/components/sidebar";
-import DashboardHeader from "@/components/checkclock-admin/header.tsx"; // Adjust path accordingly
+import CheckclockHeader from "@/components/checkclock-admin/header";
 import EmployeeTable from "@/components/checkclock-admin/employee-table";
 import { ConfirmDialog } from "@/components/checkclock-admin/confirm-dialog";
 import { ViewDialog } from "@/components/checkclock-admin/view-dialog";
@@ -30,9 +30,9 @@ const Checkclock: React.FC = () => {
     if (clockIn === "0" && clockOut === "0" && workHours === "0") return "Absent";
 
     const [hour, minute] = clockIn.split(".").map(Number);
+    if (hour === undefined || minute === undefined) return "Unknown"; // Handle unexpected format
     const totalMinutes = hour * 60 + minute;
-    if (totalMinutes <= 495) return "On Time";
-    return "Late";
+    return totalMinutes <= 495 ? "On Time" : "Late";
   };
 
   const openConfirmDialog = (employee: Employee, action: 'approve' | 'reject') => {
@@ -61,35 +61,31 @@ const Checkclock: React.FC = () => {
     });
 
     setEmployees(updated);
-    setOpenDialog(false);
     setShowConfirmModal(false);
+    setSelectedEmployee(null);
   };
 
   return (
     <div className="flex min-h-screen bg-white">
       <Sidebar />
-      <div className="flex-1 flex flex-col">
-        <DashboardHeader />
-        <div className="p-6 flex-1 overflow-auto">
-          <Title />
-          <EmployeeTable
-            employees={employees}
-            openConfirmDialog={openConfirmDialog}
-            setSelectedEmployee={setSelectedEmployee}
-            setOpenDialog={setOpenDialog}
-          />
-        </div>
+      <div className="flex-1 p-6">
+        <CheckclockHeader />
+        <Title />
+        <EmployeeTable 
+          employees={employees} 
+          openConfirmDialog={openConfirmDialog}
+          setOpenDialog={setOpenDialog} // Ensure this prop is used in EmployeeTable
+        />
       </div>
-
-      <ConfirmDialog
-        showConfirmModal={showConfirmModal}
+      <ConfirmDialog 
+        showConfirmModal={showConfirmModal} 
         setShowConfirmModal={setShowConfirmModal}
         handleConfirmAction={handleConfirmAction}
         confirmAction={confirmAction}
       />
-      <ViewDialog
-        openDialog={openDialog}
-        setOpenDialog={setOpenDialog}
+      <ViewDialog 
+        openDialog={openDialog} 
+        setOpenDialog={setOpenDialog} 
         selectedEmployee={selectedEmployee}
       />
     </div>
