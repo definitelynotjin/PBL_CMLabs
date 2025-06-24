@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Dialog,
   DialogContent,
@@ -11,13 +13,24 @@ import { Button } from "@/components/ui/button";
 interface ViewDialogProps {
   openDialog: boolean;
   setOpenDialog: (value: boolean) => void;
-  selectedEmployee: any; // Ideally, replace `any` with your Employee type
+  selectedEmployee: any;
 }
 
-export const ViewDialog = ({ openDialog, setOpenDialog, selectedEmployee }: ViewDialogProps) => {
+export const ViewDialog = ({
+  openDialog,
+  setOpenDialog,
+  selectedEmployee,
+}: ViewDialogProps) => {
   return (
-    <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-      <DialogContent>
+    <Dialog
+      open={openDialog}
+      onOpenChange={(open) => {
+        if (!open) setOpenDialog(false);
+      }}
+    >
+      <DialogContent
+        className="fixed inset-y-0 right-0 max-w-md w-full bg-white shadow-xl overflow-y-auto p-6 animate-in slide-in-from-right duration-300 z-[9999]"
+      >
         {selectedEmployee && (
           <>
             <DialogHeader>
