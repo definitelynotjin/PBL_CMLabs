@@ -69,28 +69,28 @@ const Checkclock: React.FC = () => {
     setOpenDialog(true); // Open the view dialog
   };
 
-   return (
+  return (
     <div className="flex min-h-screen bg-white">
       <Sidebar />
       <div className="flex-1 p-6">
         <CheckclockHeader />
         <Title />
-        <EmployeeTable 
-          employees={employees} 
+        <EmployeeTable
+          employees={employees}
           openConfirmDialog={openConfirmDialog}
           handleDetailsClick={handleDetailsClick} // Ensure this is defined
           setOpenDialog={setOpenDialog} // Pass this prop
         />
       </div>
-      <ConfirmDialog 
-        showConfirmModal={showConfirmModal} 
+      <ConfirmDialog
+        showConfirmModal={showConfirmModal}
         setShowConfirmModal={setShowConfirmModal}
         handleConfirmAction={handleConfirmAction}
         confirmAction={confirmAction}
       />
-      <ViewDialog 
-        openDialog={openDialog} 
-        setOpenDialog={setOpenDialog} 
+      <ViewDialog
+        openDialog={openDialog}
+        setOpenDialog={setOpenDialog}
         selectedEmployee={selectedEmployee}
       />
     </div>
