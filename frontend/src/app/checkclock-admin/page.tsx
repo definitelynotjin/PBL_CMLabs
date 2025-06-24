@@ -28,7 +28,6 @@ const Checkclock: React.FC = () => {
 
   const handleStatus = (clockIn: string, clockOut: string, workHours: string): string => {
     if (clockIn === "0" && clockOut === "0" && workHours === "0") return "Absent";
-
     const [hour, minute] = clockIn.split(".").map(Number);
     if (hour === undefined || minute === undefined) return "Unknown"; // Handle unexpected format
     const totalMinutes = hour * 60 + minute;
@@ -42,30 +41,35 @@ const Checkclock: React.FC = () => {
   };
 
   const handleConfirmAction = () => {
-  if (!selectedEmployee || !confirmAction) return;
+    if (!selectedEmployee || !confirmAction) return;
 
-  const updated = employees.map(emp => {
-    if (emp.name === selectedEmployee.name) {
-      const newStatus = confirmAction === 'approve'
-        ? handleStatus(emp.clockIn, emp.clockOut, emp.workHours)
-        : "Rejected";
+    const updated = employees.map(emp => {
+      if (emp.name === selectedEmployee.name) {
+        const newStatus = confirmAction === 'approve'
+          ? handleStatus(emp.clockIn, emp.clockOut, emp.workHours)
+          : "Rejected";
 
-      return {
-        ...emp,
-        approved: confirmAction === 'approve',
-        rejected: confirmAction === 'reject',
-        status: newStatus // Ensure status is set correctly
-      };
-    }
-    return emp;
-  });
+        return {
+          ...emp,
+          approved: confirmAction === 'approve',
+          rejected: confirmAction === 'reject',
+          status: newStatus
+        };
+      }
+      return emp;
+    });
 
-  setEmployees(updated);
-  setShowConfirmModal(false);
-  setSelectedEmployee(null);
-};
+    setEmployees(updated);
+    setShowConfirmModal(false);
+    setSelectedEmployee(null);
+  };
 
-  return (
+  const handleDetailsClick = (employee: Employee) => {
+    setSelectedEmployee(employee);
+    setOpenDialog(true); // Open the view dialog
+  };
+
+   return (
     <div className="flex min-h-screen bg-white">
       <Sidebar />
       <div className="flex-1 p-6">
@@ -74,7 +78,8 @@ const Checkclock: React.FC = () => {
         <EmployeeTable 
           employees={employees} 
           openConfirmDialog={openConfirmDialog}
-          setOpenDialog={setOpenDialog} // Ensure this prop is used in EmployeeTable
+          handleDetailsClick={handleDetailsClick} // Ensure this is defined
+          setOpenDialog={setOpenDialog} // Pass this prop
         />
       </div>
       <ConfirmDialog 

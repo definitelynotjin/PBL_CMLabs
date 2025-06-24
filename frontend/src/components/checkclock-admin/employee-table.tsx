@@ -10,7 +10,7 @@ interface Employee {
   clockIn: string;
   clockOut: string;
   workHours: string;
-  status: string; // Ensure this is defined
+  status: string;
   approved: boolean;
   rejected: boolean;
 }
@@ -18,10 +18,11 @@ interface Employee {
 interface EmployeeTableProps {
   employees: Employee[];
   openConfirmDialog: (employee: Employee, type: "approve" | "reject") => void;
+  handleDetailsClick: (employee: Employee) => void;
   setOpenDialog: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const EmployeeTable: React.FC<EmployeeTableProps> = ({ employees, openConfirmDialog, setOpenDialog }) => {
+const EmployeeTable: React.FC<EmployeeTableProps> = ({ employees, openConfirmDialog, handleDetailsClick, setOpenDialog }) => {
   return (
     <Table>
       <TableHeader>
@@ -31,7 +32,7 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employees, openConfirmDia
           <TableHead>Clock In</TableHead>
           <TableHead>Clock Out</TableHead>
           <TableHead>Work Hours</TableHead>
-          <TableHead>Status</TableHead> {/* Ensure this header is present */}
+          <TableHead>Status</TableHead>
           <TableHead>Actions</TableHead>
           <TableHead>Details</TableHead>
         </TableRow>
@@ -44,7 +45,7 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employees, openConfirmDia
             <TableCell>{employee.clockIn}</TableCell>
             <TableCell>{employee.clockOut}</TableCell>
             <TableCell>{employee.workHours}</TableCell>
-            <TableCell>{employee.status}</TableCell> {/* Render status here */}
+            <TableCell>{employee.status}</TableCell>
             <TableCell className="flex gap-2">
               {employee.approved && <Check className="w-4 h-4 text-green-500" />}
               {employee.rejected && <X className="w-4 h-4 text-red-500" />}
@@ -60,7 +61,10 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employees, openConfirmDia
               )}
             </TableCell>
             <TableCell>
-              <Button variant="outline" onClick={() => setOpenDialog(true)}>View</Button>
+              <Button variant="outline" onClick={() => {
+                handleDetailsClick(employee);
+                setOpenDialog(true); // Open the view dialog here
+              }}>View</Button>
             </TableCell>
           </TableRow>
         ))}

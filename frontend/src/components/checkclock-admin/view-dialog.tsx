@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 interface ViewDialogProps {
   openDialog: boolean;
   setOpenDialog: (value: boolean) => void;
-  selectedEmployee: any;
+  selectedEmployee: any; // Ideally, replace `any` with your Employee type
 }
 
 export const ViewDialog = ({ openDialog, setOpenDialog, selectedEmployee }: ViewDialogProps) => {
