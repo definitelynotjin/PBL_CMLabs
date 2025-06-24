@@ -1,3 +1,7 @@
+'use client';
+
+import Image from 'next/image';
+import * as React from "react";
 import {
   Table,
   TableBody,
@@ -7,77 +11,220 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Check, X } from 'lucide-react';
-import { Employee } from "./type";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import Link from 'next/link';
+import {
+  Grid, Users, Clock, Calendar, MessageCircle,
+  Headphones, Settings, Filter, Check, X
+} from 'lucide-react';
 
-interface EmployeeTableProps {
-  employees: Employee[];
-  openConfirmDialog: (employee: Employee, action: 'approve' | 'reject') => void;
-  setSelectedEmployee: (employee: Employee) => void;
-  setOpenDialog: (isOpen: boolean) => void;
+interface Employee {
+  name: string;
+  position: string;
+  clockIn: string;
+  clockOut: string;
+  workHours: string;
+  status: string;
+  approved: boolean;
+  rejected: boolean;
 }
 
-export const EmployeeTable = ({ employees, openConfirmDialog, setSelectedEmployee, setOpenDialog }: EmployeeTableProps) => {
+const initialEmployees: Employee[] = [
+  { name: "Juanita", position: "CEO", clockIn: "08.00", clockOut: "16.30", workHours: "10h 5m", status: "Waiting Approval", approved: false, rejected: false },
+  { name: "Shane", position: "OB", clockIn: "08.00", clockOut: "17.15", workHours: "9h 50m", status: "Waiting Approval", approved: false, rejected: false },
+  { name: "Miles", position: "Head of HR", clockIn: "09.00", clockOut: "16.45", workHours: "10h 30m", status: "Waiting Approval", approved: false, rejected: false },
+  { name: "Flores", position: "Manager", clockIn: "09.15", clockOut: "15.30", workHours: "6h 15m", status: "Waiting Approval", approved: false, rejected: false },
+  { name: "Henry", position: "CPO", clockIn: "0", clockOut: "0", workHours: "0", status: "Waiting Approval", approved: false, rejected: false },
+  { name: "Marvin", position: "OB", clockIn: "0", clockOut: "0", workHours: "0", status: "Waiting Approval", approved: false, rejected: false },
+  { name: "Black", position: "HRD", clockIn: "08.15", clockOut: "17.00", workHours: "9h 45m", status: "Waiting Approval", approved: false, rejected: false },
+];
+
+const Checkclock: React.FC = () => {
+  const [employees, setEmployees] = React.useState<Employee[]>(initialEmployees);
+  const [openDialog, setOpenDialog] = React.useState(false);
+  const [selectedEmployee, setSelectedEmployee] = React.useState<Employee | null>(null);
+  const [actionType, setActionType] = React.useState<"approve" | "reject" | null>(null);
+
+  const handleDetailsClick = (employee: Employee) => {
+    setSelectedEmployee(employee);
+    setOpenDialog(true);
+    setActionType(null);
+  };
+
+  const openConfirmDialog = (employee: Employee, type: "approve" | "reject") => {
+    setSelectedEmployee(employee);
+    setActionType(type);
+    setOpenDialog(true);
+  };
+
+  const handleConfirm = () => {
+    if (!selectedEmployee || !actionType) return;
+
+    setEmployees((prev) =>
+      prev.map((emp) => {
+        if (emp.name === selectedEmployee.name) {
+          if (actionType === "approve") {
+            const newStatus =
+              emp.clockIn === "0" || emp.clockOut === "0" || emp.workHours === "0"
+                ? "Absent"
+                : parseFloat(emp.clockIn.replace(".", ":")) <= 8.25
+                ? "On Time"
+                : "Late";
+            return { ...emp, approved: true, rejected: false, status: newStatus };
+          } else {
+            return { ...emp, approved: false, rejected: true, status: "Rejected" };
+          }
+        }
+        return emp;
+      })
+    );
+
+    setOpenDialog(false);
+    setSelectedEmployee(null);
+    setActionType(null);
+  };
+
   return (
-    <div className="bg-white rounded-lg shadow p-4">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Employee Name</TableHead>
-            <TableHead>Jabatan</TableHead>
-            <TableHead>Clock In</TableHead>
-            <TableHead>Clock Out</TableHead>
-            <TableHead>Work Hours</TableHead>
-            <TableHead>Actions</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Detail</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {employees.map((employee) => (
-            <TableRow key={employee.name}>
-              <TableCell>{employee.name}</TableCell>
-              <TableCell>{employee.position}</TableCell>
-              <TableCell>{employee.clockIn}</TableCell>
-              <TableCell>{employee.clockOut}</TableCell>
-              <TableCell>{employee.workHours}</TableCell>
-              <TableCell className="flex gap-2">
-                {employee.approved && <Check className="w-4 h-4 text-green-500" />}
-                {employee.rejected && <X className="w-4 h-4 text-red-500" />}
-                {!employee.approved && !employee.rejected && (
-                  <>
-                    <Button variant="ghost" size="icon" onClick={() => openConfirmDialog(employee, "approve")}>
-                      <Check className="w-4 h-4 text-green-600" />
-                    </Button>
-                    <Button variant="ghost" size="icon" onClick={() => openConfirmDialog(employee, "reject")}>
-                      <X className="w-4 h-4 text-red-600" />
-                    </Button>
-                  </>
-                )}
-              </TableCell>
-              <TableCell>
-                <span className={`text-xs py-1 px-2 rounded-full ${
-                  employee.status === "On Time" ? "bg-green-100 text-green-700" :
-                  employee.status === "Late" ? "bg-yellow-100 text-yellow-700" :
-                  employee.status === "Rejected" ? "bg-red-100 text-red-700" :
-                  employee.status === "Absent" ? "bg-gray-300 text-gray-800" :
-                  "bg-gray-200 text-gray-600"
-                }`}>
-                  {employee.status}
-                </span>
-              </TableCell>
-              <TableCell>
-                <Button variant="outline" size="sm" onClick={() => {
-                  setSelectedEmployee(employee);
-                  setOpenDialog(true);
-                }}>
-                  View
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+    <div className="flex min-h-screen bg-white">
+      {/* Sidebar */}
+      <aside className="w-16 flex flex-col justify-between items-center bg-gray-100 py-4">
+        <div className="flex flex-col items-center gap-6">
+          <Image src="/HRIS.png" alt="Logo" width={32} height={32} />
+          <Link href="/dashboard"><Grid className="w-5 h-5 text-gray-600" /></Link>
+          <Link href="/employee-database"><Users className="w-5 h-5 text-gray-600" /></Link>
+          <Link href="/checkclock"><Clock className="w-5 h-5 text-gray-600" /></Link>
+          <Link href="/pricing-package"><Calendar className="w-5 h-5 text-gray-600" /></Link>
+          <Link href="/order-summary"><MessageCircle className="w-5 h-5 text-gray-600" /></Link>
+        </div>
+        <div className="flex flex-col items-center gap-4 mb-4">
+          <Link href="/headphones"><Headphones className="w-5 h-5 text-gray-600" /></Link>
+          <Link href="/settings"><Settings className="w-5 h-5 text-gray-600" /></Link>
+        </div>
+      </aside>
+
+      {/* Main Content */}
+      <div className="flex-1 p-6">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold">Checkclock Overview</h1>
+          <div className="flex items-center space-x-2">
+            <Input placeholder="Search Employee" className="w-64" />
+            <Button variant="outline"><Filter className="w-4 h-4 mr-2" />Filter</Button>
+            <Button>+ Tambah Data</Button>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg shadow p-4">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Employee Name</TableHead>
+                <TableHead>Position</TableHead>
+                <TableHead>Clock In</TableHead>
+                <TableHead>Clock Out</TableHead>
+                <TableHead>Work Hours</TableHead>
+                <TableHead>Actions</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Details</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {employees.map((employee) => (
+                <TableRow key={employee.name}>
+                  <TableCell>{employee.name}</TableCell>
+                  <TableCell>{employee.position}</TableCell>
+                  <TableCell>{employee.clockIn}</TableCell>
+                  <TableCell>{employee.clockOut}</TableCell>
+                  <TableCell>{employee.workHours}</TableCell>
+                  <TableCell className="flex gap-2">
+                    {employee.approved && <Check className="w-4 h-4 text-green-500" />}
+                    {employee.rejected && <X className="w-4 h-4 text-red-500" />}
+                    {!employee.approved && !employee.rejected && (
+                      <>
+                        <Button variant="ghost" size="icon" onClick={() => openConfirmDialog(employee, "approve")}>
+                          <Check className="w-4 h-4 text-green-600" />
+                        </Button>
+                        <Button variant="ghost" size="icon" onClick={() => openConfirmDialog(employee, "reject")}>
+                          <X className="w-4 h-4 text-red-600" />
+                        </Button>
+                      </>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <span className={`text-xs py-1 px-2 rounded-full ${
+                      employee.status === "On Time"
+                        ? "bg-green-100 text-green-700"
+                        : employee.status === "Late"
+                        ? "bg-yellow-100 text-yellow-700"
+                        : employee.status === "Absent"
+                        ? "bg-gray-200 text-gray-600"
+                        : employee.status === "Rejected"
+                        ? "bg-red-100 text-red-700"
+                        : "bg-blue-100 text-blue-700"
+                    }`}>
+                      {employee.status}
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    <Button variant="outline" onClick={() => handleDetailsClick(employee)}>View</Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
+
+      {/* Dialog */}
+      <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+        <DialogContent>
+          {selectedEmployee && actionType && (
+            <>
+              <DialogHeader>
+                <DialogTitle>
+                  {actionType === "approve" ? "Approve Attendance" : "Reject Attendance"}
+                </DialogTitle>
+              </DialogHeader>
+              <DialogDescription>
+                Are you sure you want to {actionType} attendance for{" "}
+                <strong>{selectedEmployee.name}</strong>?
+              </DialogDescription>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setOpenDialog(false)}>Cancel</Button>
+                <Button onClick={handleConfirm}>Confirm</Button>
+              </DialogFooter>
+            </>
+          )}
+
+          {selectedEmployee && !actionType && (
+            <>
+              <DialogHeader>
+                <DialogTitle>Attendance Details</DialogTitle>
+              </DialogHeader>
+              <DialogDescription>
+                <p><strong>Name:</strong> {selectedEmployee.name}</p>
+                <p><strong>Position:</strong> {selectedEmployee.position}</p>
+                <p><strong>Clock In:</strong> {selectedEmployee.clockIn}</p>
+                <p><strong>Clock Out:</strong> {selectedEmployee.clockOut}</p>
+                <p><strong>Work Hours:</strong> {selectedEmployee.workHours}</p>
+                <p><strong>Status:</strong> {selectedEmployee.status}</p>
+              </DialogDescription>
+              <DialogFooter>
+                <Button onClick={() => setOpenDialog(false)}>Close</Button>
+              </DialogFooter>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
+
+export default Checkclock;
