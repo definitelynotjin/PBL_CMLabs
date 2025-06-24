@@ -1,6 +1,11 @@
 'use client';
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Employee } from './types';
 
@@ -16,14 +21,15 @@ export default function EmployeeDetailDialog({
   onShowUpload: () => void;
 }) {
   return (
-    <Dialog open={true} onOpenChange={onClose}>
+    <Dialog open={true} onOpenChange={(open) => { if (!open) onClose(); }}>
       <DialogContent
-        className="fixed right-0 top-0 h-full w-full max-w-md bg-white shadow-lg overflow-y-auto animate-in slide-in-from-right duration-300"
-        onPointerDownOutside={onClose}
+        className="fixed inset-y-0 right-0 max-w-md w-full bg-white shadow-xl overflow-y-auto p-6 animate-in slide-in-from-right duration-300"
+        style={{ left: 'auto' }}
       >
         <DialogHeader>
           <DialogTitle>Employee Details</DialogTitle>
         </DialogHeader>
+
         <div className="space-y-2">
           <p><strong>Name:</strong> {employee.first_name} {employee.last_name}</p>
           <p><strong>Email:</strong> {employee.email}</p>
@@ -33,10 +39,11 @@ export default function EmployeeDetailDialog({
           <p><strong>Position:</strong> {employee.position}</p>
           <p><strong>Status:</strong> {Number(employee.status) === 1 ? 'Active' : 'Inactive'}</p>
         </div>
+
         <div className="flex gap-2 pt-4">
           <Button onClick={() => {
             onClose();
-            setTimeout(onShowUpload, 200);
+            setTimeout(onShowUpload, 300);
           }}>
             Add Document
           </Button>
@@ -46,6 +53,5 @@ export default function EmployeeDetailDialog({
         </div>
       </DialogContent>
     </Dialog>
-
   );
 }
