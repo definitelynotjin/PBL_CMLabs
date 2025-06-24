@@ -17,7 +17,10 @@ export default function EmployeeDetailDialog({
 }) {
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent
+        className="fixed right-0 top-0 h-full w-full max-w-md bg-white shadow-lg overflow-y-auto animate-in slide-in-from-right duration-300"
+        onPointerDownOutside={onClose}
+      >
         <DialogHeader>
           <DialogTitle>Employee Details</DialogTitle>
         </DialogHeader>
@@ -43,5 +46,6 @@ export default function EmployeeDetailDialog({
         </div>
       </DialogContent>
     </Dialog>
+
   );
 }

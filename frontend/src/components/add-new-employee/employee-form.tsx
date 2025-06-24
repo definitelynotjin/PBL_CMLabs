@@ -264,30 +264,33 @@ const AddEmployeeForm: React.FC<AddEmployeeFormProps> = ({ date, setDate, onSucc
     <div className="border rounded-lg p-6">
       <h2 className="text-lg font-semibold mb-6">Add Employee</h2>
 
-      <div className="relative w-24 h-24 bg-gray-200 rounded overflow-hidden">
-        <Image
-          src={avatarUrl || "/placeholder-avatar.png"}
-          alt="Avatar"
-          width={96}
-          height={96}
-          className="object-cover rounded"
-        />
+      <div className="flex items-start gap-4 mb-6">
+        <div className="relative w-24 h-24 bg-gray-200 rounded overflow-hidden">
+          <Image
+            src={avatarUrl || "/placeholder-avatar.png"}
+            alt="Avatar"
+            width={96}
+            height={96}
+            className="object-cover rounded"
+          />
 
-        {avatarUrl && (
-          <button
-            type="button"
-            onClick={onCancelAvatar}
-            className="absolute top-0 right-0 bg-white rounded-full p-1 shadow hover:bg-red-500 hover:text-white transition"
-            title="Remove Avatar"
-          >
-            <XCircle className="w-4 h-4" />
-          </button>
-        )}
+          {avatarUrl && (
+            <button
+              type="button"
+              onClick={onCancelAvatar}
+              className="absolute top-0 right-0 bg-white rounded-full p-1 shadow hover:bg-red-500 hover:text-white transition"
+              title="Remove Avatar"
+            >
+              <XCircle className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+
+        <Button variant="outline" type="button" onClick={onAvatarClick}>
+          {avatarUrl ? "Change Avatar" : "Upload Avatar"}
+        </Button>
       </div>
 
-      <Button variant="outline" type="button" onClick={onAvatarClick}>
-        {avatarUrl ? "Change Avatar" : "Upload Avatar"}
-      </Button>
       <input
         ref={fileInputRef}
         type="file"
@@ -489,36 +492,6 @@ const AddEmployeeForm: React.FC<AddEmployeeFormProps> = ({ date, setDate, onSucc
             </Select>
           </div>
           <Field label="NIK" placeholder="Enter national ID" value={form.nik} onChange={handleChange('nik')} />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-1 w-full">
-            <label className="text-sm font-medium">Gender</label>
-            <Select value={form.gender} onValueChange={handleSelectChange('gender')}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="-Select Gender-" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="M">Male</SelectItem>
-                <SelectItem value="F">Female</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-1 w-full mt-4">
-            <label className="text-sm font-medium">Highest Education</label>
-            <Select value={form.pendidikan_terakhir} onValueChange={handleSelectChange('pendidikan_terakhir')}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="-Select Education-" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="SMA">High School</SelectItem>
-                <SelectItem value="D3">Diploma (D3)</SelectItem>
-                <SelectItem value="S1">Bachelor (S1)</SelectItem>
-                <SelectItem value="S2">Master (S2)</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
         </div>
       </section>
 

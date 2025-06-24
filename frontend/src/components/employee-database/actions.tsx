@@ -38,7 +38,7 @@ const exportToCSV = (employees: Employee[]) => {
     emp.grade || '',
     emp.contract_type || '',
     emp.employment_status || '',
-    emp.join_date || '',
+    emp.join_date ? new Date(emp.join_date).toISOString().split('T')[0] : ''
   ]);
 
   const csvContent = [
