@@ -42,28 +42,28 @@ const Checkclock: React.FC = () => {
   };
 
   const handleConfirmAction = () => {
-    if (!selectedEmployee || !confirmAction) return;
+  if (!selectedEmployee || !confirmAction) return;
 
-    const updated = employees.map(emp => {
-      if (emp.name === selectedEmployee.name) {
-        const newStatus = confirmAction === 'approve'
-          ? handleStatus(emp.clockIn, emp.clockOut, emp.workHours)
-          : "Rejected";
+  const updated = employees.map(emp => {
+    if (emp.name === selectedEmployee.name) {
+      const newStatus = confirmAction === 'approve'
+        ? handleStatus(emp.clockIn, emp.clockOut, emp.workHours)
+        : "Rejected";
 
-        return {
-          ...emp,
-          approved: confirmAction === 'approve',
-          rejected: confirmAction === 'reject',
-          status: newStatus
-        };
-      }
-      return emp;
-    });
+      return {
+        ...emp,
+        approved: confirmAction === 'approve',
+        rejected: confirmAction === 'reject',
+        status: newStatus // Ensure status is set correctly
+      };
+    }
+    return emp;
+  });
 
-    setEmployees(updated);
-    setShowConfirmModal(false);
-    setSelectedEmployee(null);
-  };
+  setEmployees(updated);
+  setShowConfirmModal(false);
+  setSelectedEmployee(null);
+};
 
   return (
     <div className="flex min-h-screen bg-white">

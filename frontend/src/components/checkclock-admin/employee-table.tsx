@@ -1,4 +1,3 @@
-// components/checkclock-admin/EmployeeTable.tsx
 'use client';
 
 import { Button } from "@/components/ui/button";
@@ -11,7 +10,7 @@ interface Employee {
   clockIn: string;
   clockOut: string;
   workHours: string;
-  status: string;
+  status: string; // Ensure this is defined
   approved: boolean;
   rejected: boolean;
 }
@@ -19,7 +18,7 @@ interface Employee {
 interface EmployeeTableProps {
   employees: Employee[];
   openConfirmDialog: (employee: Employee, type: "approve" | "reject") => void;
-  setOpenDialog: React.Dispatch<React.SetStateAction<boolean>>; // Add this line
+  setOpenDialog: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const EmployeeTable: React.FC<EmployeeTableProps> = ({ employees, openConfirmDialog, setOpenDialog }) => {
@@ -32,8 +31,8 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employees, openConfirmDia
           <TableHead>Clock In</TableHead>
           <TableHead>Clock Out</TableHead>
           <TableHead>Work Hours</TableHead>
+          <TableHead>Status</TableHead> {/* Ensure this header is present */}
           <TableHead>Actions</TableHead>
-          <TableHead>Status</TableHead>
           <TableHead>Details</TableHead>
         </TableRow>
       </TableHeader>
@@ -45,6 +44,7 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employees, openConfirmDia
             <TableCell>{employee.clockIn}</TableCell>
             <TableCell>{employee.clockOut}</TableCell>
             <TableCell>{employee.workHours}</TableCell>
+            <TableCell>{employee.status}</TableCell> {/* Render status here */}
             <TableCell className="flex gap-2">
               {employee.approved && <Check className="w-4 h-4 text-green-500" />}
               {employee.rejected && <X className="w-4 h-4 text-red-500" />}
