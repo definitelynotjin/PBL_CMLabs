@@ -1,10 +1,12 @@
 'use client';
 
+import React from 'react';
+import { createPortal } from 'react-dom';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle
+  DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Employee } from './types';
@@ -20,11 +22,19 @@ export default function EmployeeDetailDialog({
   onShowDocuments: () => void;
   onShowUpload: () => void;
 }) {
-  return (
+  // Use React state to track if portal container is ready
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null; // Wait for client mount to avoid SSR issues
+
+  return createPortal(
     <Dialog open={true} onOpenChange={(open) => { if (!open) onClose(); }}>
       <DialogContent
-        className="fixed inset-y-0 right-0 max-w-md w-full bg-white shadow-xl overflow-y-auto p-6 animate-in slide-in-from-right duration-300"
-        style={{ left: 'auto' }}
+        className="fixed inset-y-0 right-0 max-w-md w-full bg-white shadow-xl overflow-y-auto p-6 animate-in slide-in-from-right duration-300 z-[9999]"
       >
         <DialogHeader>
           <DialogTitle>Employee Details</DialogTitle>
@@ -52,6 +62,7 @@ export default function EmployeeDetailDialog({
           </Button>
         </div>
       </DialogContent>
-    </Dialog>
+    </Dialog>,
+    document.body
   );
 }
