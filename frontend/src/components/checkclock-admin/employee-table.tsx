@@ -1,71 +1,83 @@
-'use client';
-
-import React from 'react';
-import { Employee } from './type';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Check, X } from 'lucide-react';
+import { Employee } from "./type";
 
 interface EmployeeTableProps {
   employees: Employee[];
   openConfirmDialog: (employee: Employee, action: 'approve' | 'reject') => void;
-  setSelectedEmployee: React.Dispatch<React.SetStateAction<Employee | null>>;
-  setOpenDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectedEmployee: (employee: Employee) => void;
+  setOpenDialog: (isOpen: boolean) => void;
 }
 
-const EmployeeTable: React.FC<EmployeeTableProps> = ({
-  employees,
-  openConfirmDialog,
-  setSelectedEmployee,
-  setOpenDialog,
-}) => {
+export const EmployeeTable = ({ employees, openConfirmDialog, setSelectedEmployee, setOpenDialog }: EmployeeTableProps) => {
   return (
-    <table className="min-w-full border border-gray-300">
-      <thead>
-        <tr className="bg-gray-100">
-          <th className="border px-4 py-2">Name</th>
-          <th className="border px-4 py-2">Position</th>
-          <th className="border px-4 py-2">Clock In</th>
-          <th className="border px-4 py-2">Clock Out</th>
-          <th className="border px-4 py-2">Work Hours</th>
-          <th className="border px-4 py-2">Status</th>
-          <th className="border px-4 py-2">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {employees.map((emp, idx) => (
-          <tr key={idx} className="hover:bg-gray-50">
-            <td className="border px-4 py-2">{emp.name}</td>
-            <td className="border px-4 py-2">{emp.position}</td>
-            <td className="border px-4 py-2">{emp.clockIn}</td>
-            <td className="border px-4 py-2">{emp.clockOut}</td>
-            <td className="border px-4 py-2">{emp.workHours}</td>
-            <td className="border px-4 py-2">{emp.status}</td>
-            <td className="border px-4 py-2 space-x-2">
-              <button
-                className="text-green-600 hover:underline"
-                onClick={() => openConfirmDialog(emp, 'approve')}
-              >
-                Approve
-              </button>
-              <button
-                className="text-red-600 hover:underline"
-                onClick={() => openConfirmDialog(emp, 'reject')}
-              >
-                Reject
-              </button>
-              <button
-                className="text-blue-600 hover:underline"
-                onClick={() => {
-                  setSelectedEmployee(emp);
+    <div className="bg-white rounded-lg shadow p-4">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Employee Name</TableHead>
+            <TableHead>Jabatan</TableHead>
+            <TableHead>Clock In</TableHead>
+            <TableHead>Clock Out</TableHead>
+            <TableHead>Work Hours</TableHead>
+            <TableHead>Actions</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Detail</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {employees.map((employee) => (
+            <TableRow key={employee.name}>
+              <TableCell>{employee.name}</TableCell>
+              <TableCell>{employee.position}</TableCell>
+              <TableCell>{employee.clockIn}</TableCell>
+              <TableCell>{employee.clockOut}</TableCell>
+              <TableCell>{employee.workHours}</TableCell>
+              <TableCell className="flex gap-2">
+                {employee.approved && <Check className="w-4 h-4 text-green-500" />}
+                {employee.rejected && <X className="w-4 h-4 text-red-500" />}
+                {!employee.approved && !employee.rejected && (
+                  <>
+                    <Button variant="ghost" size="icon" onClick={() => openConfirmDialog(employee, "approve")}>
+                      <Check className="w-4 h-4 text-green-600" />
+                    </Button>
+                    <Button variant="ghost" size="icon" onClick={() => openConfirmDialog(employee, "reject")}>
+                      <X className="w-4 h-4 text-red-600" />
+                    </Button>
+                  </>
+                )}
+              </TableCell>
+              <TableCell>
+                <span className={`text-xs py-1 px-2 rounded-full ${
+                  employee.status === "On Time" ? "bg-green-100 text-green-700" :
+                  employee.status === "Late" ? "bg-yellow-100 text-yellow-700" :
+                  employee.status === "Rejected" ? "bg-red-100 text-red-700" :
+                  employee.status === "Absent" ? "bg-gray-300 text-gray-800" :
+                  "bg-gray-200 text-gray-600"
+                }`}>
+                  {employee.status}
+                </span>
+              </TableCell>
+              <TableCell>
+                <Button variant="outline" size="sm" onClick={() => {
+                  setSelectedEmployee(employee);
                   setOpenDialog(true);
-                }}
-              >
-                View
-              </button>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+                }}>
+                  View
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   );
 };
-
-export default EmployeeTable;
