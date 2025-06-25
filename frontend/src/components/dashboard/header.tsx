@@ -4,6 +4,8 @@ import { useEffect, useState, useRef, ChangeEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { Bell, ChevronDown, Search } from "lucide-react";
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
+
 
 export function DashboardHeader() {
   const [user, setUser] = useState<any>(null);
@@ -91,7 +93,7 @@ export function DashboardHeader() {
       setUser((prevUser: any) => ({ ...prevUser, avatar: avatarUrl }));
     } catch (error) {
       console.error("Error uploading avatar:", error);
-      alert("Failed to upload avatar.");
+      toast.error("Failed to upload avatar.");
     }
   };
 

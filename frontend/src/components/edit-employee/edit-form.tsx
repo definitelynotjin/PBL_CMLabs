@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import Field from './field';
 import { format } from 'date-fns';
+import toast from 'react-hot-toast';
 import { XCircle } from 'lucide-react';
 import ReactDatePicker from 'react-datepicker';
 import {
@@ -240,9 +241,9 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
 
   const handleSubmit = async () => {
     try {
-      if (!data?.id) return alert('Missing employee ID.');
+      if (!data?.id) return toast.error('Missing employee ID.');
       const token = localStorage.getItem('token');
-      if (!token) return alert('Authentication token not found.');
+      if (!token) return toast.error('Authentication token not found.');
 
       // Upload avatar first (if changed)
       let avatarUrl = data?.avatar_url || null;
@@ -260,7 +261,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
 
         if (!uploadRes.ok) {
           const err = await uploadRes.json();
-          return alert('Avatar upload failed: ' + (err.message || uploadRes.statusText));
+          return toast.error('Avatar upload failed: ' + (err.message || uploadRes.statusText));
         }
 
         const uploadData = await uploadRes.json();
@@ -286,15 +287,15 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
 
       if (!res.ok) {
         const err = await res.json();
-        return alert('Failed: ' + (err.message || res.statusText));
+        return toast.error('Failed: ' + (err.message || res.statusText));
       }
 
       const response = await res.json();
-      alert('Employee updated successfully!');
+      toast.success('Employee updated successfully!');
       onSuccess(response.id);
       router.push('/employee-database');
     } catch (err) {
-      alert('Error: ' + err);
+      toast.error('Error: ' + err);
       console.error(err);
     }
   };

@@ -25,6 +25,7 @@ class CheckClockController extends Controller
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
             'supporting_document' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'check_clock_setting_id' => 'required|uuid|exists:check_clock_settings,id',
         ]);
 
         $user = Auth::user();
@@ -88,6 +89,7 @@ class CheckClockController extends Controller
             'latitude' => $validated['latitude'] ?? null,
             'longitude' => $validated['longitude'] ?? null,
             'supporting_document_path' => $filePath,
+            'check_clock_setting_id' => $validated['check_clock_setting_id'],
             'status' => 'Awaiting Approval',
         ]);
 

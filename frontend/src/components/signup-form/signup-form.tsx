@@ -8,6 +8,7 @@ import SignUpInput from "./signup-input";
 import SignUpTerms from "./signup-terms";
 import SignUpFooter from "./signup-footer";
 import { useRouter } from "next/navigation";
+import toast from 'react-hot-toast';
 
 export const SignUpForm = ({
   className,
@@ -84,7 +85,7 @@ export const SignUpForm = ({
 
       if (response.ok) {
         console.log("User registered:", data);
-        alert("Registration successful! Please log in.");
+        toast.success("Registration successful! Please log in.");
         setFormData({
           firstName: "",
           lastName: "",

@@ -4,6 +4,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Filter, Download, Upload } from 'lucide-react';
 import Link from 'next/link';
+import toast from 'react-hot-toast';
 import { Employee } from './types'; // make sure this import exists
 
 interface ActionsProps {
@@ -11,7 +12,7 @@ interface ActionsProps {
 }
 
 const exportToCSV = (employees: Employee[]) => {
-  if (!employees.length) return alert('No employee data to export.');
+  if (!employees.length) return toast.error('No employee data to export.');
 
   const headers = [
     'ID',

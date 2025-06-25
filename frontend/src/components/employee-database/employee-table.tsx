@@ -2,8 +2,9 @@
 
 import React, { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
-import { ChevronsUpDown, Edit2, Trash2, FileText } from 'lucide-react';
+import { ChevronsUpDown, Edit2, Trash2, FileText, User } from 'lucide-react';
 import { Employee } from './types';
+import toast from 'react-hot-toast';
 import Link from 'next/link';
 import { Switch } from '@/components/ui/switch';
 import {
@@ -18,6 +19,7 @@ interface EmployeeTableProps {
   loading: boolean;
   onRowClick: (employee: Employee) => void;
   refreshData: () => void;
+  onViewProfile: (employee: Employee) => void;
 }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
@@ -27,6 +29,7 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
   loading,
   onRowClick,
   refreshData,
+  onViewProfile,
 }) => {
   const [sortKey, setSortKey] = useState<keyof Employee | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | null>(null);
@@ -85,11 +88,11 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
 
       if (!res.ok) throw new Error('Failed to delete employee');
 
-      alert('Employee deleted successfully');
+      toast.success('Employee deleted successfully');
       refreshData(); // reload employee list after deletion
     } catch (err) {
       console.error(err);
-      alert('Failed to delete employee');
+      toast.error('Failed to delete employee');
     }
   };
 
@@ -114,7 +117,7 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
       refreshData();
     } catch (err) {
       console.error(err);
-      alert('Failed to update employee status');
+      toast.error('Failed to update employee status');
     }
   };
 
@@ -225,6 +228,21 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
                       </TooltipTrigger>
                       <TooltipContent side="top">Manage Letters</TooltipContent>
                     </Tooltip>
+
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onViewProfile(emp)}
+                          className="hover:bg-[#1E3A5F] hover:text-white"
+                        >
+                          <User className="w-4 h-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent side="top">View Profile</TooltipContent>
+                    </Tooltip>
+
                   </td>
                 </tr>
               ))

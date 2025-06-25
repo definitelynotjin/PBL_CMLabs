@@ -3,6 +3,7 @@
 import React, { useState, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 import { Button } from '@/components/ui/button';
 import Field from './field';
 import { format } from 'date-fns';
@@ -172,14 +173,14 @@ const AddEmployeeForm: React.FC<AddEmployeeFormProps> = ({ date, setDate, onSucc
   const handleSubmit = async () => {
     try {
       if (!form.first_name || !form.last_name) {
-        return alert('Please fill in first and last name.');
+        return toast.error('Please fill in first and last name.');
       }
       if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-        return alert('Please enter a valid email address.');
+        return toast.error('Please enter a valid email address.');
       }
 
       const token = localStorage.getItem('token');
-      if (!token) return alert('Authentication token not found.');
+      if (!token) return toast.error('Authentication token not found.');
 
       // Map "unset" and "none" values to null before sending
       const payload = {
@@ -201,15 +202,15 @@ const AddEmployeeForm: React.FC<AddEmployeeFormProps> = ({ date, setDate, onSucc
 
       if (!res.ok) {
         const errorData = await res.json();
-        return alert('Failed: ' + (errorData.message || res.statusText));
+        return toast.error('Failed: ' + (errorData.message || res.statusText));
       }
 
       const response = await res.json();
-      alert('Employee added successfully!');
+      toast.success('Employee added successfully!');
       onSuccess(response.id);
       router.push('/employee-database');
     } catch (error) {
-      alert('Error: ' + error);
+      toast.error('Error: ' + error);
       console.error(error);
     }
   };
@@ -224,7 +225,7 @@ const AddEmployeeForm: React.FC<AddEmployeeFormProps> = ({ date, setDate, onSucc
     if (!file) return;
 
     const token = localStorage.getItem('token');
-    if (!token) return alert('Authentication token not found.');
+    if (!token) return toast.error('Authentication token not found.');
 
     const formData = new FormData();
     formData.append('avatar', file);
@@ -249,7 +250,7 @@ const AddEmployeeForm: React.FC<AddEmployeeFormProps> = ({ date, setDate, onSucc
       setAvatarUrl(uploadedUrl);
     } catch (err) {
       console.error('Avatar upload failed', err);
-      alert('Failed to upload avatar');
+      toast.error('Failed to upload avatar');
     }
   };
 

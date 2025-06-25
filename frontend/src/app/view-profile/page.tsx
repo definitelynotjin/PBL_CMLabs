@@ -4,6 +4,8 @@ import React, { useState, useEffect, ChangeEvent } from 'react';
 import { parseISO, format } from 'date-fns';
 import Image from 'next/image';
 import { Employee } from '@/components/edit-employee/edit-form';
+import toast from 'react-hot-toast';
+
 
 export default function ViewProfilePage() {
     const [userData, setUserData] = useState<Employee | null>(null);
@@ -92,7 +94,7 @@ export default function ViewProfilePage() {
     const handleSave = async () => {
         if (!avatarFile) return;
         // TODO: Implement actual API upload here
-        alert('Avatar saved (this is a placeholder)');
+        toast.success('Avatar saved (this is a placeholder)');
         handleCancel();
     };
 

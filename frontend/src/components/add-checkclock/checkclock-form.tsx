@@ -3,6 +3,7 @@
 import React from "react";
 import type { LatLngTuple } from "leaflet";
 import dynamic from "next/dynamic";
+import toast from 'react-hot-toast';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -106,12 +107,12 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
     e.preventDefault();
 
     if (!selectedAbsenceType || !selectedLocation) {
-      return alert("Mohon lengkapi tipe absensi dan lokasi.");
+      return toast.error("Mohon lengkapi tipe absensi dan lokasi.");
     }
 
     if (["annual-leave", "sick-leave"].includes(selectedAbsenceType)) {
       if (!startDate || !endDate || !file) {
-        return alert("Untuk cuti/sakit, isi tanggal dan lampirkan dokumen.");
+        return toast.error("Untuk cuti/sakit, isi tanggal dan lampirkan dokumen.");
       }
     }
 
@@ -174,10 +175,10 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
         throw new Error(errorText);
       }
 
-      alert("Berhasil dikirim!");
+      toast.success("Berhasil dikirim!");
       resetForm();
     } catch (err: any) {
-      alert("Gagal mengirim: " + err.message);
+      toast.error("Gagal mengirim: " + err.message);
     }
   };
 

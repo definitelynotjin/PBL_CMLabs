@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { GoogleLogin } from "@react-oauth/google";
 import { FcGoogle } from "react-icons/fc";
 import { Button } from "@/components/ui/button";
+import toast from 'react-hot-toast';
 
 const GoogleSignIn = () => {
   const router = useRouter();
@@ -34,17 +35,17 @@ const GoogleSignIn = () => {
             } else if (data.user.role === "employee") {
               router.push("/dashboard-user");
             } else {
-              alert("Unknown user role");
+              toast.error("Unknown user role");
             }
           } else {
-            alert(data.message || "Google login failed");
+            toast.error(data.message || "Google login failed");
           }
         } catch (error) {
-          alert("Google login failed due to server error");
+          toast.error("Google login failed due to server error");
         }
       }}
       onError={() => {
-        alert("Google login failed");
+        toast.error("Google login failed");
       }}
     />
   );

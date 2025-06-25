@@ -9,6 +9,11 @@ import EmployeeTable from '@/components/employee-database/employee-table';
 import EmployeeDetailDialog from '@/components/employee-database/employee-detail-dialog';
 import UploadDocumentDialog from '@/components/employee-database/upload-documents-dialog';
 import EmployeeDocumentsDialog from '@/components/employee-database/employee-documents-dialog';
+import EmployeeProfileDialog from '@/components/employee-database/employee-profile-dialog';
+import toast from 'react-hot-toast';
+
+
+
 import { Employee } from '@/components/employee-database/types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
@@ -21,6 +26,14 @@ export default function LetterManagementPage() {
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
   const [showUpload, setShowUpload] = useState(false);
   const [showDocuments, setShowDocuments] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
+  const [profileEmployee, setProfileEmployee] = useState<Employee | null>(null);
+
+  const handleViewProfile = (emp: Employee) => {
+    setProfileEmployee(emp);
+    setShowProfile(true);
+  };
+
 
   const fetchEmployees = React.useCallback(async () => {
     setLoading(true);
@@ -53,7 +66,7 @@ export default function LetterManagementPage() {
       setEmployees(mappedEmployees);
     } catch (error) {
       console.error(error);
-      alert('Failed to load employees');
+      toast.error('Failed to load employees');
     } finally {
       setLoading(false);
     }
@@ -91,15 +104,15 @@ export default function LetterManagementPage() {
       });
 
       if (res.ok) {
-        alert('Document uploaded successfully');
+        toast.success('Document uploaded successfully');
         setShowUpload(false);
         fetchEmployees(); // Refresh employees after upload if needed
       } else {
-        alert('Upload failed');
+        toast.error('Upload failed');
       }
     } catch (error) {
       console.error(error);
-      alert('Upload failed');
+      toast.error('Upload failed');
     }
   };
 
@@ -115,6 +128,7 @@ export default function LetterManagementPage() {
           loading={loading}
           onRowClick={(emp: Employee) => setSelectedEmployee(emp)}
           refreshData={fetchEmployees}
+          onViewProfile={handleViewProfile}
         />
 
         {selectedEmployee && (
@@ -139,6 +153,15 @@ export default function LetterManagementPage() {
             onClose={() => setShowDocuments(false)}
           />
         )}
+
+        {profileEmployee && (
+          <EmployeeProfileDialog
+            open={showProfile}
+            onClose={() => setShowProfile(false)}
+            employee={profileEmployee}
+          />
+        )}
+
       </div>
     </div>
   );

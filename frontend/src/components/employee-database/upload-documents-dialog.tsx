@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import toast from 'react-hot-toast';
 
 type Props = {
   onClose: () => void;
@@ -18,7 +19,7 @@ export default function UploadDocumentsDialog({
 
   const handleSubmit = async () => {
     if (!localFile || !localType) {
-      alert('Please select a document type and file');
+      toast.error('Please select a document type and file');
       return;
     }
     console.log("Submitting:", localFile, localType);
