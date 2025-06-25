@@ -157,7 +157,10 @@ export default function LetterManagementPage() {
         {profileEmployee && (
           <EmployeeProfileDialog
             open={showProfile}
-            onClose={() => setShowProfile(false)}
+            onClose={() => {
+              setShowProfile(false);
+              setProfileEmployee(null); // ✅ Reset employee so dialog is re-renderable
+            }}
             employee={profileEmployee}
           />
         )}
