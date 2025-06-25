@@ -5,15 +5,15 @@ export type User = {
 
 export type CheckClockSetting = {
   id: string;
-  name: string; // e.g., "Jakarta Office"
+  name: string;
 };
 
 export type Employee = {
-  id: string;               // Usually UUID string if you use UUIDs in backend
+  id: string;
   user_id: string;
   first_name: string;
   last_name: string;
-  email: string; //
+  email: string;
   gender: string;
   phone: string;
   ck_settings_id?: string; // FK to CheckClockSetting
@@ -27,4 +27,15 @@ export type Employee = {
   user?: User;
   join_date?: string;
   created_at?: string;
+  avatar?: string | null;
+  department?: string;
+  tempat_lahir?: string;
+  birth_date?: string;
+  address?: string;
+  pendidikan_terakhir?: string;
+  nik?: string;
+  bank?: string;
+  nomor_rekening?: string;
+  atas_nama_rekening?: string;
+  tipe_sp?: string;
 };

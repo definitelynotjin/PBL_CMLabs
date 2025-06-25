@@ -40,12 +40,19 @@ export default function EmployeeProfileDialog({
                 <div className="flex items-center justify-between border-b pb-6 mb-6">
                     <div className="flex items-center gap-6">
                         <Image
-                            src={employee.avatar_url || '/default-avatar.png'}
+                            src={
+                                employee.avatar?.startsWith('http')
+                                    ? employee.avatar
+                                    : employee.avatar
+                                        ? `https://pblcmlabs.duckdns.org/storage/${employee.avatar}`
+                                        : '/default-avatar.png'
+                            }
                             alt="Profile Picture"
                             width={100}
                             height={100}
                             className="rounded-full object-cover border"
                         />
+
                         <div>
                             <h1 className="text-2xl font-semibold text-[#1E3A5F]">
                                 {employee.first_name} {employee.last_name}
