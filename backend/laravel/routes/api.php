@@ -59,6 +59,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('checkclocksettings', CheckClockSettingController::class);
     Route::apiResource('checkclocksettingtimes', CheckClockSettingTimeController::class);
 
+    //Get Employee's own checkclock
+    Route::get('/checkclocks/me', [CheckClockController::class, 'myCheckClocks']);
+
+
     // Employees CRUD
     Route::get('/employees', [EmployeeController::class, 'index']);
     Route::post('/employees', [EmployeeController::class, 'store']);

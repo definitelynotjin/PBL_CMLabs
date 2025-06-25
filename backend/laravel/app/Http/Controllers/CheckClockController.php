@@ -96,6 +96,19 @@ class CheckClockController extends Controller
         ], 201);
     }
 
+    public function myCheckClocks(Request $request)
+    {
+        $user = $request->user();
+
+        // Retrieve all check clocks for the current user
+        $checkClocks = CheckClock::where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json(['data' => $checkClocks]);
+    }
+
+
     protected function determineStatus($checkTime, $settingTime, $checkType)
     {
         if ($checkType == 1) { // Check-in
