@@ -48,17 +48,17 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employees, openConfirmDia
             <TableCell>{employee.status}</TableCell>
             <TableCell className="flex gap-2">
               {employee.approved && <Check className="w-4 h-4 text-green-500" />}
-              {employee.rejected && <X className="w-4 h-4 text-red-500" />}
-              {!employee.approved && !employee.rejected && (
-                <>
-                  <Button variant="ghost" size="icon" onClick={() => openConfirmDialog(employee, "approve")}>
-                    <Check className="w-4 h-4 text-green-600" />
-                  </Button>
-                  <Button variant="ghost" size="icon" onClick={() => openConfirmDialog(employee, "reject")}>
-                    <X className="w-4 h-4 text-red-600" />
-                  </Button>
-                </>
-              )}
+                {employee.rejected && <X className="w-4 h-4 text-red-500" />}
+                {!employee.approved && !employee.rejected && (
+                  <>
+                    <Button variant="ghost" size="icon" onClick={() => openConfirmDialog(employee, "approve")}>
+                      <Check className="w-4 h-4 text-green-600" />
+                    </Button>
+                    <Button variant="ghost" size="icon" onClick={() => openConfirmDialog(employee, "reject")}>
+                      <X className="w-4 h-4 text-red-600" />
+                    </Button>
+                  </>
+                )}
             </TableCell>
             <TableCell>
               <Button variant="outline" onClick={() => {
