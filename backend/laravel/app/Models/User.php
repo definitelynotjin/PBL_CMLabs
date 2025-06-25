@@ -8,9 +8,10 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Notifications\ResetPasswordNotification;
 
+
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasMany;
 
     public $incrementing = false;
     protected $keyType = 'string';
@@ -57,6 +58,11 @@ class User extends Authenticatable
     public function isEmployee()
     {
         return $this->employee()->exists();
+    }
+
+    public function checkClocks()
+    {
+        return $this->hasMany(CheckClock::class);
     }
 
     public function employee()

@@ -88,6 +88,7 @@ class CheckClockController extends Controller
             'latitude' => $validated['latitude'] ?? null,
             'longitude' => $validated['longitude'] ?? null,
             'supporting_document_path' => $filePath,
+            'status' => 'Awaiting Approval',
         ]);
 
         return response()->json([
@@ -141,5 +142,25 @@ class CheckClockController extends Controller
         $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
 
         return $earthRadius * $c;
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|string|in:Waiting Approval,Approved,Rejected,Late,Early,On Time',
+            // add all statuses you allow here
+        ]);
+
+        $checkClock = CheckClock::findOrFail($id);
+
+        // Optionally, check if current user is admin here, or rely on middleware
+
+        $checkClock->status = $request->status;
+        $checkClock->save();
+
+        return response()->json([
+            'message' => 'Status updated successfully',
+            'data' => $checkClock,
+        ]);
     }
 }

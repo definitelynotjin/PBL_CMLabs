@@ -7,53 +7,74 @@ import AttendanceTable from '@/components/checkclock-user/attendance-table';
 import Title from '@/components/checkclock-user/title';
 import { UserCheckClockViewDialog } from '@/components/checkclock-user/view-dialog';
 
+interface AttendanceRecord {
+  date: string;
+  clockIn: string;
+  clockOut: string;
+  workHours: string;
+  status: string;
+}
+
 export default function CheckclockUser() {
   const [openDialog, setOpenDialog] = useState(false);
-  const [selectedRecord, setSelectedRecord] = useState<any>(null);
-  const [attendanceData, setAttendanceData] = useState<any[]>([]);
+  const [selectedRecord, setSelectedRecord] = useState<AttendanceRecord | null>(null);
+  const [attendanceData, setAttendanceData] = useState<AttendanceRecord[]>([]);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem('token');
     if (!token) return;
 
-    fetch("https://pblcmlabs.duckdns.org/api/my-checkclocks", {
+    fetch('https://pblcmlabs.duckdns.org/api/checkclocks/me', {
       headers: {
-        Accept: "application/json",
+        Accept: 'application/json',
         Authorization: `Bearer ${token}`,
       },
     })
       .then((res) => res.json())
       .then((data) => {
-        // Convert checkClock data to table-compatible format
-        const groupedByDate = groupByDate(data);
-        setAttendanceData(groupedByDate);
+        if (data.data) {
+          const groupedByDate = groupByDate(data.data);
+          setAttendanceData(groupedByDate);
+        } else {
+          console.error('API response missing data:', data);
+        }
       })
-      .catch((err) => console.error("Failed to fetch attendance data", err));
+      .catch((err) => console.error('Failed to fetch attendance data', err));
   }, []);
 
-  const groupByDate = (data: any[]) => {
-    const grouped: Record<string, any> = {};
+  const groupByDate = (data: any[]): AttendanceRecord[] => {
+    const grouped: Record<string, AttendanceRecord> = {};
 
     data.forEach((entry) => {
-      const key = entry.date;
+      // Extract date from created_at
+      const key = entry.created_at ? entry.created_at.split('T')[0] : 'Unknown Date';
+
       if (!grouped[key]) {
-        grouped[key] = { date: key, clockIn: "", clockOut: "", workHours: "", status: "" };
+        grouped[key] = {
+          date: key,
+          clockIn: '',
+          clockOut: '',
+          workHours: '',
+          status: 'Awaiting Approval',
+        };
       }
 
-      if (entry.check_clock_type === "1") {
+      // Note: check_clock_type may be string or number, so use == for loose equality
+      if (entry.check_clock_type == 1) {
         grouped[key].clockIn = entry.check_clock_time;
-        grouped[key].status = entry.status;
+        // Use status from entry if available, else default
+        grouped[key].status = entry.status || 'Awaiting Approval';
       }
 
-      if (entry.check_clock_type === "2") {
+      if (entry.check_clock_type == 2) {
         grouped[key].clockOut = entry.check_clock_time;
       }
 
-      // Optional: calculate workHours if both in/out are available
+      // Calculate workHours if both clockIn and clockOut are set
       if (grouped[key].clockIn && grouped[key].clockOut) {
-        const [h1, m1] = grouped[key].clockIn.split(":").map(Number);
-        const [h2, m2] = grouped[key].clockOut.split(":").map(Number);
-        const mins = (h2 * 60 + m2) - (h1 * 60 + m1);
+        const [h1, m1] = grouped[key].clockIn.split(':').map(Number);
+        const [h2, m2] = grouped[key].clockOut.split(':').map(Number);
+        const mins = h2 * 60 + m2 - (h1 * 60 + m1);
         grouped[key].workHours = `${Math.floor(mins / 60)}h ${mins % 60}m`;
       }
     });
@@ -69,7 +90,7 @@ export default function CheckclockUser() {
         <Title />
         <AttendanceTable
           data={attendanceData}
-          onView={(record) => {
+          onView={(record: AttendanceRecord) => {
             setSelectedRecord(record);
             setOpenDialog(true);
           }}

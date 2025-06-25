@@ -31,6 +31,8 @@ Route::get('/check-email', function (Request $request) {
 //Status toggling
 Route::middleware('auth:sanctum')->patch('/employees/{id}/status', [EmployeeController::class, 'updateStatus']);
 
+//Admin Attendance Status Updater
+Route::middleware(['auth:sanctum', 'admin'])->patch('/checkclocks/{id}/status', [CheckClockController::class, 'updateStatus']);
 
 // Documents
 Route::get('/employees/{userId}/documents', [DocumentController::class, 'index']);
