@@ -38,7 +38,7 @@ export default function SearchBar({
             value={localValue}
             onChange={(e) => setLocalValue(e.target.value)}
             placeholder={placeholder}
-            className={`bg-[#1E3A5F] text-white placeholder-white text-sm rounded-md px-3 py-1.5 w-full focus:outline-none focus:ring-2 focus:ring-blue-400 ${className}`}
+            className={`bg-[#7CA5BF] text-white placeholder-white text-sm rounded-md px-3 py-1.5 w-full focus:outline-none focus:ring-2 focus:ring-blue-400 ${className}`}
             aria-label="Search"
         />
     );
