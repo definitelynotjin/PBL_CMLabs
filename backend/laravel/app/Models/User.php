@@ -11,7 +11,7 @@ use App\Notifications\ResetPasswordNotification;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasMany;
+    use HasApiTokens, HasFactory, Notifiable;
 
     public $incrementing = false;
     protected $keyType = 'string';
