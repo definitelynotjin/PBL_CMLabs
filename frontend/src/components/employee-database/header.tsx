@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Bell, ChevronDown, Search } from "lucide-react";
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import SearchBar from '@/components/ui/searchbar.tsx';
 
 type HeaderProps = {
   search: string;
@@ -120,14 +121,15 @@ export function Header({ search, setSearch }: HeaderProps) {
             className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
             size={18}
           />
-          <Input
-            placeholder="Search"
-            className="pl-10 rounded-md border-gray-300"
+          <SearchBar
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={setSearch}
+            placeholder="Search employees..."
+            className="pl-10 rounded-md"
           />
         </div>
       </div>
+
 
       {/* Right - Actions */}
       <div className="flex items-center space-x-4 relative" ref={dropdownRef}>

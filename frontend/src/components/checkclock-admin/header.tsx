@@ -4,11 +4,13 @@ import React, { useEffect, useState, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Bell, ChevronDown, Search } from "lucide-react";
 import { useRouter } from 'next/navigation';
+import SearchBar from '@/components/ui/searchbar.tsx';
 
 const CheckclockHeader = () => {
   const [user, setUser] = useState<any>(null);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [search, setSearch] = useState('');
   const router = useRouter();
 
   useEffect(() => {
@@ -54,10 +56,21 @@ const CheckclockHeader = () => {
       <h1 className="text-2xl font-bold">Checkclock Overview</h1>
 
       {/* Middle - Search */}
-      <div className="flex-1 max-w-xl mx-6 relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-        <Input placeholder="Search Employee" className="pl-10 rounded-md border-gray-300 w-full" />
+      <div className="flex-1 mx-6 max-w-xl">
+        <div className="relative">
+          <Search
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            size={18}
+          />
+          <SearchBar
+            value={search}
+            onChange={setSearch}
+            placeholder="Search employees..."
+            className="pl-10 rounded-md"
+          />
+        </div>
       </div>
+
 
       {/* Right - Bell + Avatar */}
       <div className="flex items-center space-x-4 relative" ref={dropdownRef}>
