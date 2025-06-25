@@ -26,10 +26,52 @@ export const ViewDialog = ({
 }: ViewDialogProps) => {
   const [currentStatus, setCurrentStatus] = useState(selectedEmployee?.status || "Waiting Approval");
 
+  // Helper function untuk mengkonversi waktu string ke menit
+  const timeToMinutes = (timeStr: string): number => {
+    if (!timeStr || timeStr === "0" || timeStr === "00:00") return 0;
+    const [hours, minutes] = timeStr.split(':').map(Number);
+    return hours * 60 + minutes;
+  };
+
+  // Function untuk menentukan status berdasarkan aturan bisnis
+  const determineStatus = (): string => {
+    // Menggunakan nilai dari attendance information yang sudah ditampilkan
+    const clockInTime = selectedEmployee?.clockIn || "0";
+    const clockOutTime = selectedEmployee?.clockOut || "0";
+    
+    // Jika clock in dan clock out bernilai 0, maka absent
+    if ((clockInTime === "0" || clockInTime === "00:00" || !clockInTime) && 
+        (clockOutTime === "0" || clockOutTime === "00:00" || !clockOutTime)) {
+      return "Absent";
+    }
+
+    // Konversi waktu ke menit untuk perbandingan
+    const clockInMinutes = timeToMinutes(clockInTime);
+    const clockOutMinutes = timeToMinutes(clockOutTime);
+    
+    // Waktu standar dalam menit
+    const standardClockIn = 8 * 60; // 08:00 = 480 menit
+    const lateThreshold = 8 * 60 + 15; // 08:15 = 495 menit
+    const standardClockOut = 16 * 60; // 16:00 = 960 menit
+
+    // Cek apakah terlambat (clock in > 08:15)
+    if (clockInMinutes > 0 && clockInMinutes > lateThreshold) {
+      return "Late";
+    }
+
+    // Cek apakah pulang lebih awal (clock out < 16:00)
+    if (clockOutMinutes > 0 && clockOutMinutes < standardClockOut) {
+      return "Early Leave";
+    }
+
+    return "Approved";
+  };
+
   const handleApprove = () => {
-    setCurrentStatus("Approved");
+    const newStatus = determineStatus();
+    setCurrentStatus(newStatus);
     if (onStatusChange && selectedEmployee) {
-      onStatusChange(selectedEmployee.id, "Approved");
+      onStatusChange(selectedEmployee.id, newStatus);
     }
   };
 
@@ -48,6 +90,10 @@ export const ViewDialog = ({
         return "text-red-600";
       case "Late":
         return "text-yellow-600";
+      case "Absent":
+        return "text-gray-600";
+      case "Early Leave":
+        return "text-orange-600";
       default:
         return "text-gray-600";
     }
