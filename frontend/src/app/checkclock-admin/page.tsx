@@ -93,6 +93,9 @@ const Checkclock: React.FC = () => {
         openDialog={openDialog}
         setOpenDialog={setOpenDialog}
         selectedEmployee={selectedEmployee}
+        onStatusChange={(employeeId, newStatus) => {
+          console.log(`Employee ${employeeId} status changed to ${newStatus}`);
+        }}
       />
     </div>
   );

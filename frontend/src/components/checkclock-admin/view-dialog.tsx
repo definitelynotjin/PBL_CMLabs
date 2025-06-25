@@ -8,18 +8,51 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { Check, X } from "lucide-react";
+import { useState } from "react";
 
 interface ViewDialogProps {
   openDialog: boolean;
   setOpenDialog: (value: boolean) => void;
   selectedEmployee: any; // Ideally type this better
+  onStatusChange?: (employeeId: string, newStatus: string) => void; // Callback untuk update status
 }
 
 export const ViewDialog = ({
   openDialog,
   setOpenDialog,
   selectedEmployee,
+  onStatusChange,
 }: ViewDialogProps) => {
+  const [currentStatus, setCurrentStatus] = useState(selectedEmployee?.status || "Waiting Approval");
+
+  const handleApprove = () => {
+    setCurrentStatus("Approved");
+    if (onStatusChange && selectedEmployee) {
+      onStatusChange(selectedEmployee.id, "Approved");
+    }
+  };
+
+  const handleReject = () => {
+    setCurrentStatus("Rejected");
+    if (onStatusChange && selectedEmployee) {
+      onStatusChange(selectedEmployee.id, "Rejected");
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "Approved":
+        return "text-green-600";
+      case "Rejected":
+        return "text-red-600";
+      case "Late":
+        return "text-yellow-600";
+      default:
+        return "text-gray-600";
+    }
+  };
+
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogContent className="fixed inset-y-0 right-0 max-w-md w-full bg-white shadow-xl overflow-y-auto p-6 animate-in slide-in-from-right duration-300 z-[9999]">
@@ -34,24 +67,33 @@ export const ViewDialog = ({
                 height={64}
                 className="rounded-full object-cover"
               />
-              <div>
+              <div className="flex-1">
                 <h2 className="text-lg font-semibold">{selectedEmployee.name}</h2>
                 <p className="text-[#7CA5BF]">
                   {selectedEmployee.position} &mdash; {selectedEmployee.ck_setting?.name || 'Unknown Department'}
                 </p>
-                <span
-                  className={`text-sm font-medium ${selectedEmployee.status === "Approved"
-                    ? "text-green-600"
-                    : selectedEmployee.status === "Rejected"
-                      ? "text-red-600"
-                      : selectedEmployee.status === "Late"
-                        ? "text-yellow-600"
-                        : "text-gray-600"
-                    }`}
-                >
-                  {selectedEmployee.status}
+                <span className={`text-sm font-medium ${getStatusColor(currentStatus)}`}>
+                  {currentStatus}
                 </span>
               </div>
+              
+              {/* Action Buttons - Check and X */}
+              {currentStatus === "Waiting Approval" && (
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleApprove}
+                    className="w-8 h-8 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center transition-colors"
+                  >
+                    <Check className="w-5 h-5 text-white" />
+                  </button>
+                  <button
+                    onClick={handleReject}
+                    className="w-8 h-8 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center transition-colors"
+                  >
+                    <X className="w-5 h-5 text-white" />
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* 🟨 Section 2: Attendance Info */}
