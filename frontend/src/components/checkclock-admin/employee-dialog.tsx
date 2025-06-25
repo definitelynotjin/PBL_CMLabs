@@ -30,7 +30,7 @@ interface EmployeeDialogProps {
 const EmployeeDialog: React.FC<EmployeeDialogProps> = ({ open, onOpenChange, selectedEmployee, actionType, handleConfirm }) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="z-[100] max-w-md w-full">
         {selectedEmployee && actionType && (
           <>
             <DialogHeader>

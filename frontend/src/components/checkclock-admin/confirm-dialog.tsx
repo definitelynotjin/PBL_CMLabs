@@ -31,7 +31,7 @@ export const ConfirmDialog = ({
       <DialogContent className="max-w-md w-full">
         <DialogHeader>
           <DialogTitle>
-            {confirmAction === 'approve' ? 'Approve Attendance' : 'Reject Attendance'}
+            {confirmAction === 'approve' ? 'Approve Attendance' : 'Reject Attendance'} (DEBUG)
           </DialogTitle>
           <DialogDescription>
             Are you sure you want to {confirmAction} this employee's attendance? This action cannot be undone.
