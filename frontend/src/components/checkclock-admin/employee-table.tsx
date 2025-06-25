@@ -20,6 +20,7 @@ interface EmployeeTableProps {
   openConfirmDialog: (employee: Employee, type: "approve" | "reject") => void;
   handleDetailsClick: (employee: Employee) => void;
   setOpenDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  confirmAction: 'approve' | 'reject' | null;
 }
 
 const EmployeeTable: React.FC<EmployeeTableProps> = ({ employees, openConfirmDialog, handleDetailsClick, setOpenDialog }) => {

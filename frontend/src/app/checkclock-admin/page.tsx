@@ -79,7 +79,8 @@ const Checkclock: React.FC = () => {
           employees={employees}
           openConfirmDialog={openConfirmDialog}
           handleDetailsClick={handleDetailsClick} // Ensure this is defined
-          setOpenDialog={setOpenDialog} // Pass this prop
+          setOpenDialog={setOpenDialog}
+          confirmAction={confirmAction} // Pass this prop
         />
       </div>
       <ConfirmDialog
