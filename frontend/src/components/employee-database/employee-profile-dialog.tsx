@@ -2,7 +2,7 @@
 
 import {
     Dialog,
-    DialogContent
+    DialogContentCentered
 } from '@/components/ui/dialog';
 import Image from 'next/image';
 import { parseISO, format } from 'date-fns';
@@ -35,22 +35,7 @@ export default function EmployeeProfileDialog({
 
     return (
         <Dialog open={open} onOpenChange={(o) => { if (!o) onClose(); }}>
-            <DialogContent
-                style={{
-                    position: 'fixed',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    backgroundColor: 'white',
-                    padding: '2rem',
-                    maxWidth: '600px',
-                    width: '100%',
-                    zIndex: 10000,
-                    boxShadow: '0 0 15px rgba(0,0,0,0.3)',
-                    overflowY: 'auto',
-                    maxHeight: '90vh',
-                }}
-            >
+            <DialogContentCentered>
 
                 {/* Header */}
                 <div className="flex items-center justify-between border-b pb-6 mb-6">
@@ -106,7 +91,7 @@ export default function EmployeeProfileDialog({
                         <InfoRow label="Tipe SP" value={employee.tipe_sp} />
                     </div>
                 </section>
-            </DialogContent>
+            </DialogContentCentered>
         </Dialog>
     );
 }

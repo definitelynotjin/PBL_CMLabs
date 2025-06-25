@@ -109,6 +109,7 @@ function DialogTitle({
   )
 }
 
+
 function DialogDescription({
   className,
   ...props
@@ -122,6 +123,18 @@ function DialogDescription({
   )
 }
 
+function DialogContentCentered(props: React.ComponentProps<typeof DialogContent>) {
+  return (
+    <DialogContent
+      {...props}
+      className={cn(
+        "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 max-w-4xl w-full p-6 bg-white rounded-xl shadow-md overflow-y-auto max-h-[90vh]",
+        props.className
+      )}
+    />
+  );
+}
+
 export {
   Dialog,
   DialogClose,
@@ -133,4 +146,5 @@ export {
   DialogPortal,
   DialogTitle,
   DialogTrigger,
+  DialogContentCentered,
 }
