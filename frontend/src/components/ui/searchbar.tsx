@@ -16,38 +16,29 @@ export default function SearchBar({
     placeholder = 'Search...',
     className = '',
 }: SearchBarProps) {
-    const [inputValue, setInputValue] = useState(value);
+    const [localValue, setLocalValue] = useState(value);
 
-    // Create a debounced version of onChange using useMemo
-    const debouncedOnChange = useMemo(
-        () =>
-            debounce((val: string) => {
-                onChange(val);
-            }, 300), // 300ms debounce delay
+    useEffect(() => {
+        setLocalValue(value);
+    }, [value]);
+
+    const debouncedChange = useMemo(
+        () => debounce(onChange, 300),
         [onChange]
     );
 
-    // Update debounced onChange when inputValue changes
     useEffect(() => {
-        debouncedOnChange(inputValue);
-        // Cancel debounce on unmount
-        return () => {
-            debouncedOnChange.cancel();
-        };
-    }, [inputValue, debouncedOnChange]);
-
-    // Also update inputValue when parent changes value prop
-    useEffect(() => {
-        setInputValue(value);
-    }, [value]);
+        debouncedChange(localValue);
+        return () => debouncedChange.cancel();
+    }, [localValue, debouncedChange]);
 
     return (
         <input
             type="search"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
+            value={localValue}
+            onChange={(e) => setLocalValue(e.target.value)}
             placeholder={placeholder}
-            className={`border rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-[#1E3A5F] bg-[#1E3A5F] text-white placeholder-white ${className}`}
+            className={`bg-[#1E3A5F] text-white placeholder-white text-sm rounded-md px-3 py-1.5 w-full focus:outline-none focus:ring-2 focus:ring-blue-400 ${className}`}
             aria-label="Search"
         />
     );
