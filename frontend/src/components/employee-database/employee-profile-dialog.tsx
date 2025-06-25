@@ -36,8 +36,22 @@ export default function EmployeeProfileDialog({
     return (
         <Dialog open={open} onOpenChange={(o) => { if (!o) onClose(); }}>
             <DialogContent
-                className="z-[9999] w-full max-w-4xl bg-white rounded-xl shadow-md p-6 overflow-y-auto max-h-[90vh] animate-in fade-in zoom-in-95 duration-300"
+                style={{
+                    position: 'fixed',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    backgroundColor: 'white',
+                    padding: '2rem',
+                    maxWidth: '600px',
+                    width: '100%',
+                    zIndex: 10000,
+                    boxShadow: '0 0 15px rgba(0,0,0,0.3)',
+                    overflowY: 'auto',
+                    maxHeight: '90vh',
+                }}
             >
+
                 {/* Header */}
                 <div className="flex items-center justify-between border-b pb-6 mb-6">
                     <div className="flex items-center gap-6">
