@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/tooltip';
 import {
   Dialog,
-  DialogContent,
+  DialogContentCentered,
   DialogHeader,
   DialogTitle,
   DialogFooter,
@@ -275,7 +275,7 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
 
         {/* Delete Confirmation Dialog */}
         <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-          <DialogContent>
+          <DialogContentCentered>
             <DialogHeader>
               <DialogTitle>Confirm Delete</DialogTitle>
             </DialogHeader>
@@ -294,7 +294,7 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
                 Delete
               </Button>
             </DialogFooter>
-          </DialogContent>
+          </DialogContentCentered>
         </Dialog>
       </div>
     </TooltipProvider>
