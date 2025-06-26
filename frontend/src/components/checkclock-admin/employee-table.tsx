@@ -3,17 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Check, X } from 'lucide-react';
+import { Employee } from "@/components/checkclock-admin/type.ts";
 
-interface Employee {
-  name: string;
-  position: string;
-  clockIn: string;
-  clockOut: string;
-  workHours: string;
-  status: string;
-  approved: boolean;
-  rejected: boolean;
-}
 
 interface EmployeeTableProps {
   employees: Employee[];
@@ -49,17 +40,17 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employees, openConfirmDia
             <TableCell>{employee.status}</TableCell>
             <TableCell className="flex gap-2">
               {employee.approved && <Check className="w-4 h-4 text-green-500" />}
-                {employee.rejected && <X className="w-4 h-4 text-red-500" />}
-                {!employee.approved && !employee.rejected && (
-                  <>
-                    <Button variant="ghost" size="icon" onClick={() => openConfirmDialog(employee, "approve")}>
-                      <Check className="w-4 h-4 text-green-600" />
-                    </Button>
-                    <Button variant="ghost" size="icon" onClick={() => openConfirmDialog(employee, "reject")}>
-                      <X className="w-4 h-4 text-red-600" />
-                    </Button>
-                  </>
-                )}
+              {employee.rejected && <X className="w-4 h-4 text-red-500" />}
+              {!employee.approved && !employee.rejected && (
+                <>
+                  <Button variant="ghost" size="icon" onClick={() => openConfirmDialog(employee, "approve")}>
+                    <Check className="w-4 h-4 text-green-600" />
+                  </Button>
+                  <Button variant="ghost" size="icon" onClick={() => openConfirmDialog(employee, "reject")}>
+                    <X className="w-4 h-4 text-red-600" />
+                  </Button>
+                </>
+              )}
             </TableCell>
             <TableCell>
               <Button variant="outline" onClick={() => {

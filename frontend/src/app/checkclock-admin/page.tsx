@@ -9,22 +9,93 @@ import { ViewDialog } from "@/components/checkclock-admin/view-dialog";
 import { Employee } from "@/components/checkclock-admin/type";
 import Title from '@/components/checkclock-user/title';
 
-const initialEmployees: Employee[] = [
-  { name: "Juanita", position: "CEO", clockIn: "08.00", clockOut: "16.30", workHours: "10h 5m", status: "Waiting Approval", approved: false, rejected: false },
-  { name: "Shane", position: "OB", clockIn: "08.00", clockOut: "17.15", workHours: "9h 50m", status: "Waiting Approval", approved: false, rejected: false },
-  { name: "Miles", position: "Head of HR", clockIn: "09.00", clockOut: "16.45", workHours: "10h 30m", status: "Waiting Approval", approved: false, rejected: false },
-  { name: "Flores", position: "Manager", clockIn: "09.15", clockOut: "15.30", workHours: "6h 15m", status: "Waiting Approval", approved: false, rejected: false },
-  { name: "Henry", position: "CPO", clockIn: "0", clockOut: "0", workHours: "0", status: "Waiting Approval", approved: false, rejected: false },
-  { name: "Marvin", position: "OB", clockIn: "0", clockOut: "0", workHours: "0", status: "Waiting Approval", approved: false, rejected: false },
-  { name: "Black", position: "HRD", clockIn: "08.15", clockOut: "17.00", workHours: "9h 45m", status: "Waiting Approval", approved: false, rejected: false },
-];
-
 const Checkclock: React.FC = () => {
-  const [employees, setEmployees] = React.useState<Employee[]>(initialEmployees);
+  const [employees, setEmployees] = React.useState<Employee[]>([]);
+  const [loading, setLoading] = React.useState(true);
   const [openDialog, setOpenDialog] = React.useState(false);
   const [selectedEmployee, setSelectedEmployee] = React.useState<Employee | null>(null);
   const [confirmAction, setConfirmAction] = React.useState<'approve' | 'reject' | null>(null);
   const [showConfirmModal, setShowConfirmModal] = React.useState(false);
+
+  React.useEffect(() => {
+    const fetchEmployees = async () => {
+      try {
+
+        const token = localStorage.getItem('token');
+        if (!token) throw new Error('No auth token found');
+
+        const res = await fetch('/api/checkclocks/admin', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          // omit credentials if not needed
+        });
+
+
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        const data = await res.json();
+        // Assuming API returns { data: CheckClock[] }
+        const apiEmployees = data;
+
+        // Map backend data to your Employee type
+        // This example assumes each CheckClock item has user and employee relationships populated
+        const formattedEmployees = apiEmployees.map((item: any) => ({
+          id: item.id,
+          name: item.name || 'Unknown',
+          position: item.position || 'Unknown',
+          clockIn: item.clockIn !== '0' ? item.clockIn.slice(0, 5).replace(':', '.') : '0',
+          clockOut: item.clockOut !== '0' ? item.clockOut.slice(0, 5).replace(':', '.') : '0',
+          workHours: item.workHours || '0h 0m',
+          status: item.status || 'Waiting Approval',
+          approved: item.approved || false,
+          rejected: item.rejected || false,
+        }));
+
+
+        setEmployees(formattedEmployees);
+      } catch (error) {
+        console.error('Error fetching employees:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEmployees();
+  }, []);
+
+  const handleStatusChange = async (employeeId: string, newStatus: string) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('No auth token');
+
+      const res = await fetch(`/api/checkclocks/${employeeId}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (!res.ok) throw new Error('Failed to update status');
+
+      setEmployees((prev) =>
+        prev.map((emp) =>
+          emp.id === employeeId
+            ? { ...emp, status: newStatus, approved: newStatus === 'Approved', rejected: newStatus === 'Rejected' }
+            : emp
+        )
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
 
   const handleStatus = (clockIn: string, clockOut: string, workHours: string): string => {
     if (clockIn === "0" && clockOut === "0" && workHours === "0") return "Absent";
@@ -44,7 +115,7 @@ const Checkclock: React.FC = () => {
     if (!selectedEmployee || !confirmAction) return;
 
     const updated = employees.map(emp => {
-      if (emp.name === selectedEmployee.name) {
+      if (emp.id === selectedEmployee.id) {
         const newStatus = confirmAction === 'approve'
           ? handleStatus(emp.clockIn, emp.clockOut, emp.workHours)
           : "Rejected";
@@ -66,8 +137,10 @@ const Checkclock: React.FC = () => {
 
   const handleDetailsClick = (employee: Employee) => {
     setSelectedEmployee(employee);
-    setOpenDialog(true); // Open the view dialog
+    setOpenDialog(true);
   };
+
+  if (loading) return <div>Loading...</div>;
 
   return (
     <div className="flex min-h-screen bg-white">
@@ -78,9 +151,9 @@ const Checkclock: React.FC = () => {
         <EmployeeTable
           employees={employees}
           openConfirmDialog={openConfirmDialog}
-          handleDetailsClick={handleDetailsClick} // Ensure this is defined
+          handleDetailsClick={handleDetailsClick}
           setOpenDialog={setOpenDialog}
-          confirmAction={confirmAction} // Pass this prop
+          confirmAction={confirmAction}
         />
       </div>
       <ConfirmDialog
@@ -93,10 +166,9 @@ const Checkclock: React.FC = () => {
         openDialog={openDialog}
         setOpenDialog={setOpenDialog}
         selectedEmployee={selectedEmployee}
-        onStatusChange={(employeeId, newStatus) => {
-          console.log(`Employee ${employeeId} status changed to ${newStatus}`);
-        }}
+        onStatusChange={handleStatusChange}
       />
+
     </div>
   );
 };

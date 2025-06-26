@@ -32,7 +32,7 @@ const Sidebar: React.FC = () => (
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <Link href="/dashboard" className="group flex flex-col items-center gap-1">
+            <Link href="/dashboard" className="group flex flex-col items-center gap-2">
               <LayoutDashboard className={iconClass} />
               <div className="h-0.5 w-4 bg-white transform scale-x-0 group-hover:scale-x-100 origin-center transition-transform duration-300 rounded" />
             </Link>
@@ -42,7 +42,7 @@ const Sidebar: React.FC = () => (
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <Link href="/employee-database" className="group flex flex-col items-center gap-1">
+            <Link href="/employee-database" className="group flex flex-col items-center gap-2">
               <Users className={iconClass} />
               <div className="h-0.5 w-4 bg-white transform scale-x-0 group-hover:scale-x-100 origin-center transition-transform duration-300 rounded" />
             </Link>
@@ -52,7 +52,7 @@ const Sidebar: React.FC = () => (
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <Link href="/checkclock-admin" className="group flex flex-col items-center gap-1">
+            <Link href="/checkclock-admin" className="group flex flex-col items-center gap-2">
               <Clock className={iconClass} />
               <div className="h-0.5 w-4 bg-white transform scale-x-0 group-hover:scale-x-100 origin-center transition-transform duration-300 rounded" />
             </Link>
@@ -62,7 +62,7 @@ const Sidebar: React.FC = () => (
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <Link href="/pricing-package" className="group flex flex-col items-center gap-1">
+            <Link href="/pricing-package" className="group flex flex-col items-center gap-2">
               <WalletMinimal className={iconClass} />
               <div className="h-0.5 w-4 bg-white transform scale-x-0 group-hover:scale-x-100 origin-center transition-transform duration-300 rounded" />
             </Link>
@@ -72,7 +72,7 @@ const Sidebar: React.FC = () => (
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <Link href="/order-summary" className="group flex flex-col items-center gap-1">
+            <Link href="/order-summary" className="group flex flex-col items-center gap-2">
               <ShoppingCart className={iconClass} />
               <div className="h-0.5 w-4 bg-white transform scale-x-0 group-hover:scale-x-100 origin-center transition-transform duration-300 rounded" />
             </Link>

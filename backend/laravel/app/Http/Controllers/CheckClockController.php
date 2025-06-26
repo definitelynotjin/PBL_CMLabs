@@ -165,4 +165,43 @@ class CheckClockController extends Controller
             'data' => $checkClock,
         ]);
     }
+
+    public function adminView()
+    {
+        $today = Carbon::today();
+
+        $checkClocks = CheckClock::with(['user.employee'])
+            ->whereDate('created_at', $today)
+            ->get()
+            ->groupBy('user_id')
+            ->map(function ($records) {
+                $user = $records->first()->user;
+                $employee = $user->employee;
+
+                $clockInRecord = $records->firstWhere('check_clock_type', '1');
+                $clockOutRecord = $records->firstWhere('check_clock_type', '2');
+
+                $clockIn = $clockInRecord?->check_clock_time ?? '0';
+                $clockOut = $clockOutRecord?->check_clock_time ?? '0';
+
+                $workHours = ($clockIn !== '0' && $clockOut !== '0')
+                    ? gmdate('H\h i\m', strtotime($clockOut) - strtotime($clockIn))
+                    : '0h 0m';
+
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'position' => $employee?->position ?? '-',
+                    'clockIn' => $clockIn,
+                    'clockOut' => $clockOut,
+                    'workHours' => $workHours,
+                    'status' => 'Waiting Approval',
+                    'approved' => false,
+                    'rejected' => false,
+                ];
+            })
+            ->values();
+
+        return response()->json($checkClocks);
+    }
 }

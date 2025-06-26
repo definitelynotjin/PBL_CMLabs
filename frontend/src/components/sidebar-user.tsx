@@ -30,8 +30,9 @@ const Sidebar: React.FC = () => (
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <Link href="/dashboard-user">
+            <Link href="/dashboard-user" className="group flex flex-col items-center gap-2">
               <LayoutDashboard className={iconClass} />
+              <div className="h-0.5 w-4 bg-white transform scale-x-0 group-hover:scale-x-100 origin-center transition-transform duration-300 rounded" />
             </Link>
           </TooltipTrigger>
           <TooltipContent side="right">
@@ -42,8 +43,9 @@ const Sidebar: React.FC = () => (
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <Link href="/checkclock">
+            <Link href="/checkclock" className="group flex flex-col items-center gap-2">
               <Clock className={iconClass} />
+              <div className="h-0.5 w-4 bg-white transform scale-x-0 group-hover:scale-x-100 origin-center transition-transform duration-300 rounded" />
             </Link>
           </TooltipTrigger>
           <TooltipContent side="right">
