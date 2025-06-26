@@ -62,26 +62,28 @@ class EmployeeController extends Controller
             'tipe_sp' => 'nullable|in:SP 1,SP 2,SP 3',
         ]);
 
-        // 1. Create the user
+        $uuid = \Ramsey\Uuid\Uuid::uuid4()->toString();
+
+        // Create User with consistent UUID
         $user = User::create([
-            'id' => Uuid::uuid4()->toString(),
+            'id' => $uuid,
             'name' => $validated['first_name'] . ' ' . $validated['last_name'],
             'email' => $validated['email'],
-            'password' => bcrypt('defaultpassword'), // or Str::random(8)
-            'role' => 'employee', // optional, depending on your system
+            'password' => bcrypt('defaultpassword'), // or generate random password
+            'role' => 'employee',
             'status' => 'active',
         ]);
 
+        // Generate EMP001-like employee ID
         $user->employee_id = EmployeeIdGenerator::generate();
         $user->save();
 
-
-        // 2. Create the employee, link it to the user
+        // Create Employee linked to User
         $employee = Employee::create(array_merge(
             $validated,
             [
-                'id' => Uuid::uuid4()->toString(),
-                'user_id' => $user->id,
+                'id' => \Ramsey\Uuid\Uuid::uuid4()->toString(),
+                'user_id' => $uuid,
             ]
         ));
 
@@ -91,6 +93,7 @@ class EmployeeController extends Controller
             'data' => $employee,
         ], 201);
     }
+
 
 
     public function show($id)
