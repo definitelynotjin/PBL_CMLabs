@@ -13,6 +13,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
 
 interface EmployeeTableProps {
   employees: Employee[];
@@ -33,6 +40,10 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
 }) => {
   const [sortKey, setSortKey] = useState<keyof Employee | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | null>(null);
+
+  // For delete confirmation dialog state
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [employeeToDelete, setEmployeeToDelete] = useState<Employee | null>(null);
 
   const toggleSort = (key: keyof Employee) => {
     if (sortKey !== key) {
@@ -72,14 +83,19 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
     });
   }, [employees, sortKey, sortDirection]);
 
-  const handleDelete = async (empId: string) => {
-    if (!confirm('Are you sure you want to delete this employee?')) return;
+  const openDeleteDialog = (emp: Employee) => {
+    setEmployeeToDelete(emp);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDelete = async () => {
+    if (!employeeToDelete) return;
 
     try {
       const token = localStorage.getItem('token');
       if (!token) throw new Error('No auth token found');
 
-      const res = await fetch(`${API_BASE_URL}/employees/${empId}`, {
+      const res = await fetch(`${API_BASE_URL}/employees/${employeeToDelete.id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -90,12 +106,13 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
 
       toast.success('Employee deleted successfully');
       refreshData(); // reload employee list after deletion
+      setDeleteDialogOpen(false);
+      setEmployeeToDelete(null);
     } catch (err) {
       console.error(err);
       toast.error('Failed to delete employee');
     }
   };
-
 
   const handleStatusToggle = async (emp: Employee) => {
     const newStatus = emp.status ? 0 : 1;
@@ -141,11 +158,14 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
               ].map((col, idx) => (
                 <th key={idx} className="p-2">
                   <div
-                    className={`flex items-center gap-1 ${col.key ? 'cursor-pointer' : ''}`}
+                    className={`flex items-center gap-1 ${col.key ? 'cursor-pointer' : ''
+                      }`}
                     onClick={() => col.key && toggleSort(col.key as keyof Employee)}
                   >
                     {col.label}
-                    {col.key && <ChevronsUpDown className="w-4 h-4 text-muted-foreground" />}
+                    {col.key && (
+                      <ChevronsUpDown className="w-4 h-4 text-muted-foreground" />
+                    )}
                   </div>
                 </th>
               ))}
@@ -155,18 +175,24 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={10} className="text-center p-4">Loading...</td>
+                <td colSpan={10} className="text-center p-4">
+                  Loading...
+                </td>
               </tr>
             ) : sortedEmployees.length === 0 ? (
               <tr>
-                <td colSpan={10} className="text-center p-4">No employees found.</td>
+                <td colSpan={10} className="text-center p-4">
+                  No employees found.
+                </td>
               </tr>
             ) : (
               sortedEmployees.map((emp, index) => (
                 <tr key={emp.id} className="border-t hover:bg-gray-50">
                   <td className="p-2">{index + 1}</td>
                   <td className="p-2">{emp.user?.employee_id || '-'}</td>
-                  <td className="p-2">{emp.first_name} {emp.last_name}</td>
+                  <td className="p-2">
+                    {emp.first_name} {emp.last_name}
+                  </td>
                   <td className="p-2">{emp.gender}</td>
                   <td className="p-2">{emp.phone}</td>
                   <td className="p-2">{emp.check_clock_setting?.name || '-'}</td>
@@ -204,7 +230,7 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => handleDelete(emp.id)}
+                          onClick={() => openDeleteDialog(emp)}
                           className="hover:bg-[#C11106] hover:text-white"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -212,8 +238,6 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
                       </TooltipTrigger>
                       <TooltipContent side="top">Delete</TooltipContent>
                     </Tooltip>
-
-
 
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -242,13 +266,36 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
                       </TooltipTrigger>
                       <TooltipContent side="top">View Profile</TooltipContent>
                     </Tooltip>
-
                   </td>
                 </tr>
               ))
             )}
           </tbody>
         </table>
+
+        {/* Delete Confirmation Dialog */}
+        <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Confirm Delete</DialogTitle>
+            </DialogHeader>
+            <div>
+              Are you sure you want to delete{' '}
+              <strong>{employeeToDelete?.first_name} {employeeToDelete?.last_name}</strong>?
+            </div>
+            <DialogFooter>
+              <Button variant="ghost" onClick={() => setDeleteDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={handleDelete}
+              >
+                Delete
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </TooltipProvider>
   );
