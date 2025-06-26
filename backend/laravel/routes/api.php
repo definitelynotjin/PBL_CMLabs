@@ -44,8 +44,7 @@
     // Protected routes
     Route::middleware('auth:sanctum')->group(function () {
         //Admin view for all employee's attendance
-        Route::get('/checkclocks/admin', [CheckClockController::class, 'adminView'])->middleware('admin');
-
+        Route::get('/checkclocks/admin', [CheckClockController::class, 'adminView']);
 
         // User Info & Avatar
         Route::get('/me', fn(Request $request) => $request->user()->load('employee'));
