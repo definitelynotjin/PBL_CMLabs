@@ -56,13 +56,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/absence-requests/{id}', [AbsenceRequestController::class, 'update']);
     Route::delete('/absence-requests/{id}', [AbsenceRequestController::class, 'destroy']);
 
+    //Get Employee Attendance
+    Route::get('/checkclocks/me', [CheckClockController::class, 'myCheckClocks']);
     // Check Clock resources
     Route::apiResource('checkclocks', CheckClockController::class);
     Route::apiResource('checkclocksettings', CheckClockSettingController::class);
     Route::apiResource('checkclocksettingtimes', CheckClockSettingTimeController::class);
 
     //Get Employee's own checkclock
-    Route::get('/checkclocks/me', [CheckClockController::class, 'myCheckClocks']);
+
 
 
     // Employees CRUD

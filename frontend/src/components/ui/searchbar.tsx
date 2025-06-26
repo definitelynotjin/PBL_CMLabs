@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import debounce from 'lodash.debounce';
+import { Search } from 'lucide-react';
 
 interface SearchBarProps {
     value: string;
@@ -22,10 +23,7 @@ export default function SearchBar({
         setLocalValue(value);
     }, [value]);
 
-    const debouncedChange = useMemo(
-        () => debounce(onChange, 300),
-        [onChange]
-    );
+    const debouncedChange = useMemo(() => debounce(onChange, 300), [onChange]);
 
     useEffect(() => {
         debouncedChange(localValue);
@@ -33,13 +31,20 @@ export default function SearchBar({
     }, [localValue, debouncedChange]);
 
     return (
-        <input
-            type="search"
-            value={localValue}
-            onChange={(e) => setLocalValue(e.target.value)}
-            placeholder={placeholder}
-            className={`bg-white text-[#1E3A5F] placeholder-[#1E3A5F] text-sm rounded-lg px-4 py-2 w-full shadow-sm border border-[#1E3A5F] focus:outline-none focus:ring-2 focus:ring-[#1E3A5F] transition duration-200 ${className}`}
-            aria-label="Search"
-        />
+        <div className={`relative w-full ${className}`}>
+            <Search
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-[#1E3A5F]"
+                size={18}
+                aria-hidden="true"
+            />
+            <input
+                type="search"
+                value={localValue}
+                onChange={(e) => setLocalValue(e.target.value)}
+                placeholder={placeholder}
+                className="pl-10 pr-4 py-2 w-full rounded-lg border-2 border-[#1E3A5F] text-[#1E3A5F] placeholder-[#1E3A5F] bg-white focus:outline-none focus:ring-4 focus:ring-[#1E3A5F]/50 transition duration-200"
+                aria-label="Search"
+            />
+        </div>
     );
 }
