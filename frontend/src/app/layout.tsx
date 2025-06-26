@@ -30,7 +30,40 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <GoogleOAuthProvider clientId="217627718844-cu531f7ko77cjms8d6pomg5pr29u2nc6.apps.googleusercontent.com">
           {children}
-          <Toaster /> {/* <-- Add this here */}
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              // Default toast style
+              style: {
+                background: '#1E3A5F', // Berkeley Blue
+                color: '#ffffff',
+                borderRadius: '0.5rem',
+                padding: '12px 16px',
+                fontSize: '0.875rem',
+              },
+              // Success toasts
+              success: {
+                style: {
+                  background: '#15803d', // Tailwind green-700
+                },
+                iconTheme: {
+                  primary: '#22c55e',
+                  secondary: '#ffffff',
+                },
+              },
+              // Error toasts
+              error: {
+                style: {
+                  background: '#b91c1c', // Tailwind red-700
+                },
+                iconTheme: {
+                  primary: '#f87171',
+                  secondary: '#ffffff',
+                },
+              },
+            }}
+          />
+
         </GoogleOAuthProvider>
       </body>
     </html>

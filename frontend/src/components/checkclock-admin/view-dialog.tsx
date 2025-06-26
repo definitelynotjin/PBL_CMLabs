@@ -38,17 +38,17 @@ export const ViewDialog = ({
     // Menggunakan nilai dari attendance information yang sudah ditampilkan
     const clockInTime = selectedEmployee?.clockIn || "0";
     const clockOutTime = selectedEmployee?.clockOut || "0";
-    
+
     // Jika clock in dan clock out bernilai 0, maka absent
-    if ((clockInTime === "0" || clockInTime === "00:00" || !clockInTime) && 
-        (clockOutTime === "0" || clockOutTime === "00:00" || !clockOutTime)) {
+    if ((clockInTime === "0" || clockInTime === "00:00" || !clockInTime) &&
+      (clockOutTime === "0" || clockOutTime === "00:00" || !clockOutTime)) {
       return "Absent";
     }
 
     // Konversi waktu ke menit untuk perbandingan
     const clockInMinutes = timeToMinutes(clockInTime);
     const clockOutMinutes = timeToMinutes(clockOutTime);
-    
+
     // Waktu standar dalam menit
     const standardClockIn = 8 * 60; // 08:00 = 480 menit
     const lateThreshold = 8 * 60 + 15; // 08:15 = 495 menit
@@ -122,7 +122,7 @@ export const ViewDialog = ({
                   {currentStatus}
                 </span>
               </div>
-              
+
               {/* Action Buttons - Check and X */}
               {currentStatus === "Waiting Approval" && (
                 <div className="flex gap-2">
@@ -145,17 +145,19 @@ export const ViewDialog = ({
             {/* 🟨 Section 2: Attendance Info */}
             <div className="space-y-2 border-b pb-4">
               <h3 className="text-base font-semibold">Attendance Information</h3>
-              <p><strong>Clock In:</strong> {selectedEmployee.clockIn}</p>
-              <p><strong>Clock Out:</strong> {selectedEmployee.clockOut}</p>
-              <p><strong>Work Hours:</strong> {selectedEmployee.workHours}</p>
-              <p><strong>Position:</strong> {selectedEmployee.position}</p>
+              <div className="font-semibold space-y-1">
+                <p>Clock In: {selectedEmployee.clockIn}</p>
+                <p>Clock Out: {selectedEmployee.clockOut}</p>
+                <p>Work Hours: {selectedEmployee.workHours}</p>
+              </div>
             </div>
 
             {/* 🟩 Section 3: Location & Proof */}
             <div className="space-y-2">
               <h3 className="text-base font-semibold">Proof of Attendance</h3>
-              <p><strong>Location:</strong> {selectedEmployee.ck_setting?.name || 'Unknown'}</p>
-              {/* Display image or file proof */}
+              <div className="font-semibold">
+                <p>Location: {selectedEmployee.ck_setting?.name || 'Unknown'}</p>
+              </div>
               {selectedEmployee.proof_file_url ? (
                 <div className="mt-2">
                   <Image
