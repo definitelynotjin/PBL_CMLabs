@@ -33,6 +33,7 @@ services:
     volumes:
       - ./backend/laravel:/var/www/html
       - ./backend/laravel/.env:/var/www/html/.env
+    user: "${UID}:${GID}"
     networks:
       - hris_network
 
