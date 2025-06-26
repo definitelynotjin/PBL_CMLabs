@@ -41,7 +41,7 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
   const [sortKey, setSortKey] = useState<keyof Employee | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | null>(null);
 
-  // For delete confirmation dialog state
+  // State for delete dialog
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [employeeToDelete, setEmployeeToDelete] = useState<Employee | null>(null);
 
@@ -279,18 +279,18 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
             <DialogHeader>
               <DialogTitle>Confirm Delete</DialogTitle>
             </DialogHeader>
-            <div>
+            <div className="py-4">
               Are you sure you want to delete{' '}
-              <strong>{employeeToDelete?.first_name} {employeeToDelete?.last_name}</strong>?
+              <strong>
+                {employeeToDelete?.first_name} {employeeToDelete?.last_name}
+              </strong>
+              ?
             </div>
             <DialogFooter>
               <Button variant="ghost" onClick={() => setDeleteDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button
-                variant="destructive"
-                onClick={handleDelete}
-              >
+              <Button variant="destructive" onClick={handleDelete}>
                 Delete
               </Button>
             </DialogFooter>
