@@ -3,11 +3,12 @@
 import React, { useEffect, useState } from 'react';
 import SidebarUser from '@/components/sidebar-user';
 import CheckclockHeader from '@/components/checkclock-user/header';
-import AttendanceTable from '@/components/checkclock-user/attendance-table';
+import CheckClockTable from '@/components/checkclock-user/attendance-table';
 import Title from '@/components/checkclock-user/title';
 import { UserCheckClockViewDialog } from '@/components/checkclock-user/view-dialog';
 
 interface AttendanceRecord {
+  id: string;
   date: string;
   clockIn: string;
   clockOut: string;
@@ -19,10 +20,13 @@ export default function CheckclockUser() {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<AttendanceRecord | null>(null);
   const [attendanceData, setAttendanceData] = useState<AttendanceRecord[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) return;
+
+    setLoading(true); // Start loading
 
     fetch('https://pblcmlabs.duckdns.org/api/checkclocks/me', {
       headers: {
@@ -35,11 +39,13 @@ export default function CheckclockUser() {
         if (data.data) {
           const groupedByDate = groupByDate(data.data);
           setAttendanceData(groupedByDate);
-        } else {
-          console.error('API response missing data:', data);
         }
+        setLoading(false); // Done loading
       })
-      .catch((err) => console.error('Failed to fetch attendance data', err));
+      .catch((err) => {
+        console.error('Failed to fetch attendance data', err);
+        setLoading(false);
+      });
   }, []);
 
   const groupByDate = (data: any[]): AttendanceRecord[] => {
@@ -51,6 +57,7 @@ export default function CheckclockUser() {
 
       if (!grouped[key]) {
         grouped[key] = {
+          id: entry.id,  // <-- assign id from current entry
           date: key,
           clockIn: '',
           clockOut: '',
@@ -58,6 +65,7 @@ export default function CheckclockUser() {
           status: 'Awaiting Approval',
         };
       }
+
 
       // Note: check_clock_type may be string or number, so use == for loose equality
       if (entry.check_clock_type == 1) {
@@ -88,8 +96,9 @@ export default function CheckclockUser() {
       <div className="flex-1 p-4 md:p-6 space-y-6">
         <CheckclockHeader />
         <Title />
-        <AttendanceTable
-          data={attendanceData}
+        <CheckClockTable
+          loading={loading}
+          records={attendanceData}
           onView={(record: AttendanceRecord) => {
             setSelectedRecord(record);
             setOpenDialog(true);
