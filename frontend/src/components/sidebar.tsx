@@ -18,7 +18,6 @@ import {
 
 const iconClass = "w-5 h-5 text-white hover:text-[#7CA5BF] transition-colors duration-200";
 
-
 const Sidebar: React.FC = () => (
   <TooltipProvider>
     <aside className="w-16 h-screen sticky top-0 flex flex-col justify-between items-center bg-[#1E3A5F] py-4">
@@ -33,57 +32,52 @@ const Sidebar: React.FC = () => (
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <Link href="/dashboard">
+            <Link href="/dashboard" className="group flex flex-col items-center gap-1">
               <LayoutDashboard className={iconClass} />
+              <div className="h-0.5 w-4 bg-white transform scale-x-0 group-hover:scale-x-100 origin-center transition-transform duration-300 rounded" />
             </Link>
           </TooltipTrigger>
-          <TooltipContent side="right">
-            Dashboard
-          </TooltipContent>
+          <TooltipContent side="right">Dashboard</TooltipContent>
         </Tooltip>
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <Link href="/employee-database">
+            <Link href="/employee-database" className="group flex flex-col items-center gap-1">
               <Users className={iconClass} />
+              <div className="h-0.5 w-4 bg-white transform scale-x-0 group-hover:scale-x-100 origin-center transition-transform duration-300 rounded" />
             </Link>
           </TooltipTrigger>
-          <TooltipContent side="right">
-            Employee Database
-          </TooltipContent>
+          <TooltipContent side="right">Employee Database</TooltipContent>
         </Tooltip>
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <Link href="/checkclock-admin">
+            <Link href="/checkclock-admin" className="group flex flex-col items-center gap-1">
               <Clock className={iconClass} />
+              <div className="h-0.5 w-4 bg-white transform scale-x-0 group-hover:scale-x-100 origin-center transition-transform duration-300 rounded" />
             </Link>
           </TooltipTrigger>
-          <TooltipContent side="right">
-            Check Clock
-          </TooltipContent>
+          <TooltipContent side="right">Check Clock</TooltipContent>
         </Tooltip>
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <Link href="/pricing-package">
+            <Link href="/pricing-package" className="group flex flex-col items-center gap-1">
               <WalletMinimal className={iconClass} />
+              <div className="h-0.5 w-4 bg-white transform scale-x-0 group-hover:scale-x-100 origin-center transition-transform duration-300 rounded" />
             </Link>
           </TooltipTrigger>
-          <TooltipContent side="right">
-            Pricing Package
-          </TooltipContent>
+          <TooltipContent side="right">Pricing Package</TooltipContent>
         </Tooltip>
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <Link href="/order-summary">
+            <Link href="/order-summary" className="group flex flex-col items-center gap-1">
               <ShoppingCart className={iconClass} />
+              <div className="h-0.5 w-4 bg-white transform scale-x-0 group-hover:scale-x-100 origin-center transition-transform duration-300 rounded" />
             </Link>
           </TooltipTrigger>
-          <TooltipContent side="right">
-            Order Summary
-          </TooltipContent>
+          <TooltipContent side="right">Order Summary</TooltipContent>
         </Tooltip>
 
       </div>

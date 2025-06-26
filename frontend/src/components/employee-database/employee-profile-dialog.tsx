@@ -41,6 +41,7 @@ export default function EmployeeProfileDialog({
         <Dialog open={open} onOpenChange={(o) => { if (!o) onClose(); }}>
             <DialogContentCentered>
 
+
                 {/* Header */}
                 <div className="flex items-center justify-between border-b pb-6 mb-6">
                     <div className="flex items-center gap-6">
@@ -58,18 +59,19 @@ export default function EmployeeProfileDialog({
                             className="rounded-full object-cover border"
                         />
 
+                        {/* Name, Position, and Status */}
                         <div>
                             <h1 className="text-2xl font-semibold text-[#1E3A5F]">
                                 {employee.first_name} {employee.last_name}
                             </h1>
                             <p className="text-[#7CA5BF]">{employee.position} &mdash; {employee.department}</p>
+                            <span className={`text-sm font-medium block mt-1 ${getStatusColor(Number(employee.status))}`}>
+                                {Number(employee.status) === 1 ? 'Active' : 'Inactive'}
+                            </span>
                         </div>
-
-                        <span className={`text-sm font-medium ${getStatusColor(Number(employee.status))}`}>
-                            {Number(employee.status) === 1 ? 'Active' : 'Inactive'}
-                        </span>
                     </div>
                 </div>
+
 
                 {/* Personal Info */}
                 <section className="mb-6">
