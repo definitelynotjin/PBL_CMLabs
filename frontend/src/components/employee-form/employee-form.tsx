@@ -95,13 +95,13 @@ export function EmployeeSignInForm({
         {error && <p className="text-red-500 text-sm">{error}</p>}
         <Button
           type="submit"
-          className="w-full p-6 bg-gray-500 hover:bg-gray-600 text-white uppercase"
+          className="w-full p-6 bg-[#1E3A5F] hover:bg-[#7CA5BF] text-white uppercase transition-colors duration-200"
         >
           Sign In
         </Button>
         <Button
           variant="outline"
-          className="w-full p-6 border-gray-200"
+          className="w-full text-[#1E3A5F] p-6 border-gray-200"
           type="button"
           onClick={() => router.push("/signin")}
         >

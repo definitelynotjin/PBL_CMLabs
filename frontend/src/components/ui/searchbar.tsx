@@ -33,18 +33,18 @@ export default function SearchBar({
     return (
         <div className={`relative w-full ${className}`}>
             <Search
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-[#1E3A5F]"
-                size={18}
-                aria-hidden="true"
+                className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#1E3A5F]"
+                size={16}
             />
+
             <input
                 type="search"
                 value={localValue}
                 onChange={(e) => setLocalValue(e.target.value)}
                 placeholder={placeholder}
-                className="pl-10 pr-4 py-2 w-full rounded-lg border-2 border-[#1E3A5F] text-[#1E3A5F] placeholder-[#1E3A5F] bg-white focus:outline-none focus:ring-4 focus:ring-[#1E3A5F]/50 transition duration-200"
-                aria-label="Search"
+                className="pl-9 pr-3 py-1.5 text-sm w-full rounded-md border border-[#1E3A5F] text-[#1E3A5F] placeholder-[#1E3A5F] bg-white focus:outline-none focus:ring-2 focus:ring-[#1E3A5F]/50 transition duration-200"
             />
+
         </div>
     );
 }

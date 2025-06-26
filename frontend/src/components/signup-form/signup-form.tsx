@@ -125,11 +125,12 @@ export const SignUpForm = ({
         {error && <p className="text-red-600">{error}</p>}
         <Button
           type="submit"
-          className="w-full p-6 bg-gray-500 hover:bg-gray-600 text-white uppercase"
+          className="w-full p-6 bg-[#1E3A5F] hover:bg-[#7CA5BF] text-white uppercase transition-colors duration-200"
           disabled={loading}
         >
           {loading ? "Signing up..." : "Sign Up"}
         </Button>
+
       </div>
       <SignUpFooter />
     </form>

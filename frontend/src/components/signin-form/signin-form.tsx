@@ -79,11 +79,15 @@ export function SignInForm({
         <TextInput id="identifier" label="Email or Phone Number" value={identifier} onChange={setIdentifier} />
         <TextInput id="password" label="Password" type="password" value={password} onChange={setPassword} showPassword={showPassword} setShowPassword={setShowPassword} />
         <RememberMe remember={remember} setRemember={setRemember} />
-        <Button type="submit" className="w-full p-6 bg-gray-500 hover:bg-gray-600 text-white uppercase">
+        <Button
+          type="submit"
+          className="w-full p-6 bg-[#1E3A5F] hover:bg-[#7CA5BF] text-white uppercase transition-colors duration-200"
+        >
           Sign In
         </Button>
+
         <GoogleSignIn />
-        <Button type="button" variant="outline" className="w-full p-6 uppercase"
+        <Button type="button" variant="outline" className="w-full p-6 uppercase text-[#1E3A5F]"
           onClick={() => { router.push("/employee-signin"); }}
         >
           Sign In with ID Employee
