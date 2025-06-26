@@ -106,12 +106,21 @@ export default function CheckClockTable({ records, loading, onView }: CheckClock
             ) : (
               sortedRecords.map((rec) => (
                 <tr key={rec.id} className="border-t hover:bg-gray-50">
-                  <td className="p-2">{rec.date}</td>
+                  <td className="p-2">
+                    {new Date(rec.date).toLocaleDateString('en-US', {
+                      weekday: 'short',
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric',
+                    })}
+                  </td>
+
                   <td className="p-2">{rec.clockIn}</td>
                   <td className="p-2">{rec.clockOut}</td>
                   <td className="p-2">{rec.workHours}</td>
                   <td className="p-2 capitalize">{rec.status.replace('_', ' ')}</td>
-                  <td className="p-2 text-right">
+                  <td className="p-2">
+                    <div className="flex items-center justify-center"></div>
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Button
