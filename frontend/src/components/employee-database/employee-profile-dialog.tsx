@@ -26,13 +26,17 @@ export default function EmployeeProfileDialog({
         return branchOptions.find((opt) => opt.value === value)?.label || '-';
     };
 
+
+    const getStatusColor = (status: number) => {
+        return status === 1 ? 'text-green-600' : 'text-gray-500';
+    };
+
     const InfoRow = ({ label, value }: { label: string; value?: string | null }) => (
         <div className="grid grid-cols-3 gap-4 py-1 text-sm">
             <span className="text-gray-600 font-medium">{label}</span>
             <span className="col-span-2">{value || '-'}</span>
         </div>
     );
-
     return (
         <Dialog open={open} onOpenChange={(o) => { if (!o) onClose(); }}>
             <DialogContentCentered>
@@ -60,6 +64,10 @@ export default function EmployeeProfileDialog({
                             </h1>
                             <p className="text-[#7CA5BF]">{employee.position} &mdash; {employee.department}</p>
                         </div>
+
+                        <span className={`text-sm font-medium ${getStatusColor(Number(employee.status))}`}>
+                            {Number(employee.status) === 1 ? 'Active' : 'Inactive'}
+                        </span>
                     </div>
                 </div>
 
