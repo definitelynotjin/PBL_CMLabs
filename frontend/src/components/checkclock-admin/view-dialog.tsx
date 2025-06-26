@@ -116,7 +116,7 @@ export const ViewDialog = ({
               <div className="flex-1">
                 <h2 className="text-lg font-semibold">{selectedEmployee.name}</h2>
                 <p className="text-[#7CA5BF]">
-                  {selectedEmployee.position} &mdash; {selectedEmployee.ck_setting?.name || 'Unknown Department'}
+                  {selectedEmployee.position} &mdash; {selectedEmployee.department.name || 'Unknown Department'}
                 </p>
                 <span className={`text-sm font-medium ${getStatusColor(currentStatus)}`}>
                   {currentStatus}
@@ -156,7 +156,7 @@ export const ViewDialog = ({
             <div className="space-y-2">
               <h3 className="text-base font-semibold">Proof of Attendance</h3>
               <div className="font-semibold">
-                <p>Location: {selectedEmployee.ck_setting?.name || 'Unknown'}</p>
+                <p>Location: {selectedEmployee.ck_setting_id?.name || 'Unknown'}</p>
               </div>
               {selectedEmployee.proof_file_url ? (
                 <div className="mt-2">

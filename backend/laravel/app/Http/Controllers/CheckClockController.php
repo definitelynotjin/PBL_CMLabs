@@ -181,25 +181,35 @@ class CheckClockController extends Controller
                 $clockInRecord = $records->firstWhere('check_clock_type', '1');
                 $clockOutRecord = $records->firstWhere('check_clock_type', '2');
 
-                $clockIn = $clockInRecord?->check_clock_time ?? '0';
-                $clockOut = $clockOutRecord?->check_clock_time ?? '0';
+                $clockIn = $clockInRecord?->check_clock_time;
+                $clockOut = $clockOutRecord?->check_clock_time;
 
-                $workHours = ($clockIn !== '0' && $clockOut !== '0')
+                // Compute work hours
+                $workHours = ($clockIn && $clockOut)
                     ? gmdate('H\h i\m', strtotime($clockOut) - strtotime($clockIn))
                     : '0h 0m';
+
+                // Determine status
+                $status = match (true) {
+                    $clockIn && $clockOut => 'Ready for Review',
+                    $clockIn && !$clockOut => 'Waiting for Clock-Out',
+                    !$clockIn && $clockOut => 'Missing Clock-In',
+                    default => 'Incomplete',
+                };
 
                 return [
                     'id' => $user->id,
                     'name' => $user->name,
                     'position' => $employee?->position ?? '-',
-                    'clockIn' => $clockIn,
-                    'clockOut' => $clockOut,
+                    'clockIn' => $clockIn ?? '-',
+                    'clockOut' => $clockOut ?? '-',
                     'workHours' => $workHours,
-                    'status' => 'Waiting Approval',
+                    'status' => $status,
                     'approved' => false,
                     'rejected' => false,
                 ];
             })
+            ->filter() // remove any null values
             ->values();
 
         return response()->json($checkClocks);
