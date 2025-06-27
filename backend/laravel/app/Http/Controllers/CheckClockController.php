@@ -197,12 +197,15 @@ class CheckClockController extends Controller
                     : '0h 0m';
 
                 // Determine status
-                $status = match (true) {
-                    $clockIn && $clockOut => 'Ready for Review',
-                    $clockIn && !$clockOut => 'Waiting for Clock-Out',
-                    !$clockIn && $clockOut => 'Missing Clock-In',
-                    default => 'Incomplete',
-                };
+                $status = $clockInRecord?->status
+                    ?? $clockOutRecord?->status
+                    ?? match (true) {
+                        $clockIn && !$clockOut => 'Waiting for Clock-Out',
+                        !$clockIn && $clockOut => 'Missing Clock-In',
+                        !$clockIn && !$clockOut => 'Incomplete',
+                        default => 'Ready for Review',
+                    };
+
 
                 return [
                     'id' => $user->id,

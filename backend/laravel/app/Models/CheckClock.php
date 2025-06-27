@@ -22,6 +22,7 @@ class CheckClock extends Model
         'latitude',
         'longitude',
         'supporting_document_path',
+        'status',
         'created_at',
         'updated_at',
         'deleted_at',
