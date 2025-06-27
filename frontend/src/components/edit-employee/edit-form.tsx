@@ -391,6 +391,26 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <Field
+            label="Pendidikan Terakhir"
+            placeholder="Enter last education"
+            value={form.pendidikan_terakhir}
+            onChange={handleChange('pendidikan_terakhir')}
+            disabled={readOnly}
+            className={readOnly ? disabledInputClass : ''}
+          />
+
+          <Field
+            label="NIK"
+            placeholder="Enter NIK"
+            value={form.nik}
+            onChange={handleChange('nik')}
+            disabled={readOnly}
+            className={readOnly ? disabledInputClass : ''}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <Field
             label="Birthplace"
             placeholder="Enter birthplace"
             value={form.tempat_lahir}
@@ -399,14 +419,6 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
             className={readOnly ? disabledInputClass : ''}
           />
 
-          <Field
-            label="Pendidikan Terakhir"
-            placeholder="Enter last education"
-            value={form.pendidikan_terakhir}
-            onChange={handleChange('pendidikan_terakhir')}
-            disabled={readOnly}
-            className={readOnly ? disabledInputClass : ''}
-          />
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium block">Date of Birth</label>
             <ReactDatePicker
@@ -434,6 +446,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
             />
           </div>
         </div>
+
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <Field
@@ -577,15 +590,6 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
               ))}
             </RadioGroup>
           </div>
-
-          <Field
-            label="NIK"
-            placeholder="Enter NIK"
-            value={form.nik}
-            onChange={handleChange('nik')}
-            disabled={readOnly}
-            className={readOnly ? disabledInputClass : ''}
-          />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
