@@ -10,13 +10,16 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Check, X } from "lucide-react";
 import { useState } from "react";
+import { DetailedEmployee } from '@/components/checkclock-admin/type'; // adjust path if needed
+
 
 interface ViewDialogProps {
   openDialog: boolean;
   setOpenDialog: (value: boolean) => void;
-  selectedEmployee: any; // Ideally type this better
-  onStatusChange?: (employeeId: string, newStatus: string) => void; // Callback untuk update status
+  selectedEmployee: DetailedEmployee | null;
+  onStatusChange?: (employeeId: string, newStatus: string) => void;
 }
+
 
 export const ViewDialog = ({
   openDialog,
@@ -116,8 +119,9 @@ export const ViewDialog = ({
               <div className="flex-1">
                 <h2 className="text-lg font-semibold">{selectedEmployee.name}</h2>
                 <p className="text-[#7CA5BF]">
-                  {selectedEmployee.position} &mdash; {selectedEmployee.department.name || 'Unknown Department'}
+                  {selectedEmployee.position || 'Unknown Position'} &mdash; {selectedEmployee.department || 'Unknown Department'}
                 </p>
+
                 <span className={`text-sm font-medium ${getStatusColor(currentStatus)}`}>
                   {currentStatus}
                 </span>
@@ -156,7 +160,7 @@ export const ViewDialog = ({
             <div className="space-y-2">
               <h3 className="text-base font-semibold">Proof of Attendance</h3>
               <div className="font-semibold">
-                <p>Location: {selectedEmployee.ck_setting_id?.name || 'Unknown'}</p>
+                <p>Location: {selectedEmployee.check_clock_setting?.name || 'Unknown'}</p>
               </div>
               {selectedEmployee.proof_file_url ? (
                 <div className="mt-2">

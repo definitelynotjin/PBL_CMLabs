@@ -8,4 +8,21 @@ export interface Employee {
   status: string;
   approved: boolean;
   rejected: boolean;
+  avatar?: string;
+  department?: {
+    name?: string;
+  };
+  ck_setting_id?: {
+    name?: string;
+  };
+  proof_file_url?: string;
+}
+
+export interface DetailedEmployee extends Employee {
+  avatar?: string | null;
+  department?: string;
+  check_clock_setting?: {
+    name?: string;
+  };
+  proof_file_url?: string;
 }

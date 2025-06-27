@@ -162,12 +162,14 @@ const Checkclock: React.FC = () => {
         handleConfirmAction={handleConfirmAction}
         confirmAction={confirmAction}
       />
-      <ViewDialog
-        openDialog={openDialog}
-        setOpenDialog={setOpenDialog}
-        selectedEmployee={selectedEmployee}
-        onStatusChange={handleStatusChange}
-      />
+      {selectedEmployee && (
+        <ViewDialog
+          openDialog={openDialog}
+          setOpenDialog={setOpenDialog}
+          selectedEmployee={selectedEmployee}
+          onStatusChange={handleStatusChange}
+        />
+      )}
 
     </div>
   );
