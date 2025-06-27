@@ -7,25 +7,22 @@ import {
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Check, X } from "lucide-react";
-import { useState } from "react";
 import { DetailedEmployee } from '@/components/checkclock-admin/type'; // adjust path if needed
-
 
 interface ViewDialogProps {
   openDialog: boolean;
   setOpenDialog: (value: boolean) => void;
   selectedEmployee: DetailedEmployee | null;
   onStatusChange?: (employeeId: string, newStatus: string) => void;
+  onOpenConfirmDialog: (employee: DetailedEmployee, action: 'approve' | 'reject') => void;
 }
-
 
 export const ViewDialog = ({
   openDialog,
   setOpenDialog,
   selectedEmployee,
-  onStatusChange,
+  onOpenConfirmDialog,
 }: ViewDialogProps) => {
-  const [currentStatus, setCurrentStatus] = useState(selectedEmployee?.status || "Waiting Approval");
 
   // Helper function untuk mengkonversi waktu string ke menit
   const timeToMinutes = (timeStr: string): number => {
@@ -37,7 +34,7 @@ export const ViewDialog = ({
   const isReviewableStatus = (
     selectedEmployee?.clockIn &&
     selectedEmployee?.clockOut &&
-    ["Waiting Approval", "Ready for Review"].includes(currentStatus)
+    ["Waiting Approval", "Ready for Review"].includes(selectedEmployee?.status || "Waiting Approval")
   );
 
   // Function untuk menentukan status berdasarkan aturan bisnis
@@ -72,21 +69,6 @@ export const ViewDialog = ({
     }
 
     return "Approved";
-  };
-
-  const handleApprove = () => {
-    const newStatus = determineStatus();
-    setCurrentStatus(newStatus);
-    if (onStatusChange && selectedEmployee) {
-      onStatusChange(selectedEmployee.id, newStatus);
-    }
-  };
-
-  const handleReject = () => {
-    setCurrentStatus("Rejected");
-    if (onStatusChange && selectedEmployee) {
-      onStatusChange(selectedEmployee.id, "Rejected");
-    }
   };
 
   const getStatusColor = (status: string) => {
@@ -126,8 +108,8 @@ export const ViewDialog = ({
                   {selectedEmployee.position || 'Unknown Position'} &mdash; {selectedEmployee.department || 'Unknown Department'}
                 </p>
 
-                <span className={`text-sm font-medium ${getStatusColor(currentStatus)}`}>
-                  {currentStatus}
+                <span className={`text-sm font-medium ${getStatusColor(selectedEmployee.status || "Waiting Approval")}`}>
+                  {selectedEmployee.status || "Waiting Approval"}
                 </span>
               </div>
 
@@ -135,13 +117,13 @@ export const ViewDialog = ({
               {isReviewableStatus && (
                 <div className="flex gap-2">
                   <button
-                    onClick={handleApprove}
+                    onClick={() => onOpenConfirmDialog(selectedEmployee, 'approve')}
                     className="w-8 h-8 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center transition-colors"
                   >
                     <Check className="w-5 h-5 text-white" />
                   </button>
                   <button
-                    onClick={handleReject}
+                    onClick={() => onOpenConfirmDialog(selectedEmployee, 'reject')}
                     className="w-8 h-8 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center transition-colors"
                   >
                     <X className="w-5 h-5 text-white" />

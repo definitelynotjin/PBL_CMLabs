@@ -398,6 +398,15 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
             disabled={readOnly}
             className={readOnly ? disabledInputClass : ''}
           />
+
+          <Field
+            label="Pendidikan Terakhir"
+            placeholder="Enter last education"
+            value={form.pendidikan_terakhir}
+            onChange={handleChange('pendidikan_terakhir')}
+            disabled={readOnly}
+            className={readOnly ? disabledInputClass : ''}
+          />
           <div className="space-y-1 w-full">
             <label className="text-sm font-medium block">Date of Birth</label>
             <ReactDatePicker

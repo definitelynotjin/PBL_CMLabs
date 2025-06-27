@@ -7,6 +7,7 @@ import EmployeeTable from "@/components/checkclock-admin/employee-table";
 import { ConfirmDialog } from "@/components/checkclock-admin/confirm-dialog";
 import { ViewDialog } from "@/components/checkclock-admin/view-dialog";
 import { Employee } from "@/components/checkclock-admin/type";
+import toast from 'react-hot-toast';
 import Title from '@/components/checkclock-user/title';
 
 const Checkclock: React.FC = () => {
@@ -111,29 +112,24 @@ const Checkclock: React.FC = () => {
     setShowConfirmModal(true);
   };
 
-  const handleConfirmAction = () => {
+  const handleConfirmAction = async () => {
     if (!selectedEmployee || !confirmAction) return;
 
-    const updated = employees.map(emp => {
-      if (emp.id === selectedEmployee.id) {
-        const newStatus = confirmAction === 'approve'
-          ? handleStatus(emp.clockIn, emp.clockOut, emp.workHours)
-          : "Rejected";
+    const newStatus = confirmAction === 'approve'
+      ? handleStatus(selectedEmployee.clockIn, selectedEmployee.clockOut, selectedEmployee.workHours)
+      : 'Rejected';
 
-        return {
-          ...emp,
-          approved: confirmAction === 'approve',
-          rejected: confirmAction === 'reject',
-          status: newStatus
-        };
-      }
-      return emp;
-    });
-
-    setEmployees(updated);
-    setShowConfirmModal(false);
-    setSelectedEmployee(null);
+    try {
+      await handleStatusChange(selectedEmployee.id, newStatus);
+      toast.success(`Status updated to "${newStatus}" successfully!`);
+      setShowConfirmModal(false);
+      setSelectedEmployee(null);
+    } catch (error) {
+      console.error('Failed to update status:', error);
+      toast.error('Failed to update status. Please try again.');
+    }
   };
+
 
   const handleDetailsClick = (employee: Employee) => {
     setSelectedEmployee(employee);
@@ -162,15 +158,12 @@ const Checkclock: React.FC = () => {
         handleConfirmAction={handleConfirmAction}
         confirmAction={confirmAction}
       />
-      {selectedEmployee && (
-        <ViewDialog
-          openDialog={openDialog}
-          setOpenDialog={setOpenDialog}
-          selectedEmployee={selectedEmployee}
-          onStatusChange={handleStatusChange}
-        />
-      )}
-
+      <ViewDialog
+        openDialog={openDialog}
+        setOpenDialog={setOpenDialog}
+        selectedEmployee={selectedEmployee}
+        onOpenConfirmDialog={openConfirmDialog} // pass handler here
+      />
     </div>
   );
 };

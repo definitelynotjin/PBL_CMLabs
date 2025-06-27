@@ -316,7 +316,7 @@ const AddEmployeeForm: React.FC<AddEmployeeFormProps> = ({ date, setDate, onSucc
         </div>
 
         {/* Birthplace and Date of Birth side by side */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           <Field label="Birthplace" placeholder="Enter birthplace" value={form.tempat_lahir} onChange={handleChange('tempat_lahir')} />
 
           <div className="mb-4">
@@ -343,7 +343,15 @@ const AddEmployeeForm: React.FC<AddEmployeeFormProps> = ({ date, setDate, onSucc
               dropdownMode="select"
             />
           </div>
+
+          <Field
+            label="Pendidikan Terakhir"
+            placeholder="Enter last education"
+            value={form.pendidikan_terakhir}
+            onChange={handleChange('pendidikan_terakhir')}
+          />
         </div>
+
 
         {/* Address and Gender side by side */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

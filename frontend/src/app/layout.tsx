@@ -4,6 +4,8 @@ import "leaflet/dist/leaflet.css";
 import "./globals.css";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { Toaster } from 'react-hot-toast'; // <-- import Toaster
+import "react-datepicker/dist/react-datepicker.css";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
