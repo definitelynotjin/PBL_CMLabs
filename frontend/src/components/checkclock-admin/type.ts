@@ -9,9 +9,7 @@ export interface Employee {
   approved: boolean;
   rejected: boolean;
   avatar?: string | null;
-  department?: {
-    name?: string;
-  };
+  department?: string;
   ck_setting_id?: {
     name?: string;
   };

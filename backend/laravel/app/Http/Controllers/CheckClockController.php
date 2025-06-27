@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use Illuminate\Validation\Rule;
 
 class CheckClockController extends Controller
 {
@@ -117,10 +118,10 @@ class CheckClockController extends Controller
         if ($checkType == 1) { // Check-in
             $scheduledIn = Carbon::createFromTimeString($settingTime->clock_in);
             $gracePeriod = $scheduledIn->copy()->addMinutes(15);
-            return $checkTime->gt($gracePeriod) ? 'late' : 'on_time';
+            return $checkTime->gt($gracePeriod) ? 'Late' : 'On Time';
         } else { // Check-out (2)
             $scheduledOut = Carbon::createFromTimeString($settingTime->clock_out);
-            return $checkTime->lt($scheduledOut) ? 'early' : 'on_time';
+            return $checkTime->lt($scheduledOut) ? 'Early Leave' : 'On Time';
         }
     }
 
@@ -149,8 +150,14 @@ class CheckClockController extends Controller
     public function updateStatus(Request $request, $id)
     {
         $request->validate([
-            'status' => 'required|string|in:Waiting Approval,Approved,Rejected,Late,Early,On Time',
-            // add all statuses you allow here
+            'status' => ['required', 'string', Rule::in([
+                'Waiting Approval',
+                'Approved',
+                'Rejected',
+                'Late',
+                'Early Leave',
+                'On Time'
+            ])],
         ]);
 
         $checkClock = CheckClock::findOrFail($id);

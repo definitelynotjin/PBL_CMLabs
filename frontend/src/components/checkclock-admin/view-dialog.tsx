@@ -119,7 +119,7 @@ export const ViewDialog = ({
               <div className="flex-1">
                 <h2 className="text-lg font-semibold">{selectedEmployee.name}</h2>
                 <p className="text-[#7CA5BF]">
-                  {selectedEmployee.position || 'Unknown Position'} &mdash; {selectedEmployee.department?.name || 'Unknown Department'}
+                  {selectedEmployee.position || 'Unknown Position'} &mdash; {selectedEmployee.department || 'Unknown Department'}
                 </p>
 
                 <span className={`text-sm font-medium ${getStatusColor(currentStatus)}`}>
