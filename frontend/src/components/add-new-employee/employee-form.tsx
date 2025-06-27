@@ -344,14 +344,24 @@ const AddEmployeeForm: React.FC<AddEmployeeFormProps> = ({ date, setDate, onSucc
             />
           </div>
 
-          <Field
-            label="Pendidikan Terakhir"
-            placeholder="Enter last education"
-            value={form.pendidikan_terakhir}
-            onChange={handleChange('pendidikan_terakhir')}
-          />
+          <div className="space-y-1 w-full">
+            <label className="text-sm font-medium">Last Education</label>
+            <Select
+              value={form.pendidikan_terakhir}
+              onValueChange={handleSelectChange('pendidikan_terakhir')}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="-Select Education Level-" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="SMA/SMK">SMA/SMK</SelectItem>
+                <SelectItem value="D3">D3</SelectItem>
+                <SelectItem value="D4/S1">D4/S1</SelectItem>
+                <SelectItem value="S2">S2</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
-
 
         {/* Address and Gender side by side */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -389,25 +389,25 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <Field
-            label="Pendidikan Terakhir"
-            placeholder="Enter last education"
+        <div className="space-y-1 w-full">
+          <label className="text-sm font-medium">Pendidikan Terakhir</label>
+          <Select
             value={form.pendidikan_terakhir}
-            onChange={handleChange('pendidikan_terakhir')}
+            onValueChange={handleSelectChange('pendidikan_terakhir')}
             disabled={readOnly}
-            className={readOnly ? disabledInputClass : ''}
-          />
-
-          <Field
-            label="NIK"
-            placeholder="Enter NIK"
-            value={form.nik}
-            onChange={handleChange('nik')}
-            disabled={readOnly}
-            className={readOnly ? disabledInputClass : ''}
-          />
+          >
+            <SelectTrigger className={`w-full ${readOnly ? disabledInputClass : ''}`}>
+              <SelectValue placeholder="-Select Education Level-" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="SMA/SMK">SMA/SMK</SelectItem>
+              <SelectItem value="D3">D3</SelectItem>
+              <SelectItem value="D4/S1">D4/S1</SelectItem>
+              <SelectItem value="S2">S2</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
+
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <Field
