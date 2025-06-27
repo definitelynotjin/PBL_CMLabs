@@ -1,6 +1,6 @@
 import {
   Dialog,
-  DialogContent,
+  DialogContentCentered, // import your centered dialog content
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -28,7 +28,7 @@ export const ConfirmDialog = ({
         if (!open) setShowConfirmModal(false);
       }}
     >
-      <DialogContent className="max-w-md w-full">
+      <DialogContentCentered className="max-w-md w-full">
         <DialogHeader>
           <DialogTitle>
             {confirmAction === 'approve' ? 'Approve Attendance' : 'Reject Attendance'} (DEBUG)
@@ -45,7 +45,7 @@ export const ConfirmDialog = ({
             {confirmAction === 'approve' ? 'Approve' : 'Reject'}
           </Button>
         </DialogFooter>
-      </DialogContent>
+      </DialogContentCentered>
     </Dialog>
   );
 };
