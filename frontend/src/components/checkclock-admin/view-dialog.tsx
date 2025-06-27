@@ -3,8 +3,6 @@
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -35,6 +33,12 @@ export const ViewDialog = ({
     const [hours, minutes] = timeStr.split(':').map(Number);
     return hours * 60 + minutes;
   };
+
+  const isReviewableStatus = (
+    selectedEmployee?.clockIn &&
+    selectedEmployee?.clockOut &&
+    ["Waiting Approval", "Ready for Review"].includes(currentStatus)
+  );
 
   // Function untuk menentukan status berdasarkan aturan bisnis
   const determineStatus = (): string => {
@@ -128,7 +132,7 @@ export const ViewDialog = ({
               </div>
 
               {/* Action Buttons - Check and X */}
-              {currentStatus === "Waiting Approval" && (
+              {isReviewableStatus && (
                 <div className="flex gap-2">
                   <button
                     onClick={handleApprove}
