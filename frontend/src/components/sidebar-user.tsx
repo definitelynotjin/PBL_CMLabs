@@ -35,9 +35,7 @@ const Sidebar: React.FC = () => (
               <div className="h-0.5 w-4 bg-white transform scale-x-0 group-hover:scale-x-100 origin-center transition-transform duration-300 rounded" />
             </Link>
           </TooltipTrigger>
-          <TooltipContent side="right">
-            Dashboard
-          </TooltipContent>
+          <TooltipContent side="right">Dashboard</TooltipContent>
         </Tooltip>
 
 
@@ -48,9 +46,7 @@ const Sidebar: React.FC = () => (
               <div className="h-0.5 w-4 bg-white transform scale-x-0 group-hover:scale-x-100 origin-center transition-transform duration-300 rounded" />
             </Link>
           </TooltipTrigger>
-          <TooltipContent side="right">
-            Check Clock
-          </TooltipContent>
+          <TooltipContent side="right">Check Clock</TooltipContent>
         </Tooltip>
 
       </div>
