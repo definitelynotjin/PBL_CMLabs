@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Dialog, DialogHeader, DialogTitle, DialogFooter, DialogContentCentered } from '@/components/ui/dialog';
+import { Dialog, DialogHeader, DialogTitle, DialogFooter, DialogContentSidebarRight } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import toast from 'react-hot-toast';
@@ -34,7 +34,7 @@ export default function UploadDocumentsDialog({
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContentCentered>
+      <DialogContentSidebarRight>
         <DialogHeader>
           <DialogTitle>Upload Document</DialogTitle>
         </DialogHeader>
@@ -53,7 +53,7 @@ export default function UploadDocumentsDialog({
           <Button variant="outline" onClick={onClose}>Cancel</Button>
           <Button onClick={handleSubmit}>Upload</Button>
         </DialogFooter>
-      </DialogContentCentered>
+      </DialogContentSidebarRight>
     </Dialog>
   );
 }

@@ -135,6 +135,19 @@ function DialogContentCentered(props: React.ComponentProps<typeof DialogContent>
   );
 }
 
+function DialogContentSidebarRight(props: React.ComponentProps<typeof DialogContent>) {
+  return (
+    <DialogContent
+      {...props}
+      className={cn(
+        "fixed inset-y-0 right-0 max-w-md w-full bg-white shadow-xl overflow-y-auto p-6 animate-in slide-in-from-right duration-300",
+        props.className
+      )}
+    />
+  );
+}
+
+
 
 export {
   Dialog,
@@ -148,4 +161,5 @@ export {
   DialogTitle,
   DialogTrigger,
   DialogContentCentered,
+  DialogContentSidebarRight,
 }
