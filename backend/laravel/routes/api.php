@@ -35,6 +35,7 @@
     Route::middleware(['auth:sanctum', 'admin'])->patch('/checkclocks/{id}/status', [CheckClockController::class, 'updateStatus']);
 
     // Documents
+    Route::middleware(['auth:sanctum', 'admin'])->delete('/documents/{id}', [DocumentController::class, 'destroy']);
     Route::get('/employees/{userId}/documents', [DocumentController::class, 'index']);
     Route::post('/documents', [DocumentController::class, 'store']);
 

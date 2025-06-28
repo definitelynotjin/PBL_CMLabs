@@ -47,4 +47,19 @@ class DocumentController extends Controller
 
         return response()->json($document, 201);
     }
+
+    public function destroy($id)
+    {
+        $document = Document::findOrFail($id);
+
+        // Optional: Check admin auth here
+
+        // Delete file from storage
+        Storage::disk('public')->delete($document->file_path);
+
+        // Delete DB record
+        $document->delete();
+
+        return response()->json(['message' => 'Document deleted']);
+    }
 }
