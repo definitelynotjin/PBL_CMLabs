@@ -140,12 +140,16 @@ function DialogContentSidebarRight(props: React.ComponentProps<typeof DialogCont
     <DialogContent
       {...props}
       className={cn(
-        "fixed inset-y-0 right-0 max-w-md w-full bg-white shadow-xl overflow-y-auto p-6 z-[10000] data-[state=open]:animate-in slide-in-from-right duration-300",
+        "fixed inset-y-0 right-0 max-w-md w-full bg-white shadow-xl overflow-y-auto p-6 z-[10000]",
+        "data-[state=open]:animate-in data-[state=open]:slide-in-from-right",
+        "data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right",
+        "duration-300",
         props.className
       )}
     />
   );
 }
+
 
 
 

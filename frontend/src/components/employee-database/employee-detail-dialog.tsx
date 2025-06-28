@@ -3,7 +3,7 @@
 import React from 'react';
 import {
   Dialog,
-  DialogContent,
+  DialogContentSidebarRight,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
@@ -23,7 +23,8 @@ export default function EmployeeDetailDialog({
 
   return (
     <Dialog open={true} onOpenChange={(open) => { if (!open) onClose(); }}>
-      <DialogContent className="fixed inset-y-0 right-0 max-w-md w-full bg-white shadow-xl overflow-y-auto p-6 animate-in slide-in-from-right duration-300 z-[9999]">
+      <DialogContentSidebarRight
+        className="fixed inset-y-0 right-0 max-w-md w-full bg-white shadow-xl overflow-y-auto p-6 animate-in slide-in-from-right duration-300 z-[9999]">
         <div className="space-y-6">
 
           {/* Employee Info Header */}
@@ -69,7 +70,7 @@ export default function EmployeeDetailDialog({
             </Button>
           </div>
         </div>
-      </DialogContent>
+      </DialogContentSidebarRight>
     </Dialog>
   );
 }
