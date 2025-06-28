@@ -13,9 +13,10 @@ class AdminMiddleware
         $user = $request->user();
 
         // Replace this with your actual admin check logic
-        if (!$user || !$user->isAdmin()) {
+        if (!$user || $user->role !== 'admin') {
             abort(403, 'Unauthorized - Admins only');
         }
+
 
         return $next($request);
     }
