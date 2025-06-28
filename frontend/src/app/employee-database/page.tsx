@@ -8,7 +8,7 @@ import Actions from '@/components/employee-database/actions';
 import EmployeeTable from '@/components/employee-database/employee-table';
 import EmployeeDetailDialog from '@/components/employee-database/employee-detail-dialog';
 import UploadDocumentDialog from '@/components/employee-database/upload-documents-dialog';
-import EmployeeDocumentsDialog from '@/components/employee-database/employee-documents-dialog';
+import EmployeeDocumentsDialog from '@/components/employee-database/employee-documents';
 import EmployeeProfileDialog from '@/components/employee-database/employee-profile-dialog';
 import toast from 'react-hot-toast';
 
