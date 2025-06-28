@@ -6,13 +6,16 @@ use App\Models\Document;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
+use App\Models\Employee;
 
 
 class DocumentController extends Controller
 {
-    public function index($userId)
+    public function index($employeeId)
     {
-        return Document::where('user_id', $userId)->get()->map(function ($doc) {
+        $employee = Employee::findOrFail($employeeId);
+
+        $documents = Document::where('user_id', $employee->user_id)->get()->map(function ($doc) {
             return [
                 'id' => $doc->id,
                 'document_type' => $doc->document_type,
@@ -20,6 +23,8 @@ class DocumentController extends Controller
                 'file_url' => Storage::url($doc->file_path),
             ];
         });
+
+        return response()->json($documents);
     }
 
     public function store(Request $request)
