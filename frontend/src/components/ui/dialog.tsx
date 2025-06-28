@@ -128,12 +128,13 @@ function DialogContentCentered(props: React.ComponentProps<typeof DialogContent>
     <DialogContent
       {...props}
       className={cn(
-        "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 max-w-4xl w-full p-6 bg-white rounded-xl shadow-md overflow-y-auto max-h-[90vh]",
+        "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 max-w-4xl w-full p-6 bg-white rounded-xl shadow-md overflow-y-auto max-h-[90vh] z-[10000]",
         props.className
       )}
     />
   );
 }
+
 
 export {
   Dialog,
