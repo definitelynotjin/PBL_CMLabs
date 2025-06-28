@@ -21,6 +21,10 @@ export default function EmployeeDetailDialog({
   onShowUpload: () => void;
 }) {
 
+  const getStatusColor = (status: number) => {
+    return status === 1 ? 'text-green-600' : 'text-gray-500';
+  };
+
   return (
     <Dialog open={true} onOpenChange={(open) => { if (!open) onClose(); }}>
       <DialogContentSidebarRight
@@ -39,8 +43,8 @@ export default function EmployeeDetailDialog({
             <div className="flex-1">
               <h2 className="text-lg font-semibold">{employee.first_name} {employee.last_name}</h2>
 
-              <span className={`inline-block mt-1 px-2 py-0.5 text-xs rounded-full ${employee.status === 1 ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-500'}`}>
-                {employee.status === 1 ? 'Active' : 'Inactive'}
+              <span className={`inline-block mt-1 px-2 py-0.5 text-xs rounded-full ${getStatusColor(Number(employee.status))}`}>
+                {Number(employee.status) === 1 ? 'Active' : 'Inactive'}
               </span>
 
               <p className="text-[#7CA5BF] mt-1">

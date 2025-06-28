@@ -149,6 +149,7 @@ export default function LetterManagementPage() {
 
         {showDocuments && selectedEmployee && (
           <EmployeeDocumentsDialog
+            open={showDocuments}
             employeeId={selectedEmployee.id}
             onClose={() => setShowDocuments(false)}
           />
