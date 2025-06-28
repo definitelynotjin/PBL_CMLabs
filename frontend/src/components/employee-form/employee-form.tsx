@@ -56,7 +56,7 @@ export function EmployeeSignInForm({
       const data = await res.json();
 
       if (!data.token) {
-        throw new Error("No token received from server");
+        throw new Error("Your account is inactive. Please contact admin.");
       }
 
       localStorage.setItem("token", data.token);
