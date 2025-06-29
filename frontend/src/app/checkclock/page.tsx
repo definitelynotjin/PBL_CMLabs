@@ -16,6 +16,68 @@ interface AttendanceRecord {
   status: string;
 }
 
+// ✅ Converts absence entries into displayable records
+const convertAbsencesToRecords = (absences: any[]): AttendanceRecord[] => {
+  const absenceRecords: AttendanceRecord[] = [];
+
+  absences.forEach((absence) => {
+    const start = new Date(absence.start_date);
+    const end = new Date(absence.end_date);
+
+    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+      const dateStr = d.toISOString().split('T')[0];
+      absenceRecords.push({
+        id: `${absence.id}-${dateStr}`,
+        date: dateStr,
+        clockIn: '—',
+        clockOut: '—',
+        workHours: '—',
+        status: absence.absence_type.replace('-', ' ').toUpperCase(),
+      });
+    }
+  });
+
+  return absenceRecords;
+};
+
+// ✅ Groups check clock entries by date and calculates work hours
+const groupByDate = (data: any[]): AttendanceRecord[] => {
+  const grouped: Record<string, AttendanceRecord> = {};
+
+  data.forEach((entry) => {
+    const key = entry.created_at?.split('T')[0] ?? 'Unknown Date';
+
+    if (!grouped[key]) {
+      grouped[key] = {
+        id: entry.id,
+        date: key,
+        clockIn: '',
+        clockOut: '',
+        workHours: '',
+        status: 'Awaiting Approval',
+      };
+    }
+
+    if (entry.check_clock_type == 1) {
+      grouped[key].clockIn = entry.check_clock_time;
+      grouped[key].status = entry.status || 'Awaiting Approval';
+    }
+
+    if (entry.check_clock_type == 2) {
+      grouped[key].clockOut = entry.check_clock_time;
+    }
+
+    if (grouped[key].clockIn && grouped[key].clockOut) {
+      const [h1, m1] = grouped[key].clockIn.split(':').map(Number);
+      const [h2, m2] = grouped[key].clockOut.split(':').map(Number);
+      const mins = h2 * 60 + m2 - (h1 * 60 + m1);
+      grouped[key].workHours = `${Math.floor(mins / 60)}h ${mins % 60}m`;
+    }
+  });
+
+  return Object.values(grouped);
+};
+
 export default function CheckclockUser() {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<AttendanceRecord | null>(null);
@@ -26,69 +88,44 @@ export default function CheckclockUser() {
     const token = localStorage.getItem('token');
     if (!token) return;
 
-    setLoading(true); // Start loading
+    setLoading(true);
 
-    fetch('https://pblcmlabs.duckdns.org/api/checkclocks/me', {
+    const fetchCheckClocks = fetch('https://pblcmlabs.duckdns.org/api/checkclocks/me', {
       headers: {
         Accept: 'application/json',
         Authorization: `Bearer ${token}`,
       },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.data) {
-          const groupedByDate = groupByDate(data.data);
-          setAttendanceData(groupedByDate);
-        }
-        setLoading(false); // Done loading
+    }).then((res) => res.json());
+
+    const fetchAbsences = fetch('https://pblcmlabs.duckdns.org/api/absence-requests/me', {
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((res) => res.json());
+
+    Promise.all([fetchCheckClocks, fetchAbsences])
+      .then(([checkclockRes, absenceRes]) => {
+        const checkclockRecords = checkclockRes.data
+          ? groupByDate(checkclockRes.data)
+          : [];
+
+        const absenceRecords = absenceRes.data
+          ? convertAbsencesToRecords(absenceRes.data)
+          : [];
+
+        const merged = [...checkclockRecords, ...absenceRecords].sort((a, b) =>
+          a.date.localeCompare(b.date)
+        );
+
+        setAttendanceData(merged);
+        setLoading(false);
       })
       .catch((err) => {
-        console.error('Failed to fetch attendance data', err);
+        console.error('Failed to fetch attendance data or absences', err);
         setLoading(false);
       });
   }, []);
-
-  const groupByDate = (data: any[]): AttendanceRecord[] => {
-    const grouped: Record<string, AttendanceRecord> = {};
-
-    data.forEach((entry) => {
-      // Extract date from created_at
-      const key = entry.created_at ? entry.created_at.split('T')[0] : 'Unknown Date';
-
-      if (!grouped[key]) {
-        grouped[key] = {
-          id: entry.id,  // <-- assign id from current entry
-          date: key,
-          clockIn: '',
-          clockOut: '',
-          workHours: '',
-          status: 'Awaiting Approval',
-        };
-      }
-
-
-      // Note: check_clock_type may be string or number, so use == for loose equality
-      if (entry.check_clock_type == 1) {
-        grouped[key].clockIn = entry.check_clock_time;
-        // Use status from entry if available, else default
-        grouped[key].status = entry.status || 'Awaiting Approval';
-      }
-
-      if (entry.check_clock_type == 2) {
-        grouped[key].clockOut = entry.check_clock_time;
-      }
-
-      // Calculate workHours if both clockIn and clockOut are set
-      if (grouped[key].clockIn && grouped[key].clockOut) {
-        const [h1, m1] = grouped[key].clockIn.split(':').map(Number);
-        const [h2, m2] = grouped[key].clockOut.split(':').map(Number);
-        const mins = h2 * 60 + m2 - (h1 * 60 + m1);
-        grouped[key].workHours = `${Math.floor(mins / 60)}h ${mins % 60}m`;
-      }
-    });
-
-    return Object.values(grouped);
-  };
 
   return (
     <div className="flex min-h-screen bg-white">

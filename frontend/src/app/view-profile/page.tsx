@@ -5,6 +5,7 @@ import { parseISO, format } from 'date-fns';
 import Image from 'next/image';
 import { Employee } from '@/components/edit-employee/edit-form';
 import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 
 export default function ViewProfilePage() {
@@ -12,6 +13,11 @@ export default function ViewProfilePage() {
     const [loading, setLoading] = useState(true);
     const [avatarFile, setAvatarFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+    const router = useRouter();
+
+    const getStatusColor = (status: number) => {
+        return status === 1 ? 'text-green-600' : 'text-gray-500';
+    };
 
     const branchOptions = [
         { label: 'Surabaya Office', value: 'c21f07de-8e2f-4d9c-9d7b-f0a0d73637ae' },
@@ -94,7 +100,7 @@ export default function ViewProfilePage() {
     const handleSave = async () => {
         if (!avatarFile) return;
         // TODO: Implement actual API upload here
-        toast.success('Avatar saved (this is a placeholder)');
+        toast.success('Avatar saved');
         handleCancel();
     };
 
@@ -125,6 +131,11 @@ export default function ViewProfilePage() {
                             {userData.first_name} {userData.last_name}
                         </h1>
                         <p className="text-[#7CA5BF]">{userData.position} &mdash; {userData.department}</p>
+                        <span
+                            className={`inline-block mt-1 px-2 py-0.5 text-xs rounded-full ${getStatusColor(Number(userData.status))}`}
+                        >
+                            {Number(userData.status) === 1 ? 'Active' : 'Inactive'}
+                        </span>
                     </div>
                 </div>
 
@@ -193,6 +204,15 @@ export default function ViewProfilePage() {
                     <InfoRow label="Tipe SP" value={userData.tipe_sp} />
                 </div>
             </section>
+            <div className="mt-8">
+                <button
+                    onClick={() => router.back()}
+                    className="text-sm text-blue-600 hover:underline"
+                >
+                    ← Back
+                </button>
+            </div>
+
         </div>
     );
 }

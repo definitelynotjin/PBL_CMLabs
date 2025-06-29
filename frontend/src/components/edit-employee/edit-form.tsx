@@ -43,6 +43,7 @@ export interface Employee {
   address: string;
   email?: string;
   avatar_url?: string;
+  status?: number | string;
 }
 
 interface EmployeeFormProps {
