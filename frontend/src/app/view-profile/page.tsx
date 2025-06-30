@@ -66,11 +66,14 @@ export default function ViewProfilePage() {
                     address: employeeData.address ?? '',
                     email: rawData.email ?? '',
                     avatar_url:
-                        typeof rawData.avatar === 'string' && rawData.avatar.startsWith('http')
-                            ? rawData.avatar
-                            : rawData.avatar
-                                ? `https://pblcmlabs.duckdns.org/storage/${rawData.avatar}`
-                                : '/default-avatar.png',
+                        rawData.avatar
+                            ? rawData.avatar.startsWith('http')
+                                ? rawData.avatar
+                                : `https://pblcmlabs.duckdns.org/storage/${rawData.avatar}`
+                            : '/default-avatar.png',
+
+
+                    status: employeeData.status ?? rawData.status ?? 0,
                 };
 
                 setUserData(data);
@@ -97,12 +100,41 @@ export default function ViewProfilePage() {
         setPreviewUrl(null);
     };
 
+    const uploadAvatar = async (file: File) => {
+        const token = localStorage.getItem("token");
+        const formData = new FormData();
+        formData.append("avatar", file);
+
+        try {
+            const response = await fetch("https://pblcmlabs.duckdns.org/api/user/avatar", {
+                method: "POST",
+                headers: { Authorization: `Bearer ${token}` },
+                body: formData,
+            });
+
+            if (!response.ok) throw new Error("Failed to upload avatar");
+
+            const data = await response.json();
+
+            const avatarUrl = data.avatar?.startsWith("http")
+                ? data.avatar
+                : `https://pblcmlabs.duckdns.org/storage/${data.avatar}`;
+
+            setUserData((prev) => prev ? { ...prev, avatar_url: avatarUrl } : null);
+            toast.success("Avatar updated");
+        } catch (error) {
+            console.error("Error uploading avatar:", error);
+            toast.error("Failed to upload avatar.");
+        }
+    };
+
+
     const handleSave = async () => {
         if (!avatarFile) return;
-        // TODO: Implement actual API upload here
-        toast.success('Avatar saved');
-        handleCancel();
+        await uploadAvatar(avatarFile); // <-- actually uploads
+        handleCancel(); // clear preview
     };
+
 
     if (loading) return <p className="p-6 text-center">Loading...</p>;
     if (!userData) return <p className="p-6 text-center text-red-500">Failed to load user data.</p>;

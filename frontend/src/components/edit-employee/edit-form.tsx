@@ -630,6 +630,13 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
             className={readOnly ? disabledInputClass : ''}
           >
             <div className="flex items-center gap-4">
+              {/* Unset/None option */}
+              <div className="flex items-center gap-1">
+                <RadioGroupItem value="unset" id="tipe_sp_unset" />
+                <label htmlFor="tipe_sp_unset">None</label>
+              </div>
+
+              {/* SP Options */}
               {['SP 1', 'SP 2', 'SP 3'].map((label) => (
                 <div key={label} className="flex items-center gap-1">
                   <RadioGroupItem value={label} id={`tipe_sp_${label}`} />
@@ -639,6 +646,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ date, setDate, data, onSucc
             </div>
           </RadioGroup>
         </div>
+
       </section>
 
       {/* BUTTONS */}
