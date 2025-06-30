@@ -131,8 +131,8 @@ export default function ViewProfilePage() {
 
     const handleSave = async () => {
         if (!avatarFile) return;
-        await uploadAvatar(avatarFile); // <-- actually uploads
-        handleCancel(); // clear preview
+        await uploadAvatar(avatarFile);
+        handleCancel();
     };
 
 

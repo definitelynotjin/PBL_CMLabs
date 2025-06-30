@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   title: "HRIS",
   description: "Human Resource Information System",
   icons: {
-    icon: "/HRIS_White_Transparent.png",
+    icon: "/favicon.ico",
   },
 };
 
