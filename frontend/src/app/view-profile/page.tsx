@@ -239,10 +239,11 @@ export default function ViewProfilePage() {
             <div className="mt-8">
                 <button
                     onClick={() => router.back()}
-                    className="text-sm text-blue-600 hover:underline"
+                    className="px-4 py-2 text-white bg-[#003262] rounded-md text-sm hover:bg-[#00254d] transition"
                 >
                     ← Back
                 </button>
+
             </div>
 
         </div>
