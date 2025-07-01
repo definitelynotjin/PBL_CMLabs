@@ -111,20 +111,26 @@ export default function EmployeeDocumentsDialog({
                                             href={doc.file_url}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="text-blue-600 text-sm hover:underline"
                                         >
-                                            View
+                                            <Button
+                                                size="sm"
+                                                className="bg-[#003262] hover:bg-[#002147] text-white"
+                                            >
+                                                View
+                                            </Button>
                                         </a>
+
                                         <Button
-                                            variant="destructive"
                                             size="sm"
                                             onClick={() => {
                                                 setDocToDelete(doc);
                                                 setShowDeleteConfirm(true);
                                             }}
+                                            className="bg-red-600 hover:bg-red-700 text-white"
                                         >
                                             Delete
                                         </Button>
+
                                     </div>
                                 </div>
                             ))
