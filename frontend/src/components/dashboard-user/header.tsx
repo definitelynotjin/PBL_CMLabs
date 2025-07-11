@@ -27,7 +27,10 @@ export function DashboardHeader() {
       const data = await response.json();
       const avatarUrl = data.avatar?.startsWith("http")
         ? data.avatar
-        : `https://pblcmlabs.duckdns.org/storage/${data.avatar}`;
+        : data.avatar
+          ? `https://pblcmlabs.duckdns.org/storage/${data.avatar}`
+          : null;
+
 
       setUser((prevUser: any) => ({ ...prevUser, avatar: avatarUrl }));
     } catch (error) {

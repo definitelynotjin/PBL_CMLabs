@@ -20,7 +20,14 @@ const CheckclockHeader = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await response.json();
-        setUser(data);
+        const avatarUrl = data.avatar?.startsWith("http")
+          ? data.avatar
+          : data.avatar
+            ? `https://pblcmlabs.duckdns.org/storage/${data.avatar}`
+            : null;
+
+        setUser({ ...data, avatar: avatarUrl });
+
       } catch (error) {
         console.error("Failed to fetch user:", error);
       }
