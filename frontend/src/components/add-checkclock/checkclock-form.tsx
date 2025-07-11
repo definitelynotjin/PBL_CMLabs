@@ -110,7 +110,7 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
       return toast.error("Mohon lengkapi tipe absensi dan lokasi.");
     }
 
-    if (["annual-leave", "sick-leave"].includes(selectedAbsenceType)) {
+    if (["annual-leave", "sick-leave", "absent"].includes(selectedAbsenceType)) {
       if (!startDate || !endDate || !file) {
         return toast.error("Untuk cuti/sakit, isi tanggal dan lampirkan dokumen.");
       }
@@ -202,7 +202,7 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
               value={selectedAbsenceType}
               onValueChange={(val) => {
                 setSelectedAbsenceType(val);
-                if (!["annual-leave", "sick-leave"].includes(val)) {
+                if (!["annual-leave", "sick-leave", "absent"].includes(val)) {
                   setStartDate("");
                   setEndDate("");
                 }
@@ -221,7 +221,7 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
             </Select>
           </div>
 
-          {["annual-leave", "sick-leave"].includes(selectedAbsenceType) && (
+          {["annual-leave", "sick-leave", "absent"].includes(selectedAbsenceType) && (
             <div className="flex space-x-4">
               <div className="w-full">
                 <Label htmlFor="start-date">Start Date</Label>
