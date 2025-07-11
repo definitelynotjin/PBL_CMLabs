@@ -37,11 +37,14 @@ export const ViewDialog = ({
     ["Waiting Approval", "Ready for Review"].includes(selectedEmployee?.status || "Waiting Approval")
   );
 
-  const proofUrl = selectedEmployee?.supporting_document_path
-    ? (selectedEmployee.supporting_document_path.startsWith('http')
-      ? selectedEmployee.supporting_document_path
-      : `/storage/${selectedEmployee.supporting_document_path}`)
+  const rawProofPath = selectedEmployee?.supporting_document_path || selectedEmployee?.file_path;
+
+  const proofUrl = rawProofPath
+    ? (rawProofPath.startsWith('http')
+      ? rawProofPath
+      : `/storage/${rawProofPath}`)
     : null;
+
 
 
   // Function untuk menentukan status berdasarkan aturan bisnis
@@ -153,7 +156,12 @@ export const ViewDialog = ({
             <div className="space-y-2">
               <h3 className="text-base font-semibold">Proof of Attendance</h3>
               <div className="font-semibold">
-                <p>Location: {selectedEmployee.ck_setting_id?.name || 'Unknown'}</p>
+                <p>Location: {
+                  selectedEmployee.ck_setting_id?.name ||
+                  selectedEmployee.check_clock_setting?.name ||
+                  'Unknown'
+                }</p>
+
               </div>
               {proofUrl ? (
                 <div className="mt-2">

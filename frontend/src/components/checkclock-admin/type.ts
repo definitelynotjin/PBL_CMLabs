@@ -21,4 +21,10 @@ export interface DetailedEmployee extends Employee {
   check_clock_setting?: {
     name?: string;
   };
+  file_path?: string;
+  latitude?: string;
+  longitude?: string;
+  absence_type?: string;
+  start_date?: string;
+  end_date?: string;
 }
