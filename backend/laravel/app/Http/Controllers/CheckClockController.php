@@ -10,6 +10,8 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Validation\Rule;
+use App\Models\AbsenceRequest;
+
 
 class CheckClockController extends Controller
 {
@@ -173,7 +175,7 @@ class CheckClockController extends Controller
         ]);
     }
 
-    use App\Models\AbsenceRequest;
+
 
     public function adminView()
     {
