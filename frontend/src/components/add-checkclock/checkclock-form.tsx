@@ -110,7 +110,8 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
       return toast.error("Mohon lengkapi tipe absensi dan lokasi.");
     }
 
-    if (["annual-leave", "sick-leave", "absent"].includes(selectedAbsenceType)) {
+    if (["annual_leave", "sick", "permission"]
+      .includes(selectedAbsenceType)) {
       if (!startDate || !endDate || !file) {
         return toast.error("Untuk cuti/sakit, isi tanggal dan lampirkan dokumen.");
       }
@@ -118,7 +119,7 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
 
     const formData = new FormData();
 
-    const isCheckClock = !["annual-leave", "sick-leave", "absent"].includes(selectedAbsenceType);
+    const isCheckClock = !["annual_leave", "sick", "permission"].includes(selectedAbsenceType);
 
     if (isCheckClock) {
       let check_clock_type = "";
@@ -154,7 +155,7 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
     if (startDate) formData.append("start_date", startDate);
     if (endDate) formData.append("end_date", endDate);
 
-    const endpoint = ["annual-leave", "sick-leave", "absent"].includes(selectedAbsenceType)
+    const endpoint = ["annual_leave", "sick", "permission"].includes(selectedAbsenceType)
       ? "https://pblcmlabs.duckdns.org/api/absence-requests"
       : "https://pblcmlabs.duckdns.org/api/checkclocks";
 
@@ -202,7 +203,7 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
               value={selectedAbsenceType}
               onValueChange={(val) => {
                 setSelectedAbsenceType(val);
-                if (!["annual-leave", "sick-leave", "absent"].includes(val)) {
+                if (!["annual_leave", "sick", "permission"].includes(val)) {
                   setStartDate("");
                   setEndDate("");
                 }
@@ -221,7 +222,7 @@ const CheckclockForm: React.FC<CheckclockFormProps> = ({ isClient }) => {
             </Select>
           </div>
 
-          {["annual-leave", "sick-leave", "absent"].includes(selectedAbsenceType) && (
+          {["annual_leave", "sick", "permission"].includes(selectedAbsenceType) && (
             <div className="flex space-x-4">
               <div className="w-full">
                 <Label htmlFor="start-date">Start Date</Label>
