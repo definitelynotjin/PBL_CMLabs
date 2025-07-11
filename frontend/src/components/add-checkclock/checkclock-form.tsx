@@ -47,9 +47,9 @@ const locations = [
 const absenceTypes = [
   { value: "clock-in", label: "Clock In" },
   { value: "clock-out", label: "Clock Out" },
-  { value: "absent", label: "Absent" },
-  { value: "annual-leave", label: "Annual Leave" },
-  { value: "sick-leave", label: "Sick Leave" },
+  { value: "permission", label: "Absent" },
+  { value: "annual_leave", label: "Annual Leave" },
+  { value: "sick", label: "Sick Leave" },
 ];
 
 interface CheckclockFormProps {

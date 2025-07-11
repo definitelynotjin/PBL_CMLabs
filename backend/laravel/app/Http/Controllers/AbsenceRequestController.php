@@ -57,7 +57,9 @@ class AbsenceRequestController extends Controller
         }
 
         $validated = $request->validate([
-            'absence_date' => 'required|date',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+
             'absence_type' => 'required|in:annual_leave,sick,permission,other',
             'reason' => 'nullable|string',
             'location_name' => 'nullable|string',
