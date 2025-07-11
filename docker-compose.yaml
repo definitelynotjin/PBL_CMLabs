@@ -30,6 +30,7 @@ services:
       DB_DATABASE: PBL_CMLabs
       DB_USERNAME: root
       DB_PASSWORD: rootpassword
+      HOME: /tmp
     volumes:
       - ./backend/laravel:/var/www/html
       - ./backend/laravel/.env:/var/www/html/.env
