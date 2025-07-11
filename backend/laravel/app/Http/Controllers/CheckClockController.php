@@ -219,6 +219,8 @@ class CheckClockController extends Controller
                     'status' => $status,
                     'approved' => false, // optional: you can add status field in DB
                     'rejected' => false,
+                    'supporting_document_path' => $clockInRecord?->supporting_document_path ?? $clockOutRecord?->supporting_document_path ?? null,
+                    'check_clock_setting' => $employee?->checkClockSetting, // or pick fields you want
                 ];
             })
             ->filter()
