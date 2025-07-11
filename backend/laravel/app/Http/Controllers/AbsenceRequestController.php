@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Employee;
 
 
 class AbsenceRequestController extends Controller
@@ -16,6 +17,8 @@ class AbsenceRequestController extends Controller
     public function index()
     {
         $user = Auth::user();
+
+        dd(get_class($user), $user); // Debugging line to check user type
 
         if ($user->isEmployee()) {
             // Employees can only view their own requests

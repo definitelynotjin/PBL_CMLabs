@@ -173,10 +173,13 @@ class CheckClockController extends Controller
         ]);
     }
 
+    use App\Models\AbsenceRequest;
+
     public function adminView()
     {
         $today = Carbon::today();
 
+        // Fetch today's check clocks
         $checkClocks = CheckClock::with(['user.employee'])
             ->whereDate('created_at', $today)
             ->get()
@@ -191,12 +194,10 @@ class CheckClockController extends Controller
                 $clockIn = $clockInRecord?->check_clock_time;
                 $clockOut = $clockOutRecord?->check_clock_time;
 
-                // Compute work hours
                 $workHours = ($clockIn && $clockOut)
                     ? gmdate('H\h i\m', strtotime($clockOut) - strtotime($clockIn))
                     : '0h 0m';
 
-                // Determine status
                 $status = $clockInRecord?->status
                     ?? $clockOutRecord?->status
                     ?? match (true) {
@@ -206,22 +207,42 @@ class CheckClockController extends Controller
                         default => 'Ready for Review',
                     };
 
-
                 return [
                     'id' => $user->id,
                     'name' => $user->name,
                     'position' => $employee?->position ?? '-',
-                    'clockIn' => $clockIn ?? '-',
-                    'clockOut' => $clockOut ?? '-',
+                    'clockIn' => $clockIn ?? '0',
+                    'clockOut' => $clockOut ?? '0',
                     'workHours' => $workHours,
                     'status' => $status,
-                    'approved' => false,
+                    'approved' => false, // optional: you can add status field in DB
                     'rejected' => false,
                 ];
             })
-            ->filter() // remove any null values
+            ->filter()
             ->values();
 
-        return response()->json($checkClocks);
+        // Fetch today's absence requests
+        $absences = AbsenceRequest::with('employee.user')
+            ->whereDate('created_at', $today)
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'id' => $item->employee->user->id ?? Str::uuid(),
+                    'name' => $item->employee->user->name ?? '-',
+                    'position' => $item->employee->position ?? '-',
+                    'clockIn' => '0',
+                    'clockOut' => '0',
+                    'workHours' => '0h 0m',
+                    'status' => ucfirst(str_replace('_', ' ', $item->absence_type)), // e.g. Annual Leave
+                    'approved' => $item->status === 'approved',
+                    'rejected' => $item->status === 'rejected',
+                ];
+            });
+
+        // Combine both
+        $combined = $checkClocks->merge($absences);
+
+        return response()->json($combined->values());
     }
 }

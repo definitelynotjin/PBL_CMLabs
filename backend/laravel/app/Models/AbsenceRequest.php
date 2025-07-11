@@ -44,4 +44,9 @@ class AbsenceRequest extends Model
     {
         return $this->belongsTo(Employee::class, 'employee_id');
     }
+
+    public function absenceRequests()
+    {
+        return $this->hasMany(AbsenceRequest::class, 'employee_id');
+    }
 }
