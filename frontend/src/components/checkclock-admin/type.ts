@@ -14,6 +14,7 @@ export interface Employee {
     name?: string;
   };
   proof_file_url?: string;
+  supporting_document_path?: string;
 }
 
 export interface DetailedEmployee extends Employee {

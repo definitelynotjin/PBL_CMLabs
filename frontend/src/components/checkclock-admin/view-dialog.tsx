@@ -37,6 +37,13 @@ export const ViewDialog = ({
     ["Waiting Approval", "Ready for Review"].includes(selectedEmployee?.status || "Waiting Approval")
   );
 
+  const proofUrl = selectedEmployee?.supporting_document_path
+    ? (selectedEmployee.supporting_document_path.startsWith('http')
+      ? selectedEmployee.supporting_document_path
+      : `/storage/${selectedEmployee.supporting_document_path}`)
+    : null;
+
+
   // Function untuk menentukan status berdasarkan aturan bisnis
   const determineStatus = (): string => {
     // Menggunakan nilai dari attendance information yang sudah ditampilkan
@@ -146,12 +153,12 @@ export const ViewDialog = ({
             <div className="space-y-2">
               <h3 className="text-base font-semibold">Proof of Attendance</h3>
               <div className="font-semibold">
-                <p>Location: {selectedEmployee.check_clock_setting?.name || 'Unknown'}</p>
+                <p>Location: {selectedEmployee.ck_setting_id?.name || 'Unknown'}</p>
               </div>
-              {selectedEmployee.proof_file_url ? (
+              {proofUrl ? (
                 <div className="mt-2">
                   <Image
-                    src={selectedEmployee.proof_file_url}
+                    src={proofUrl}
                     alt="Proof of attendance"
                     width={320}
                     height={180}
