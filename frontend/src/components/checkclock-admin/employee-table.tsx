@@ -6,7 +6,6 @@ import { Check, X, ClockAlert, ClockFading } from 'lucide-react';
 import { Employee } from "@/components/checkclock-admin/type.ts";
 import toast from "react-hot-toast";
 
-
 interface EmployeeTableProps {
   employees: Employee[];
   openConfirmDialog: (employee: Employee, type: "approve" | "reject") => void;
@@ -22,8 +21,6 @@ const confirmStatusUpdate = async (checkClockId: string, action: 'approve' | 're
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
-        // Include Authorization header if you’re using bearer token (optional)
-        // 'Authorization': `Bearer ${token}`,
       },
       body: JSON.stringify({ status: newStatus }),
     });
@@ -34,9 +31,6 @@ const confirmStatusUpdate = async (checkClockId: string, action: 'approve' | 're
 
     const data = await res.json();
     toast.success("Status updated successfully!");
-
-    // Refresh table or mutate data locally
-    // e.g., re-fetch adminView or update state
     return data;
   } catch (err) {
     toast.error("Could not update status.");
@@ -67,28 +61,22 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employees, openConfirmDia
             <TableCell>{employee.clockIn}</TableCell>
             <TableCell>{employee.clockOut}</TableCell>
             <TableCell>{employee.workHours}</TableCell>
-            <TableCell className="flex items-center gap-2">
-              {employee.isAbsence ? (
-                <>
-                  <ClockFading className="w-4 h-4" style={{ color: '#7CA5BF' }} />
-                  <span style={{ color: '#7CA5BF' }}>{employee.status}</span>
-                </>
-              ) : employee.status === "Late" ? (
-                <>
-                  <ClockAlert className="w-4 h-4 text-yellow-500" />
-                  <span className="text-yellow-600">Late</span>
-                </>
-              ) : (
-                <span>{employee.status}</span>
-              )}
+
+            {/* Status column - text only */}
+            <TableCell>
+              <span>{employee.status}</span>
             </TableCell>
 
-
-            <TableCell className="flex gap-2">
+            {/* Actions column - icons or approve/reject buttons */}
+            <TableCell className="flex gap-2 items-center">
               {employee.status === "Approved" ? (
                 <Check className="w-4 h-4 text-green-500" />
               ) : employee.status === "Rejected" ? (
                 <X className="w-4 h-4 text-red-500" />
+              ) : employee.status === "Late" ? (
+                <ClockAlert className="w-4 h-4 text-yellow-500" />
+              ) : employee.isAbsence ? (
+                <ClockFading className="w-4 h-4" style={{ color: '#7CA5BF' }} />
               ) : (
                 <>
                   <Button
@@ -109,11 +97,14 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employees, openConfirmDia
               )}
             </TableCell>
 
+            {/* Details column - view button only */}
             <TableCell>
               <Button variant="outline" onClick={() => {
                 handleDetailsClick(employee);
-                setOpenDialog(true); // Open the view dialog here
-              }}>View</Button>
+                setOpenDialog(true);
+              }}>
+                View
+              </Button>
             </TableCell>
           </TableRow>
         ))}
