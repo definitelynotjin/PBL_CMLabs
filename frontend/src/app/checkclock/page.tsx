@@ -21,32 +21,19 @@ interface AttendanceRecord {
 
 // ✅ Converts absence entries into displayable records
 const convertAbsencesToRecords = (absences: any[]): AttendanceRecord[] => {
-  const absenceRecords: AttendanceRecord[] = [];
-
-  absences.forEach((absence) => {
-    const start = new Date(absence.start_date);
-    const end = new Date(absence.end_date);
-    const absenceType = absence.absence_type || 'Other';
-    const status = absence.status || 'Pending';
-
-    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-      const dateStr = d.toISOString().split('T')[0];
-      absenceRecords.push({
-        id: `${absence.id}-${dateStr}`,
-        date: dateStr,
-        clockIn: '—',
-        clockOut: '—',
-        workHours: '—',
-        status: status,
-        absenceType: absenceType,
-        startDate: absence.start_date,
-        endDate: absence.end_date,
-      });
-    }
-  });
-
-  return absenceRecords;
+  return absences.map((absence) => ({
+    id: absence.id,
+    date: absence.start_date,   // you can also use absence.end_date or format both for display
+    clockIn: '—',
+    clockOut: '—',
+    workHours: '—',
+    status: absence.status || 'Pending',
+    absenceType: absence.absence_type || 'Other',
+    startDate: absence.start_date,
+    endDate: absence.end_date,
+  }));
 };
+
 
 
 // ✅ Groups check clock entries by date and calculates work hours
