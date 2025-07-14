@@ -164,8 +164,7 @@ export default function ViewProfilePage() {
                         </h1>
                         <p className="text-[#7CA5BF]">{userData.position} &mdash; {userData.department}</p>
                         <span
-                            className={`inline-block mt-1 px-2 py-0.5 text-xs rounded-full ${getStatusColor(Number(userData.status))}`}
-                        >
+                            className={`inline-block mt-1 px-2 py-0.5 text-xs rounded-full ${getStatusColor(Number(userData.status))}`}>
                             {Number(userData.status) === 1 ? 'Active' : 'Inactive'}
                         </span>
                     </div>

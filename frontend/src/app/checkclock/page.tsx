@@ -14,6 +14,9 @@ interface AttendanceRecord {
   clockOut: string;
   workHours: string;
   status: string;
+  absenceType?: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 // ✅ Converts absence entries into displayable records
@@ -32,8 +35,12 @@ const convertAbsencesToRecords = (absences: any[]): AttendanceRecord[] => {
         clockIn: '—',
         clockOut: '—',
         workHours: '—',
-        status: absence.absence_type.replace('-', ' ').toUpperCase(),
+        status: absence.status || 'Waiting Approval',
+        absenceType: absence.absence_type,
+        startDate: absence.start_date,
+        endDate: absence.end_date,
       });
+
     }
   });
 

@@ -135,8 +135,8 @@ export default function CheckClockTable({ records, loading, onView }: CheckClock
 
                 {isAbsence(rec) ? (
                   <>
-                    <TableCell colSpan={3} className="italic text-gray-600">
-                      {rec.absenceType} from {new Date(rec.startDate!).toLocaleDateString()} to {new Date(rec.endDate!).toLocaleDateString()}
+                    <TableCell colSpan={2} className="italic text-gray-600">
+                      {rec.absenceType || 'Absence'} from {new Date(rec.startDate!).toLocaleDateString()} to {new Date(rec.endDate!).toLocaleDateString()}
                     </TableCell>
                     <TableCell>
                       {/* Calculate duration */}
