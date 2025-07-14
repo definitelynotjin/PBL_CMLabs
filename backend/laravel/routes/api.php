@@ -32,7 +32,7 @@
     Route::middleware('auth:sanctum')->patch('/employees/{id}/status', [EmployeeController::class, 'updateStatus']);
 
     //Admin Attendance Status Updater
-    Route::middleware(['auth:sanctum', 'admin'])->patch('/checkclocks/{id}/status', [CheckClockController::class, 'updateStatus']);
+    Route::middleware(['auth:sanctum'])->patch('/checkclocks/{id}/status', [CheckClockController::class, 'updateStatus']);
 
     // Documents
     Route::delete('/documents/{id}', [DocumentController::class, 'destroy']);

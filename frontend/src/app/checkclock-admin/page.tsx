@@ -40,11 +40,9 @@ const Checkclock: React.FC = () => {
         }
 
         const data = await res.json();
-        // Assuming API returns { data: CheckClock[] }
         const apiEmployees = data;
 
-        // Map backend data to your Employee type
-        // This example assumes each CheckClock item has user and employee relationships populated
+
         const formattedEmployees = apiEmployees.map((item: any) => ({
           id: item.id,
           name: item.name || 'Unknown',
