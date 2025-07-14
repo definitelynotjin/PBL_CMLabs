@@ -53,6 +53,8 @@
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::post('/user/avatar', [AuthController::class, 'uploadAvatar']);
 
+        Route::get('/absence-requests/me', [AbsenceRequestController::class, 'myAbsences']);
+
         // Absence Requests
         Route::get('/absence-requests', [AbsenceRequestController::class, 'index']);
         Route::post('/absence-requests', [AbsenceRequestController::class, 'store']);

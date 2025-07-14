@@ -136,4 +136,14 @@ class AbsenceRequestController extends Controller
             'message' => 'Absence request deleted successfully',
         ]);
     }
+
+    public function myAbsences(Request $request)
+    {
+        $user = $request->user();
+
+        // Assuming your AbsenceRequest has a user_id field
+        $absences = AbsenceRequest::where('user_id', $user->id)->get();
+
+        return response()->json(['data' => $absences]);
+    }
 }
