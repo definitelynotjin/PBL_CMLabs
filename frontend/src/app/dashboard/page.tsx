@@ -108,9 +108,10 @@ export default function DashboardUserPage() {
 
     const fetchAttendance = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/checkclocks`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/checkclocks/admin`, {
           headers: {
             Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
           },
         });
 
@@ -123,14 +124,15 @@ export default function DashboardUserPage() {
           status: getStatus(clock),
           clockIn: clock.check_clock_type === '1' ? clock.check_clock_time : '-',
           clockOut: clock.check_clock_type === '2' ? clock.check_clock_time : '-',
-          workHour: '-', // Optional: calculate actual work hours
+          workHour: '-', // Optional
         }));
 
         setAttendanceData(formatted);
       } catch (error) {
-        console.error('Error fetching attendance:', error);
+        console.error('Error fetching admin attendance:', error);
       }
     };
+
 
     fetchEmployees();
     fetchAttendance();
@@ -148,6 +150,7 @@ export default function DashboardUserPage() {
     else acc.push({ name: curr.status, value: 1 });
     return acc;
   }, []);
+
 
   return (
     <div className="flex min-h-screen bg-white">
