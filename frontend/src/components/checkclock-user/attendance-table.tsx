@@ -135,17 +135,29 @@ export default function CheckClockTable({ records, loading, onView }: CheckClock
 
                 {isAbsence(rec) ? (
                   <>
-                    <TableCell colSpan={2} className="italic text-gray-600">
-                      {rec.absenceType || 'Absence'} from {new Date(rec.startDate!).toLocaleDateString()} to {new Date(rec.endDate!).toLocaleDateString()}
+                    <TableCell>
+                      {rec.absenceType || 'Absence'}
+                    </TableCell>
+                    <TableCell colSpan={2} className="text-gray-500">
+                      {new Date(rec.startDate!).toLocaleDateString()} – {new Date(rec.endDate!).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell className="text-yellow-600">
+                      {rec.status}
                     </TableCell>
                     <TableCell>
-                      {/* Calculate duration */}
-                      {(() => {
-                        const start = new Date(rec.startDate!);
-                        const end = new Date(rec.endDate!);
-                        const diff = Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-                        return `${diff} day${diff > 1 ? 's' : ''}`;
-                      })()}
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="hover:text-blue-600"
+                            onClick={() => onView && onView(rec)}
+                          >
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="top">View</TooltipContent>
+                      </Tooltip>
                     </TableCell>
                   </>
                 ) : (
@@ -154,25 +166,23 @@ export default function CheckClockTable({ records, loading, onView }: CheckClock
                     <TableCell>{rec.clockOut || '-'}</TableCell>
                     <TableCell>{rec.workHours || '-'}</TableCell>
                     <TableCell className="capitalize">{rec.status.replace('_', ' ')}</TableCell>
+                    <TableCell>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="hover:text-blue-600"
+                            onClick={() => onView && onView(rec)}
+                          >
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="top">View</TooltipContent>
+                      </Tooltip>
+                    </TableCell>
                   </>
                 )}
-
-                <TableCell>
-                  {/* View button */}
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="hover:text-blue-600"
-                        onClick={() => onView && onView(rec)}
-                      >
-                        <Eye className="w-4 h-4" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side="top">View</TooltipContent>
-                  </Tooltip>
-                </TableCell>
               </TableRow>
             ))
           )}
