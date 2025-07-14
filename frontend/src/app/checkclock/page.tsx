@@ -26,6 +26,8 @@ const convertAbsencesToRecords = (absences: any[]): AttendanceRecord[] => {
   absences.forEach((absence) => {
     const start = new Date(absence.start_date);
     const end = new Date(absence.end_date);
+    const absenceType = absence.absence_type || 'Other';
+    const status = absence.status || 'Pending';
 
     for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
       const dateStr = d.toISOString().split('T')[0];
@@ -35,17 +37,17 @@ const convertAbsencesToRecords = (absences: any[]): AttendanceRecord[] => {
         clockIn: '—',
         clockOut: '—',
         workHours: '—',
-        status: absence.status || 'Waiting Approval',
-        absenceType: absence.absence_type,
+        status: status,
+        absenceType: absenceType,
         startDate: absence.start_date,
         endDate: absence.end_date,
       });
-
     }
   });
 
   return absenceRecords;
 };
+
 
 // ✅ Groups check clock entries by date and calculates work hours
 const groupByDate = (data: any[]): AttendanceRecord[] => {
