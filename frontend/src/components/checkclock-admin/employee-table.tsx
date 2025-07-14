@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Check, X } from 'lucide-react';
 import { Employee } from "@/components/checkclock-admin/type.ts";
+import toast from "react-hot-toast";
 
 
 interface EmployeeTableProps {
@@ -13,6 +14,35 @@ interface EmployeeTableProps {
   setOpenDialog: React.Dispatch<React.SetStateAction<boolean>>;
   confirmAction: 'approve' | 'reject' | null;
 }
+const confirmStatusUpdate = async (checkClockId: string, action: 'approve' | 'reject') => {
+  const newStatus = action === 'approve' ? 'Approved' : 'Rejected';
+
+  try {
+    const res = await fetch(`/api/checkclocks/${checkClockId}/status`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        // Include Authorization header if you’re using bearer token (optional)
+        // 'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ status: newStatus }),
+    });
+
+    if (!res.ok) {
+      throw new Error(`Failed to update status: ${res.status}`);
+    }
+
+    const data = await res.json();
+    toast.success("Status updated successfully!");
+
+    // Refresh table or mutate data locally
+    // e.g., re-fetch adminView or update state
+    return data;
+  } catch (err) {
+    toast.error("Could not update status.");
+    console.error(err);
+  }
+};
 
 const EmployeeTable: React.FC<EmployeeTableProps> = ({ employees, openConfirmDialog, handleDetailsClick, setOpenDialog }) => {
   return (

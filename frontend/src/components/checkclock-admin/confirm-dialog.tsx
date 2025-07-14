@@ -41,9 +41,13 @@ export const ConfirmDialog = ({
           <Button variant="outline" onClick={() => setShowConfirmModal(false)}>
             Cancel
           </Button>
-          <Button onClick={handleConfirmAction}>
+          <Button
+            onClick={handleConfirmAction}
+            variant={confirmAction === 'approve' ? 'default' : 'destructive'}
+          >
             {confirmAction === 'approve' ? 'Approve' : 'Reject'}
           </Button>
+
         </DialogFooter>
       </DialogContentCentered>
     </Dialog>
