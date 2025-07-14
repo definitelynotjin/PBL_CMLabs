@@ -61,7 +61,7 @@ export default function DashboardUserPage() {
   const [attendanceData, setAttendanceData] = useState<AttendanceItem[]>([]);
 
   useEffect(() => {
-    const token = localStorage.getItem('auth_token');
+    const token = localStorage.getItem('token');
 
     const fetchEmployees = async () => {
       try {
