@@ -54,6 +54,10 @@ const Checkclock: React.FC = () => {
           status: item.status || 'Waiting Approval',
           approved: item.approved || false,
           rejected: item.rejected || false,
+          isAbsence: item.absence_type !== undefined, // or any other indicator
+          startDate: item.start_date || null,
+          endDate: item.end_date || null,
+          duration: item.duration || null, // optional
         }));
 
 

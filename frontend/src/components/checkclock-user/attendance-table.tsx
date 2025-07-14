@@ -1,6 +1,14 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { ChevronsUpDown, Eye } from 'lucide-react';
 import {
@@ -61,86 +69,79 @@ export default function CheckClockTable({ records, loading, onView }: CheckClock
     });
   }, [records, sortKey, sortDirection]);
 
+  // Helper to format date like admin table
+  const formatDate = (dateStr: string) => {
+    return new Date(dateStr).toLocaleDateString('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  };
+
   return (
     <TooltipProvider>
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm border rounded-md">
-          <thead>
-            <tr className="bg-muted text-left">
-              {[
-                { label: 'Date', key: 'date' },
-                { label: 'Clock In', key: 'clockIn' },
-                { label: 'Clock Out', key: 'clockOut' },
-                { label: 'Work Hours', key: 'workHours' },
-                { label: 'Status', key: 'status' },
-                { label: 'Action', key: null },
-              ].map((col, idx) => (
-                <th key={idx} className="p-2">
-                  <div
-                    className={`flex items-center gap-1 ${col.key ? 'cursor-pointer' : ''}`}
-                    onClick={() => col.key && toggleSort(col.key as keyof CheckClockRecord)}
-                  >
-                    {col.label}
-                    {col.key && (
-                      <ChevronsUpDown className="w-4 h-4 text-muted-foreground" />
-                    )}
-                  </div>
-                </th>
-              ))}
-            </tr>
-          </thead>
-
-          <tbody>
-            {loading ? (
-              <tr>
-                <td colSpan={6} className="text-center p-4">
-                  Loading...
-                </td>
-              </tr>
-            ) : sortedRecords.length === 0 ? (
-              <tr>
-                <td colSpan={6} className="text-center p-4">
-                  No records found.
-                </td>
-              </tr>
-            ) : (
-              sortedRecords.map((rec) => (
-                <tr key={rec.id} className="border-t hover:bg-gray-50">
-                  <td className="p-2">
-                    {new Date(rec.date).toLocaleDateString('en-US', {
-                      weekday: 'short',
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric',
-                    })}
-                  </td>
-
-                  <td className="p-2">{rec.clockIn}</td>
-                  <td className="p-2">{rec.clockOut}</td>
-                  <td className="p-2">{rec.workHours}</td>
-                  <td className="p-2 capitalize">{rec.status.replace('_', ' ')}</td>
-                  <td className="p-2">
-                    <div className="flex items-center justify-center"></div>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="hover:text-blue-600"
-                          onClick={() => onView && onView(rec)}
-                        >
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent side="top">View</TooltipContent>
-                    </Tooltip>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            {[
+              { label: 'Date', key: 'date' },
+              { label: 'Clock In', key: 'clockIn' },
+              { label: 'Clock Out', key: 'clockOut' },
+              { label: 'Work Hours', key: 'workHours' },
+              { label: 'Status', key: 'status' },
+              { label: 'Action', key: null },
+            ].map((col, idx) => (
+              <TableHead key={idx} className="cursor-pointer select-none" onClick={() => col.key && toggleSort(col.key as keyof CheckClockRecord)}>
+                <div className="flex items-center gap-1">
+                  {col.label}
+                  {col.key && <ChevronsUpDown className="w-4 h-4 text-muted-foreground" />}
+                </div>
+              </TableHead>
+            ))}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {loading ? (
+            <TableRow>
+              <TableCell colSpan={6} className="text-center p-4">
+                Loading...
+              </TableCell>
+            </TableRow>
+          ) : sortedRecords.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={6} className="text-center p-4">
+                No records found.
+              </TableCell>
+            </TableRow>
+          ) : (
+            sortedRecords.map((rec) => (
+              <TableRow key={rec.id} className="hover:bg-gray-50">
+                <TableCell>{formatDate(rec.date)}</TableCell>
+                <TableCell>{rec.clockIn}</TableCell>
+                <TableCell>{rec.clockOut}</TableCell>
+                <TableCell>{rec.workHours}</TableCell>
+                <TableCell className="capitalize">{rec.status.replace('_', ' ')}</TableCell>
+                <TableCell>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="hover:text-blue-600"
+                        onClick={() => onView && onView(rec)}
+                      >
+                        <Eye className="w-4 h-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top">View</TooltipContent>
+                  </Tooltip>
+                </TableCell>
+              </TableRow>
+            ))
+          )}
+        </TableBody>
+      </Table>
     </TooltipProvider>
   );
 }

@@ -30,8 +30,10 @@ export const ViewDialog = ({
     const [hours, minutes] = timeStr.split(':').map(Number);
     return hours * 60 + minutes;
   };
+  const isAbsence = selectedEmployee?.absence_type;
 
   const isReviewableStatus = (
+    !isAbsence &&
     selectedEmployee?.clockIn &&
     selectedEmployee?.clockOut &&
     ["Waiting Approval", "Ready for Review"].includes(selectedEmployee?.status || "Waiting Approval")
@@ -145,12 +147,32 @@ export const ViewDialog = ({
             {/* 🟨 Section 2: Attendance Info */}
             <div className="space-y-2 border-b pb-4">
               <h3 className="text-base font-semibold">Attendance Information</h3>
-              <div className="font-semibold space-y-1">
-                <p>Clock In: {selectedEmployee.clockIn}</p>
-                <p>Clock Out: {selectedEmployee.clockOut}</p>
-                <p>Work Hours: {selectedEmployee.workHours}</p>
-              </div>
+
+              {isAbsence ? (
+                <div className="font-semibold space-y-1">
+                  <p>Start Date: {selectedEmployee?.start_date || '-'}</p>
+                  <p>End Date: {selectedEmployee?.end_date || '-'}</p>
+                  <p>
+                    Duration: {selectedEmployee?.start_date && selectedEmployee?.end_date
+                      ? (() => {
+                        const start = new Date(selectedEmployee.start_date!);
+                        const end = new Date(selectedEmployee.end_date!);
+                        const diff = Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+                        return `${diff} day${diff > 1 ? 's' : ''}`;
+                      })()
+                      : '-'}
+                  </p>
+                </div>
+              ) : (
+                <div className="font-semibold space-y-1">
+                  <p>Clock In: {selectedEmployee?.clockIn || '-'}</p>
+                  <p>Clock Out: {selectedEmployee?.clockOut || '-'}</p>
+                  <p>Work Hours: {selectedEmployee?.workHours || '-'}</p>
+                </div>
+              )}
             </div>
+
+
 
             {/* 🟩 Section 3: Location & Proof */}
             <div className="space-y-2">
