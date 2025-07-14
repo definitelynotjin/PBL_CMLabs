@@ -45,6 +45,7 @@ const Checkclock: React.FC = () => {
 
         const formattedEmployees = apiEmployees.map((item: any) => ({
           id: item.id,
+          userId: item.userId,
           name: item.name || 'Unknown',
           position: item.position || 'Unknown',
           clockIn: item.clockIn !== '0' ? item.clockIn.slice(0, 5).replace(':', '.') : '0',
@@ -98,8 +99,11 @@ const Checkclock: React.FC = () => {
 
   const handleStatus = (clockIn: string, clockOut: string, workHours: string): string => {
     if (clockIn === "0" && clockOut === "0" && workHours === "0") return "Absent";
+    if (!clockIn.includes(".")) return "Unknown";
+
     const [hour, minute] = clockIn.split(".").map(Number);
-    if (hour === undefined || minute === undefined) return "Unknown"; // Handle unexpected format
+    if (isNaN(hour) || isNaN(minute)) return "Unknown";
+
     const totalMinutes = hour * 60 + minute;
     return totalMinutes <= 495 ? "On Time" : "Late";
   };
@@ -134,7 +138,13 @@ const Checkclock: React.FC = () => {
     setOpenDialog(true);
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-800" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen bg-white">

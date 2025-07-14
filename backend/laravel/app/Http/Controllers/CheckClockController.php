@@ -210,7 +210,7 @@ class CheckClockController extends Controller
                     };
 
                 return [
-                    'id' => $user->id,
+                    'id' => $clockInRecord?->id ?? $clockOutRecord?->id ?? Str::uuid(),
                     'name' => $user->name,
                     'position' => $employee?->position ?? '-',
                     'clockIn' => $clockIn ?? '0',
