@@ -93,7 +93,7 @@ class CheckClockController extends Controller
             'longitude' => $validated['longitude'] ?? null,
             'supporting_document_path' => $filePath,
             'check_clock_setting_id' => $validated['check_clock_setting_id'],
-            'status' => 'Awaiting Approval',
+            'status' => 'Waiting Approval',
         ]);
 
         return response()->json([

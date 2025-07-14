@@ -54,13 +54,13 @@ const groupByDate = (data: any[]): AttendanceRecord[] => {
         clockIn: '',
         clockOut: '',
         workHours: '',
-        status: 'Awaiting Approval',
+        status: 'Waiting Approval',
       };
     }
 
     if (entry.check_clock_type == 1) {
       grouped[key].clockIn = entry.check_clock_time;
-      grouped[key].status = entry.status || 'Awaiting Approval';
+      grouped[key].status = entry.status || 'Waiting Approval';
     }
 
     if (entry.check_clock_type == 2) {
