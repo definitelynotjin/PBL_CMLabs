@@ -30,6 +30,8 @@ class AbsenceRequest extends Model
         'longitude',
     ];
 
+    protected $appends = ['file_url']; // << add this line
+
     protected static function boot()
     {
         parent::boot();
@@ -49,5 +51,10 @@ class AbsenceRequest extends Model
     public function absenceRequests()
     {
         return $this->hasMany(AbsenceRequest::class, 'employee_id');
+    }
+
+    public function getFileUrlAttribute()
+    {
+        return $this->file_path ? asset('storage/' . $this->file_path) : null;
     }
 }
