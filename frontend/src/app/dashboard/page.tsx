@@ -68,6 +68,8 @@ export default function DashboardUserPage() {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/employees`, {
           headers: {
             Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            Accept: "application/json",
           },
         });
         const responseData = await res.json();
@@ -112,6 +114,7 @@ export default function DashboardUserPage() {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
+            Accept: 'application/json',
           },
         });
 
