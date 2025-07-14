@@ -25,6 +25,9 @@ interface CheckClockRecord {
   clockOut: string;      // e.g. '17:00:00'
   workHours: string;     // e.g. '9h'
   status: string;        // e.g. 'on_time', 'late', 'early'
+  absenceType?: string;  // e.g. 'Sick Leave', 'Personal Leave'
+  startDate?: string;    // absence start date
+  endDate?: string;      // absence end date
 }
 
 interface CheckClockTableProps {
@@ -79,6 +82,10 @@ export default function CheckClockTable({ records, loading, onView }: CheckClock
     });
   };
 
+  const isAbsence = (record: CheckClockRecord) => {
+    return record.absenceType !== undefined && record.startDate !== undefined && record.endDate !== undefined;
+  };
+
   return (
     <TooltipProvider>
       <Table>
@@ -117,12 +124,41 @@ export default function CheckClockTable({ records, loading, onView }: CheckClock
           ) : (
             sortedRecords.map((rec) => (
               <TableRow key={rec.id} className="hover:bg-gray-50">
-                <TableCell>{formatDate(rec.date)}</TableCell>
-                <TableCell>{rec.clockIn}</TableCell>
-                <TableCell>{rec.clockOut}</TableCell>
-                <TableCell>{rec.workHours}</TableCell>
-                <TableCell className="capitalize">{rec.status.replace('_', ' ')}</TableCell>
                 <TableCell>
+                  {new Date(rec.date).toLocaleDateString('en-US', {
+                    weekday: 'short',
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })}
+                </TableCell>
+
+                {isAbsence(rec) ? (
+                  <>
+                    <TableCell colSpan={3} className="italic text-gray-600">
+                      {rec.absenceType} from {new Date(rec.startDate!).toLocaleDateString()} to {new Date(rec.endDate!).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell>
+                      {/* Calculate duration */}
+                      {(() => {
+                        const start = new Date(rec.startDate!);
+                        const end = new Date(rec.endDate!);
+                        const diff = Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+                        return `${diff} day${diff > 1 ? 's' : ''}`;
+                      })()}
+                    </TableCell>
+                  </>
+                ) : (
+                  <>
+                    <TableCell>{rec.clockIn || '-'}</TableCell>
+                    <TableCell>{rec.clockOut || '-'}</TableCell>
+                    <TableCell>{rec.workHours || '-'}</TableCell>
+                    <TableCell className="capitalize">{rec.status.replace('_', ' ')}</TableCell>
+                  </>
+                )}
+
+                <TableCell>
+                  {/* View button */}
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button
