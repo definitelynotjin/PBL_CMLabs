@@ -8,6 +8,7 @@ export interface Employee {
   status: string;
   approved: boolean;
   rejected: boolean;
+  isAbsence?: boolean;
   avatar?: string | null;
   department?: string;
   ck_setting_id?: {

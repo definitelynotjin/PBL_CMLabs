@@ -145,20 +145,23 @@ export default function CheckClockTable({ records, loading, onView }: CheckClock
                       {rec.status}
                     </TableCell>
                     <TableCell>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="hover:text-blue-600"
-                            onClick={() => onView && onView(rec)}
-                          >
-                            <Eye className="w-4 h-4" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent side="top">View</TooltipContent>
-                      </Tooltip>
+                      {rec.status.toLowerCase() === 'waiting approval' && (
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="hover:text-blue-600"
+                              onClick={() => onView && onView(rec)}
+                            >
+                              <Eye className="w-4 h-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent side="top">View</TooltipContent>
+                        </Tooltip>
+                      )}
                     </TableCell>
+
                   </>
                 ) : (
                   <>

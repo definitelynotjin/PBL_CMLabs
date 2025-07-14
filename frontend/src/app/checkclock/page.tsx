@@ -27,7 +27,7 @@ const convertAbsencesToRecords = (absences: any[]): AttendanceRecord[] => {
     clockIn: '—',
     clockOut: '—',
     workHours: '—',
-    status: absence.status || 'Pending',
+    status: absence.status || 'Waiting Approval',
     absenceType: absence.absence_type || 'Other',
     startDate: absence.start_date,
     endDate: absence.end_date,
