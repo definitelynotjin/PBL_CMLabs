@@ -141,8 +141,17 @@ class AbsenceRequestController extends Controller
     {
         $user = $request->user();
 
-        // Assuming your AbsenceRequest has a user_id field
-        $absences = AbsenceRequest::where('user_id', $user->id)->get();
+        // Get employee ID from related employee model
+        $employeeId = $user->employee->id ?? null;
+
+        if (!$employeeId) {
+            return response()->json([
+                'data' => [],
+                'message' => 'No employee linked to user'
+            ]);
+        }
+
+        $absences = AbsenceRequest::where('employee_id', $employeeId)->get();
 
         return response()->json(['data' => $absences]);
     }
