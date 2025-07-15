@@ -10,7 +10,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { ChevronsUpDown, Eye } from 'lucide-react';
+import { ChevronsUpDown, Eye, Check, X, ClockAlert } from 'lucide-react';
 import {
   Tooltip,
   TooltipContent,
@@ -77,6 +77,19 @@ export default function CheckClockTable({ records, loading, onView }: CheckClock
   const isAbsence = (rec: CheckClockRecord) =>
     rec.absenceType && rec.startDate && rec.endDate;
 
+  const renderStatusIcon = (status: string) => {
+    const lowerStatus = status.toLowerCase();
+    if (lowerStatus === 'approved') {
+      return <Check className="w-4 h-4 text-green-600" />;
+    } else if (lowerStatus === 'rejected') {
+      return <X className="w-4 h-4 text-red-600" />;
+    } else if (lowerStatus === 'late') {
+      return <ClockAlert className="w-4 h-4 text-yellow-600" />;
+    } else {
+      return null;
+    }
+  };
+
   return (
     <TooltipProvider>
       <Table>
@@ -89,6 +102,7 @@ export default function CheckClockTable({ records, loading, onView }: CheckClock
               { label: 'Work Hours', key: 'workHours' },
               { label: 'Status', key: 'status' },
               { label: 'Action', key: null },
+              { label: 'Details', key: null },
             ].map((col, idx) => (
               <TableHead
                 key={idx}
@@ -103,16 +117,17 @@ export default function CheckClockTable({ records, loading, onView }: CheckClock
             ))}
           </TableRow>
         </TableHeader>
+
         <TableBody>
           {loading ? (
             <TableRow>
-              <TableCell colSpan={6} className="text-center p-4">
+              <TableCell colSpan={7} className="text-center p-4">
                 Loading...
               </TableCell>
             </TableRow>
           ) : sortedRecords.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={6} className="text-center p-4">
+              <TableCell colSpan={7} className="text-center p-4">
                 No records found.
               </TableCell>
             </TableRow>
@@ -126,48 +141,38 @@ export default function CheckClockTable({ records, loading, onView }: CheckClock
                     <TableCell>-</TableCell>
                     <TableCell>-</TableCell>
                     <TableCell>-</TableCell>
-                    <TableCell className="capitalize text-yellow-600">
-                      {rec.status.replace('_', ' ')}
-                    </TableCell>
-                    <TableCell>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="hover:text-blue-600"
-                            onClick={() => onView && onView(rec)}
-                          >
-                            <Eye className="w-4 h-4" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent side="top">View</TooltipContent>
-                      </Tooltip>
-                    </TableCell>
                   </>
                 ) : (
                   <>
                     <TableCell>{rec.clockIn || '-'}</TableCell>
                     <TableCell>{rec.clockOut || '-'}</TableCell>
                     <TableCell>{rec.workHours || '-'}</TableCell>
-                    <TableCell className="capitalize">{rec.status.replace('_', ' ')}</TableCell>
-                    <TableCell>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="hover:text-blue-600"
-                            onClick={() => onView && onView(rec)}
-                          >
-                            <Eye className="w-4 h-4" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent side="top">Details</TooltipContent>
-                      </Tooltip>
-                    </TableCell>
                   </>
                 )}
+
+                <TableCell className="capitalize">{rec.status.replace('_', ' ')}</TableCell>
+
+                {/* Action icon */}
+                <TableCell>
+                  {renderStatusIcon(rec.status)}
+                </TableCell>
+
+                {/* Details icon */}
+                <TableCell>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="hover:text-blue-600"
+                        onClick={() => onView && onView(rec)}
+                      >
+                        <Eye className="w-4 h-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top">Details</TooltipContent>
+                  </Tooltip>
+                </TableCell>
               </TableRow>
             ))
           )}
