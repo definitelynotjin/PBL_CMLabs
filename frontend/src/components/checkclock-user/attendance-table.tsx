@@ -98,6 +98,7 @@ export default function CheckClockTable({ records, loading, onView }: CheckClock
               { label: 'Work Hours', key: 'workHours' },
               { label: 'Status', key: 'status' },
               { label: 'Action', key: null },
+              { label: 'Details', key: 'details' },
             ].map((col, idx) => (
               <TableHead key={idx} className="cursor-pointer select-none" onClick={() => col.key && toggleSort(col.key as keyof CheckClockRecord)}>
                 <div className="flex items-center gap-1">
@@ -143,14 +144,13 @@ export default function CheckClockTable({ records, loading, onView }: CheckClock
                         year: 'numeric',
                       })}
                     </TableCell>
-                    <TableCell>0</TableCell>
-                    <TableCell>0</TableCell>
-                    <TableCell>0</TableCell>
+                    <TableCell>0</TableCell> {/* Clock In */}
+                    <TableCell>0</TableCell> {/* Clock Out */}
+                    <TableCell>0</TableCell> {/* Work Hours */}
                     <TableCell className="capitalize text-yellow-600">
                       {rec.status.replace('_', ' ')}
                     </TableCell>
                     <TableCell>
-                      {/* status icon */}
                       <div className="flex items-center gap-2">
                         {rec.status.toLowerCase() === 'approved' && (
                           <span className="text-green-600 font-semibold">✔️</span>
@@ -161,7 +161,6 @@ export default function CheckClockTable({ records, loading, onView }: CheckClock
                         {rec.status.toLowerCase() === 'waiting approval' && (
                           <span className="text-yellow-500 font-semibold">⏳</span>
                         )}
-                        {/* Always show view button */}
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <Button
@@ -177,6 +176,22 @@ export default function CheckClockTable({ records, loading, onView }: CheckClock
                         </Tooltip>
                       </div>
                     </TableCell>
+                    <TableCell>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="hover:text-blue-600"
+                            onClick={() => onView && onView(rec)}
+                          >
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="top">Details</TooltipContent>
+                      </Tooltip>
+                    </TableCell>
+
                   </>
                 ) : (
                   <>
@@ -196,7 +211,7 @@ export default function CheckClockTable({ records, loading, onView }: CheckClock
                             <Eye className="w-4 h-4" />
                           </Button>
                         </TooltipTrigger>
-                        <TooltipContent side="top">View</TooltipContent>
+                        <TooltipContent side="top">Details</TooltipContent>
                       </Tooltip>
                     </TableCell>
                   </>
