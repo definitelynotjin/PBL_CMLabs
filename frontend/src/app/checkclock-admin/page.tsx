@@ -31,7 +31,6 @@ const Checkclock: React.FC = () => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
           },
-          // omit credentials if not needed
         });
 
 

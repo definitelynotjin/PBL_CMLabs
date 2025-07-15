@@ -136,16 +136,32 @@ export default function CheckClockTable({ records, loading, onView }: CheckClock
                 {isAbsence(rec) ? (
                   <>
                     <TableCell>
-                      {rec.absenceType || 'Absence'}
+                      {new Date(rec.date).toLocaleDateString('en-US', {
+                        weekday: 'short',
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                      })}
                     </TableCell>
-                    <TableCell colSpan={2} className="text-gray-500">
-                      {new Date(rec.startDate!).toLocaleDateString()} – {new Date(rec.endDate!).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell className="text-yellow-600">
-                      {rec.status}
+                    <TableCell>0</TableCell>
+                    <TableCell>0</TableCell>
+                    <TableCell>0</TableCell>
+                    <TableCell className="capitalize text-yellow-600">
+                      {rec.status.replace('_', ' ')}
                     </TableCell>
                     <TableCell>
-                      {rec.status.toLowerCase() === 'waiting approval' && (
+                      {/* status icon */}
+                      <div className="flex items-center gap-2">
+                        {rec.status.toLowerCase() === 'approved' && (
+                          <span className="text-green-600 font-semibold">✔️</span>
+                        )}
+                        {rec.status.toLowerCase() === 'rejected' && (
+                          <span className="text-red-600 font-semibold">❌</span>
+                        )}
+                        {rec.status.toLowerCase() === 'waiting approval' && (
+                          <span className="text-yellow-500 font-semibold">⏳</span>
+                        )}
+                        {/* Always show view button */}
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <Button
@@ -159,9 +175,8 @@ export default function CheckClockTable({ records, loading, onView }: CheckClock
                           </TooltipTrigger>
                           <TooltipContent side="top">View</TooltipContent>
                         </Tooltip>
-                      )}
+                      </div>
                     </TableCell>
-
                   </>
                 ) : (
                   <>

@@ -102,7 +102,7 @@ class AbsenceRequestController extends Controller
 
         $validated = $request->validate([
             'absence_type' => 'sometimes|in:annual_leave,sick,permission,other',
-            'status' => 'sometimes|in:pending,approved,rejected',
+            'status' => 'sometimes|in:awaiting_approval,approved,rejected',
             'reason' => 'nullable|string',
             'file_path' => 'nullable|string',
             'location_name' => 'nullable|string',
