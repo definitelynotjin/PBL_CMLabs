@@ -7,7 +7,7 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow
+  TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { ChevronsUpDown, Eye } from 'lucide-react';
@@ -20,14 +20,14 @@ import {
 
 interface CheckClockRecord {
   id: string;
-  date: string;          // e.g. '2025-06-26'
-  clockIn: string;       // e.g. '08:00:00'
-  clockOut: string;      // e.g. '17:00:00'
-  workHours: string;     // e.g. '9h'
-  status: string;        // e.g. 'on_time', 'late', 'early'
-  absenceType?: string;  // e.g. 'Sick Leave', 'Personal Leave'
-  startDate?: string;    // absence start date
-  endDate?: string;      // absence end date
+  date: string;
+  clockIn: string;
+  clockOut: string;
+  workHours: string;
+  status: string;
+  absenceType?: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 interface CheckClockTableProps {
@@ -58,33 +58,24 @@ export default function CheckClockTable({ records, loading, onView }: CheckClock
     return [...records].sort((a, b) => {
       const aVal = a[sortKey];
       const bVal = b[sortKey];
-
       if (aVal == null) return 1;
       if (bVal == null) return -1;
-
-      if (typeof aVal === 'string') {
-        return sortDirection === 'asc'
-          ? aVal.localeCompare(bVal)
-          : bVal.localeCompare(aVal);
-      }
-
-      return 0;
+      return sortDirection === 'asc'
+        ? String(aVal).localeCompare(String(bVal))
+        : String(bVal).localeCompare(String(aVal));
     });
   }, [records, sortKey, sortDirection]);
 
-  // Helper to format date like admin table
-  const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString('en-US', {
+  const formatDate = (dateStr: string) =>
+    new Date(dateStr).toLocaleDateString('en-US', {
       weekday: 'short',
       month: 'short',
       day: 'numeric',
       year: 'numeric',
     });
-  };
 
-  const isAbsence = (record: CheckClockRecord) => {
-    return record.absenceType !== undefined && record.startDate !== undefined && record.endDate !== undefined;
-  };
+  const isAbsence = (rec: CheckClockRecord) =>
+    rec.absenceType && rec.startDate && rec.endDate;
 
   return (
     <TooltipProvider>
@@ -98,9 +89,12 @@ export default function CheckClockTable({ records, loading, onView }: CheckClock
               { label: 'Work Hours', key: 'workHours' },
               { label: 'Status', key: 'status' },
               { label: 'Action', key: null },
-              { label: 'Details', key: 'details' },
             ].map((col, idx) => (
-              <TableHead key={idx} className="cursor-pointer select-none" onClick={() => col.key && toggleSort(col.key as keyof CheckClockRecord)}>
+              <TableHead
+                key={idx}
+                className={col.key ? 'cursor-pointer select-none' : ''}
+                onClick={() => col.key && toggleSort(col.key as keyof CheckClockRecord)}
+              >
                 <div className="flex items-center gap-1">
                   {col.label}
                   {col.key && <ChevronsUpDown className="w-4 h-4 text-muted-foreground" />}
@@ -125,56 +119,15 @@ export default function CheckClockTable({ records, loading, onView }: CheckClock
           ) : (
             sortedRecords.map((rec) => (
               <TableRow key={rec.id} className="hover:bg-gray-50">
-                <TableCell>
-                  {new Date(rec.date).toLocaleDateString('en-US', {
-                    weekday: 'short',
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric',
-                  })}
-                </TableCell>
+                <TableCell>{formatDate(rec.date)}</TableCell>
 
                 {isAbsence(rec) ? (
                   <>
-                    <TableCell>
-                      {new Date(rec.date).toLocaleDateString('en-US', {
-                        weekday: 'short',
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric',
-                      })}
-                    </TableCell>
-                    <TableCell>0</TableCell> {/* Clock In */}
-                    <TableCell>0</TableCell> {/* Clock Out */}
-                    <TableCell>0</TableCell> {/* Work Hours */}
+                    <TableCell>-</TableCell>
+                    <TableCell>-</TableCell>
+                    <TableCell>-</TableCell>
                     <TableCell className="capitalize text-yellow-600">
                       {rec.status.replace('_', ' ')}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        {rec.status.toLowerCase() === 'approved' && (
-                          <span className="text-green-600 font-semibold">✔️</span>
-                        )}
-                        {rec.status.toLowerCase() === 'rejected' && (
-                          <span className="text-red-600 font-semibold">❌</span>
-                        )}
-                        {rec.status.toLowerCase() === 'waiting approval' && (
-                          <span className="text-yellow-500 font-semibold">⏳</span>
-                        )}
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="hover:text-blue-600"
-                              onClick={() => onView && onView(rec)}
-                            >
-                              <Eye className="w-4 h-4" />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent side="top">View</TooltipContent>
-                        </Tooltip>
-                      </div>
                     </TableCell>
                     <TableCell>
                       <Tooltip>
@@ -188,10 +141,9 @@ export default function CheckClockTable({ records, loading, onView }: CheckClock
                             <Eye className="w-4 h-4" />
                           </Button>
                         </TooltipTrigger>
-                        <TooltipContent side="top">Details</TooltipContent>
+                        <TooltipContent side="top">View</TooltipContent>
                       </Tooltip>
                     </TableCell>
-
                   </>
                 ) : (
                   <>
