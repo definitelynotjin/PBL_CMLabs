@@ -1,5 +1,5 @@
 # 🌐 Website Overview
-Our website can be accessed through this link pblcmlabs.duckdns.org
+Our website can be accessed through this link [https://pblcmlabs.duckdns.org]
 
 # 👤 Project Members
 
