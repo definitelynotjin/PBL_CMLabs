@@ -1,4 +1,7 @@
 # 🌐 Website Overview
+
+<img width="2554" height="1393" alt="image" src="https://github.com/user-attachments/assets/1f582999-16d0-4abf-93d7-845e29e12c61" />
+
 Our website can be accessed through this link [https://pblcmlabs.duckdns.org]
 
 # 👤 Project Members
